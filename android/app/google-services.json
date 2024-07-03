@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "859031581445",
+    "project_id": "push-notification-mocto",
+    "storage_bucket": "push-notification-mocto.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:859031581445:android:23e14db953514400917d6c",
+        "android_client_info": {
+          "package_name": "com.moctor.afroochic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "859031581445-c1ufsmuvidireu7312q4636dr0d07q5b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQWUUe8QbokhujOuQ5ae7InZjahUjl2iI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "859031581445-c1ufsmuvidireu7312q4636dr0d07q5b.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "859031581445-tgsftr62ud5764t5mak35ttunf37agob.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.technologentvalley.afroochic"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:859031581445:android:08be1fbcfe76e73a917d6c",
+        "android_client_info": {
+          "package_name": "com.radius.radiusvebzaapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "859031581445-c1ufsmuvidireu7312q4636dr0d07q5b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQWUUe8QbokhujOuQ5ae7InZjahUjl2iI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "859031581445-c1ufsmuvidireu7312q4636dr0d07q5b.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "859031581445-tgsftr62ud5764t5mak35ttunf37agob.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.technologentvalley.afroochic"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
