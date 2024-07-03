@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:radar/domain/entities/login/Login.dart';
@@ -34,6 +36,7 @@ class LoginCubit extends Cubit<LoginState> {
         isLoginWithMobile: isLoginWithMobile,
         countryCode: countryCode,
       );
+      log(login.isVerified.toString());
       emit(LoginSuccess(loginModel: login));
     } on Exception catch (e) {
       emit(

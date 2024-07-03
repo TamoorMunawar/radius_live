@@ -38,44 +38,47 @@
 
 class ProfileModel {
   ProfileModel({
-      this.id, 
-      this.companyId, 
-      this.name, 
-      this.email, 
-      this.twoFactorSecret, 
-      this.twoFactorRecoveryCodes, 
-      this.twoFactorConfirmed, 
-      this.twoFactorEmailConfirmed, 
-      this.image, 
-      this.countryPhonecode, 
-      this.mobile, 
-      this.gender, 
-      this.salutation, 
-      this.locale, 
-      this.status, 
-      this.login, 
-      this.onesignalPlayerId, 
-      this.lastLogin, 
-      this.emailNotifications, 
-      this.countryId, 
-      this.darkTheme, 
-      this.rtl, 
-      this.twoFaVerifyVia, 
-      this.twoFactorCode, 
-      this.twoFactorExpiresAt, 
-      this.adminApproval, 
-      this.permissionSync, 
-      this.googleCalendarStatus, 
-      this.iqamaId,
-      this.customisedPermissions,
-      this.stripeId, 
-      this.pmType, 
-      this.pmLastFour, 
-      this.trialEndsAt, 
-      this.qrImage, 
-      this.deviceToken, 
-      this.whatsappNumber, 
-      this.imageUrl,});
+    this.id,
+    this.companyId,
+    this.name,
+    this.email,
+    this.twoFactorSecret,
+    this.twoFactorRecoveryCodes,
+    this.twoFactorConfirmed,
+    this.twoFactorEmailConfirmed,
+    this.image,
+    this.countryPhonecode,
+    this.mobile,
+    this.gender,
+    this.salutation,
+    this.locale,
+    this.status,
+    this.login,
+    this.onesignalPlayerId,
+    this.lastLogin,
+    this.emailNotifications,
+    this.countryId,
+    this.darkTheme,
+    this.rtl,
+    this.twoFaVerifyVia,
+    this.twoFactorCode,
+    this.twoFactorExpiresAt,
+    this.adminApproval,
+    this.permissionSync,
+    this.googleCalendarStatus,
+    this.iqamaId,
+    this.customisedPermissions,
+    this.stripeId,
+    this.pmType,
+    this.pmLastFour,
+    this.trialEndsAt,
+    this.qrImage,
+    this.deviceToken,
+    this.deviceId,
+    this.deviceName,
+    this.whatsappNumber,
+    this.imageUrl,
+  });
 
   ProfileModel.fromJson(dynamic json) {
     id = json['id'];
@@ -87,7 +90,7 @@ class ProfileModel {
     twoFactorConfirmed = json['two_factor_confirmed'];
     twoFactorEmailConfirmed = json['two_factor_email_confirmed'];
     image = json['image'];
-    countryPhonecode = json['country_phonecode'].toString()??"";
+    countryPhonecode = json['country_phonecode'].toString() ?? "";
     mobile = json['mobile'];
     gender = json['gender'];
     salutation = json['salutation'];
@@ -115,6 +118,8 @@ class ProfileModel {
     trialEndsAt = json['trial_ends_at'];
     qrImage = json['qr_image'];
     deviceToken = json['device_token'];
+    deviceToken = json['device_id'];
+    deviceToken = json['device_name'];
     whatsappNumber = json['whatsapp_number'];
     imageUrl = json['image_url'];
   }
@@ -154,6 +159,8 @@ class ProfileModel {
   dynamic trialEndsAt;
   String? qrImage;
   String? deviceToken;
+  String? deviceId;
+  String? deviceName;
   String? whatsappCountryCode;
   String? whatsappNumber;
   String? imageUrl;
@@ -195,9 +202,10 @@ class ProfileModel {
     map['trial_ends_at'] = trialEndsAt;
     map['qr_image'] = qrImage;
     map['device_token'] = deviceToken;
+    map['device_id'] = deviceId;
+    map['device_name'] = deviceName;
     map['whatsapp_number'] = whatsappNumber;
     map['image_url'] = imageUrl;
     return map;
   }
-
 }

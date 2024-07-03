@@ -15,19 +15,21 @@ import 'Role.dart';
 
 class Register {
   Register({
-      this.id, 
-      this.companyId, 
-      this.name, 
-      this.email, 
-      this.image, 
-      this.countryPhonecode, 
-      this.mobile, 
-      this.deviceToken,
-      this.gender,
-      this.countryId,
-      this.qrImage, 
-      this.imageUrl, 
-      this.role,});
+    this.id,
+    this.companyId,
+    this.name,
+    this.email,
+    this.image,
+    this.countryPhonecode,
+    this.mobile,
+    this.deviceToken,
+    this.gender,
+    this.countryId,
+    this.qrImage,
+    this.imageUrl,
+    this.isVerified,
+    this.role,
+  });
 
   Register.fromJson(dynamic json) {
     id = json['id'];
@@ -35,12 +37,13 @@ class Register {
     name = json['name'];
     email = json['email'];
     image = json['image'];
-   // countryPhonecode = json['country_phonecode'];
+    // countryPhonecode = json['country_phonecode'];
     mobile = json['mobile'];
     gender = json['gender'];
     countryId = json['country_id'];
     qrImage = json['qr_image'];
     imageUrl = json['image_url'];
+    isVerified = json['is_verified'];
     role = json['role'] != null ? Role.fromJson(json['role']) : null;
   }
   int? id;
@@ -54,7 +57,9 @@ class Register {
   dynamic countryId;
   String? qrImage;
   String? imageUrl;
-  Role? role;String? deviceToken;
+  bool? isVerified;
+  Role? role;
+  String? deviceToken;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -70,10 +75,10 @@ class Register {
     map['country_id'] = countryId;
     map['qr_image'] = qrImage;
     map['image_url'] = imageUrl;
+    map['is_verified'] = isVerified;
     if (role != null) {
       map['role'] = role?.toJson();
     }
     return map;
   }
-
 }

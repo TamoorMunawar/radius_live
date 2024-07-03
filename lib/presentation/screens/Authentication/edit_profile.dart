@@ -18,11 +18,15 @@ import 'package:image_picker/image_picker.dart';
 import 'package:radar/constants/app_utils.dart';
 import 'package:radar/constants/colors.dart';
 import 'package:radar/constants/logger.dart';
+import 'package:radar/constants/route_arguments.dart';
 import 'package:radar/constants/router.dart';
 import 'package:radar/constants/size_config.dart';
 import 'package:radar/domain/entities/country_code_model/country_code_model.dart';
 import 'package:radar/presentation/cubits/change_password/change_password_cubit.dart';
 import 'package:radar/presentation/cubits/profile/profile_cubit.dart';
+import 'package:radar/presentation/cubits/verification/verification_cubit.dart';
+import 'package:radar/presentation/cubits/verification/verification_state.dart';
+import 'package:radar/presentation/screens/Authentication/verification_dialog.dart';
 import 'package:radar/presentation/widgets/LoadingWidget.dart';
 import 'package:radar/presentation/widgets/button_widget.dart';
 
@@ -30,11 +34,7 @@ import 'package:radar/presentation/widgets/radius_text_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen(
-      {super.key,
-      this.isBack = false,
-      required this.phoneCode,
-      this.isFromLogin = false});
+  const EditProfileScreen({super.key, this.isBack = false, required this.phoneCode, this.isFromLogin = false});
 
   final bool isBack;
   final bool isFromLogin;
@@ -82,11 +82,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   bool isLoading = false;
   List<CountryCodeModel> countryList = [];
   List<CountryCodeModel> stcpayList = [
-    CountryCodeModel(code:"SA" ,label: "Saudi Arabia",phone: "966",phoneLength: 9),
-    CountryCodeModel(code:"PR" ,label: "Puerto Rico",phone: "1",phoneLength:10),
-
-
-   ];
+    CountryCodeModel(code: "SA", label: "Saudi Arabia", phone: "966", phoneLength: 9),
+    CountryCodeModel(code: "PR", label: "Puerto Rico", phone: "1", phoneLength: 10),
+  ];
 
   Future getCountryListData() async {
     setState(() {
@@ -96,8 +94,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     for (int i = 0; i < AppUtils.countryList.length; i++) {
       countryList.add(CountryCodeModel.fromJson(AppUtils.countryList[i]));
     }
-    print(
-        "outside condtion for each  ${whatsappCountryCode.replaceFirst("+", '')}");
+    print("outside condtion for each  ${whatsappCountryCode.replaceFirst("+", '')}");
     print("outside condtion for each  $whatsappCountryCode");
     print("outside condtion for each  ${countryCode.replaceFirst("+", '')}");
     if (whatsappCountryCode == null || whatsappCountryCode == "") {
@@ -105,13 +102,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       whatappCode = countryList[181];
     }
 
-  //  mobileCode = countryList[181];
+    //  mobileCode = countryList[181];
     for (int i = 0; i < countryList.length; i++) {
       if (countryList[i].phone == "966") {
         print("element length ${countryList[i]}  index is $i");
       }
 
-   /*   if (countryCode != null) {
+      /*   if (countryCode != null) {
         if (countryList[i].phone == countryCode.replaceFirst("+", '')) {
           print("inside if condtion for each");
           mobileCode = countryList[i];
@@ -165,10 +162,34 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             left: SizeConfig.width(context, 0.07),
             right: SizeConfig.width(context, 0.07),
           ),
-          child: SubmitButton(
-            //    width: SizeConfig.width(context, 0.5),
-            onPressed: () async {
-              if (formKey.currentState!.validate()) {
+          child: BlocConsumer<VerificationCubit, VerificationState>(
+            listener: (context, vState) {
+              if (vState is SendOtpFailure) {
+                AppUtils.showFlushBar(vState.errorMessage, context);
+              }
+              if (vState is SendOtpSuccess) {
+                AppUtils.showFlushBar("Otp Sent successfully", context);
+                showDialog(
+                    builder: (c) => Container(
+                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: VerificationDialog(
+                              email: profileCubit.result?.email ?? _emailController.text,
+                              countryCode: profileCubit.result?.email ?? _emailController.text,
+                              fromLogin: false,
+                            ),
+                          ),
+                        ),
+                    context: context);
+              }
+
+              if (vState is CheckOtpFailure) {
+                AppUtils.showFlushBar(vState.errorMessage, context);
+              }
+              if (vState is CheckOtpSuccess) {
                 changePasswordCubit.updateProfileV1(
                     mobileNumberCountryCode: "+966",
                     email: _emailController.text.trim(),
@@ -176,47 +197,56 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     name: _nameController.text.trim(),
                     image: newImage?.path ?? "",
                     number: _phoneNumberController.text.trim(),
-                    whatsappNumberCountryCode:
-                        "+${whatappCode?.phone ?? "966"}",
+                    whatsappNumberCountryCode: "+${whatappCode?.phone ?? "966"}",
                     whatsappNumber: _whatsappNumberController.text.trim());
               }
-              //     Navigator.pushNamed(context, AppRoutes.resetScreenRoute);
             },
-            child: BlocConsumer<ChangePasswordCubit, ChangePasswordState>(
-              listener: (context, state) async {
-                if (state is ChangePasswordFailure) {
-                  SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-                  prefs.setBool("isProfileUpdated", false);
-                  AppUtils.showFlushBar(state.errorMessage, context);
-                }
-                if (state is UpdateProfileSuccess) {
-                  SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-                  prefs.setBool("isProfileUpdated", true);
+            builder: (context, vState) {
+              return SubmitButton(
+                //    width: SizeConfig.width(context, 0.5),
+                onPressed: () async {
+                  if (formKey.currentState!.validate()) {
+                    context.read<VerificationCubit>().sendOtp(
+                          email: profileCubit.result?.email ?? _emailController.text,
+                          countryCode: profileCubit.result?.countryPhonecode ?? "+966",
+                          number: profileCubit.result?.mobile ?? _phoneNumberController.text,
+                        );
+                  }
+                  //     Navigator.pushNamed(context, AppRoutes.resetScreenRoute);
+                },
+                child: BlocConsumer<ChangePasswordCubit, ChangePasswordState>(
+                  listener: (context, state) async {
+                    if (state is ChangePasswordFailure) {
+                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                      prefs.setBool("isProfileUpdated", false);
+                      AppUtils.showFlushBar(state.errorMessage, context);
+                    }
+                    if (state is UpdateProfileSuccess) {
+                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                      prefs.setBool("isProfileUpdated", true);
 
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, AppRoutes.pagesScreenRoute, (route) => false,
-                      arguments: 0);
-                  AppUtils.showFlushBar(
-                      "Profile Updated Successfully".tr(), context);
-                }
-              },
-              builder: (context, state) {
-                if (state is ChangePasswordLoading) {
-                  return LoadingWidget();
-                }
+                      Navigator.pushNamedAndRemoveUntil(context, AppRoutes.pagesScreenRoute, (route) => false,
+                          arguments: 0);
+                      AppUtils.showFlushBar("Profile Updated Successfully".tr(), context);
+                    }
+                  },
+                  builder: (context, state) {
+                    if (state is ChangePasswordLoading) {
+                      return LoadingWidget();
+                    }
 
-                return Text(
-                  'Update'.tr(),
-                  style: TextStyle(
-                    color: GlobalColors.submitButtonTextColor,
-                    fontSize: SizeConfig.width(context, 0.04),
-                    fontWeight: FontWeight.w500,
-                  ),
-                );
-              },
-            ),
+                    return Text(
+                      'Update'.tr(),
+                      style: TextStyle(
+                        color: GlobalColors.submitButtonTextColor,
+                        fontSize: SizeConfig.width(context, 0.04),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
           ),
         ),
       ),
@@ -231,9 +261,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   Navigator.pop(context);
                 },
                 icon: Padding(
-                  padding: EdgeInsets.only(
-                      left: SizeConfig.width(context, 0.05),
-                      right: SizeConfig.width(context, 0.05)),
+                  padding:
+                      EdgeInsets.only(left: SizeConfig.width(context, 0.05), right: SizeConfig.width(context, 0.05)),
                   child: Icon(
                     Icons.arrow_back_ios,
                     size: SizeConfig.width(context, 0.05),
@@ -256,8 +285,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           if (state is ProfileSuccess) {
             _emailController.text = state.profileModel.email ?? "";
             _nameController.text = state.profileModel.name ?? "";
-            _whatsappNumberController.text =
-                state.profileModel.whatsappNumber ?? "";
+            _whatsappNumberController.text = state.profileModel.whatsappNumber ?? "";
 
             _idController.text = state.profileModel.iqamaId ?? "";
             countryCode = state.profileModel.countryPhonecode ?? "";
@@ -270,11 +298,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             print("profie image url $imageUrl");
             print("profie email ${state.profileModel.email}");
             print("profie whatsapp ${state.profileModel.whatsappNumber}");
-            print(
-                "profie Whatsapp code ${state.profileModel.whatsappCountryCode}");
+            print("profie Whatsapp code ${state.profileModel.whatsappCountryCode}");
             print("profie mobile ${state.profileModel.mobile}");
-            print(
-                "profie mobile country code ${state.profileModel.countryPhonecode}");
+            print("profie mobile country code ${state.profileModel.countryPhonecode}");
             getCountryListData();
             //  setState(() {});
           }
@@ -312,8 +338,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         image = await _picker.pickImage(
                           source: ImageSource.gallery,
                         );
-                        print(
-                            "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv ${image?.path}");
+                        print("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv ${image?.path}");
                         if (!mounted) return;
                         imagePath = image?.path ?? "";
 
@@ -323,10 +348,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         print("original image size ${mb.toString()}");
                         final dir = await path_provider.getTemporaryDirectory();
                         final targetPath = "${dir.absolute.path}/temp$code.jpg";
-                        final result =
-                            await FlutterImageCompress.compressAndGetFile(
-                                image!.path, targetPath,
-                                minHeight: 1080, minWidth: 1080, quality: 70);
+                        final result = await FlutterImageCompress.compressAndGetFile(image!.path, targetPath,
+                            minHeight: 1080, minWidth: 1080, quality: 70);
                         final data = await result!.readAsBytes();
                         final newkb = data.length / 1024;
                         final newMb = newkb / 1024;
@@ -334,8 +357,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         setState(() {
                           newImage = File(result.path);
                         });
-                        print(
-                            "new image size ${newMb.toString()}   ${newImage?.path}");
+                        print("new image size ${newMb.toString()}   ${newImage?.path}");
                       },
                       child: (imagePath?.isNotEmpty ?? false)
                           ? CircleAvatar(
@@ -354,8 +376,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 child: CircleAvatar(
                                   //                  backgroundColor: Colors.red,
                                   radius: SizeConfig.width(context, 0.05),
-                                  backgroundImage:
-                                      AssetImage("assets/icons/edit_icon.png"),
+                                  backgroundImage: AssetImage("assets/icons/edit_icon.png"),
                                 ),
                               )),
                     ),
@@ -428,7 +449,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     SizedBox(
                       height: SizeConfig.height(context, 0.01),
                     ),
-
                     Padding(
                       padding: EdgeInsets.only(
                         left: SizeConfig.width(context, 0.07),
@@ -436,9 +456,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       ),
                       child: Text(
                         "Please_STCPAY".tr(),
-                        style: TextStyle(
-                            color: GlobalColors.submitButtonColor,
-                            fontSize: SizeConfig.width(context, 0.03)),
+                        style:
+                            TextStyle(color: GlobalColors.submitButtonColor, fontSize: SizeConfig.width(context, 0.03)),
                       ),
                     ),
                     SizedBox(
@@ -464,8 +483,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   value: item,
                                   child: Text(
                                     "${item.phone}",
-                                    style: TextStyle(
-                                        color: GlobalColors.textFieldHintColor),
+                                    style: TextStyle(color: GlobalColors.textFieldHintColor),
                                   ),
                                 );
                               }).toList(),
@@ -473,24 +491,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               onChanged: (value) {
                                 setState(() => mobileCode = value);
                               },
-                              decoration: InputDecoration(enabled: false,
+                              decoration: InputDecoration(
+                                enabled: false,
                                 filled: false,
                                 hintText: ''.tr(),
                                 hintStyle: TextStyle(
                                   color: GlobalColors.textFieldHintColor,
                                 ),
-                                disabledBorder:OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                      color: Colors.yellow
-                                    //    color: GlobalColors.ftsTextColor,
-                                  ),
+                                disabledBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(color: Colors.yellow
+                                      //    color: GlobalColors.ftsTextColor,
+                                      ),
                                   borderRadius: BorderRadius.circular(
                                     SizeConfig.width(context, 0.03),
                                   ),
-                                ) ,
+                                ),
                                 border: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                      color: Colors.yellow
+                                  borderSide: const BorderSide(color: Colors.yellow
                                       //    color: GlobalColors.ftsTextColor,
                                       ),
                                   borderRadius: BorderRadius.circular(
@@ -507,10 +524,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   ),
                                 ),
                               ),
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
                               validator: (value) {
-
                                 return null;
                               },
                             ),
@@ -520,8 +535,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               textInputType: TextInputType.number,
                               controller: _phoneNumberController,
                               inputFormatters: [
-                                LengthLimitingTextInputFormatter(
-                                    mobileCode?.phoneLength),
+                                LengthLimitingTextInputFormatter(mobileCode?.phoneLength),
                               ],
                               hintText: 'STCPAY Number'.tr(),
                               validator: (String? value) {
@@ -529,9 +543,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   return "Please enter correct number".tr();
                                 }
 
-                                if (value!.contains("+") ||
-                                    value == null ||
-                                    value.isEmpty) {
+                                if (value!.contains("+") || value == null || value.isEmpty) {
                                   return 'Enter_valid_stcpay_number'.tr();
                                 }
                                 return null;
@@ -564,8 +576,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   value: item,
                                   child: Text(
                                     "${item.code} ${item.phone}",
-                                    style: TextStyle(
-                                        color: GlobalColors.textFieldHintColor),
+                                    style: TextStyle(color: GlobalColors.textFieldHintColor),
                                   ),
                                 );
                               }).toList(),
@@ -580,8 +591,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   color: GlobalColors.textFieldHintColor,
                                 ),
                                 border: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                      color: Colors.yellow
+                                  borderSide: const BorderSide(color: Colors.yellow
                                       //    color: GlobalColors.ftsTextColor,
                                       ),
                                   borderRadius: BorderRadius.circular(
@@ -598,12 +608,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   ),
                                 ),
                               ),
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
                               validator: (value) {
                                 if (value == null) {
-                                  return 'Please select whatsapp Number Country Code'
-                                      .tr();
+                                  return 'Please select whatsapp Number Country Code'.tr();
                                 }
                                 return null;
                               },
@@ -614,19 +622,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               textInputType: TextInputType.number,
                               controller: _whatsappNumberController,
                               inputFormatters: [
-                                LengthLimitingTextInputFormatter(
-                                    whatappCode?.phoneLength),
+                                LengthLimitingTextInputFormatter(whatappCode?.phoneLength),
                               ],
                               hintText: 'Whatsapp_Number'.tr(),
                               validator: (String? value) {
-                                if (value!.length !=
-                                    whatappCode!.phoneLength!) {
+                                if (value!.length != whatappCode!.phoneLength!) {
                                   return "Please enter correct number".tr();
                                 }
 
-                                if (value!.contains("+") ||
-                                    value == null ||
-                                    value.isEmpty) {
+                                if (value!.contains("+") || value == null || value.isEmpty) {
                                   return 'Enter_valid_whatsapp_number'.tr();
                                 }
                                 return null;
@@ -657,9 +661,5 @@ class CountryList {
   final String label;
   final int phoneLength;
 
-  CountryList(
-      {required this.phone,
-      required this.label,
-      required this.phoneLength,
-      required this.code});
+  CountryList({required this.phone, required this.label, required this.phoneLength, required this.code});
 }

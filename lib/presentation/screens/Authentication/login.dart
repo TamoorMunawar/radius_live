@@ -10,6 +10,7 @@ import 'package:location/location.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart' as ph;
 import 'package:radar/constants/device_utils.dart';
+import 'package:radar/constants/generate_route.dart';
 import 'package:radar/constants/route_arguments.dart';
 import 'package:radar/main.dart';
 import 'package:radar/presentation/screens/Authentication/verification_screen.dart';
@@ -1110,7 +1111,7 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                       ),
                     );
                   },
-                  listener: (context, state) {
+                  listener: (context, state) async {
                     if (state is RegisterSuccess) {
                       setState(() {
                         _cityController.clear();
@@ -1128,9 +1129,19 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
 
                         _iqamaExpiryController.clear();
                         _idNumberController.clear();
-                        isLogin = true;
                       });
 
+                      await Navigator.pushNamed(context, AppRoutes.verification,
+                          arguments: VerificationRoute(
+                            email: state.register.email ?? "",
+                            countryCode: state.register.countryPhonecode ?? "",
+                            number: state.register.mobile ?? "",
+                            fromLogin: true,
+                          ));
+
+                      setState(() {
+                        isLogin = true;
+                      });
                       AppUtils.showFlushBar("Please_login_now".tr(), context);
                     }
                     if (state is RegisterFailure) {
@@ -1421,8 +1432,8 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                           countryCode: loginCountryCode,
                           password: _passwordController.text.trim(),
                           deviceToken: deviceToken,
-                          deviceId: "DID090078",
-                          deviceName: "macbook",
+                          deviceId: deviceId,
+                          deviceName: deviceName,
                           email:
                               (isLoginWithMobile) ? _loginMobileController.text.trim() : _emailController.text.trim());
                       // Permission is already granted or not needed, proceed with the location related task
@@ -1441,21 +1452,22 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                       SharedPreferences prefs = await SharedPreferences.getInstance();
                       prefs.setBool("isProfileUpdated", true);
 
-                      // if (state.loginModel.isVerified ?? false) {
-                      Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                MyApp(isProfile: state.loginModel.whatsappNumber != null ? false : true)),
-                        (Route<dynamic> route) => false,
-                      );
-                      // } else {
-                      //   Navigator.pushNamed(context, AppRoutes.verification,
-                      //       arguments: VerificationRoute(
-                      //         email: state.loginModel.email ?? "",
-                      //         countryCode: state.loginModel.countryPhonecode ?? "",
-                      //         number: state.loginModel.mobile ?? "",
-                      //       ));
-                      // }
+                      if (state.loginModel.isVerified!) {
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  splashScreen(isProfile: state.loginModel.whatsappNumber != null ? false : true)),
+                          (Route<dynamic> route) => false,
+                        );
+                      } else {
+                        Navigator.pushNamed(context, AppRoutes.verification,
+                            arguments: VerificationRoute(
+                              email: state.loginModel.email ?? "",
+                              countryCode: state.loginModel.countryPhonecode ?? "",
+                              number: state.loginModel.mobile ?? "",
+                              fromLogin: true,
+                            ));
+                      }
 
                       /*  if (state.loginModel.whatsappNumber != null) {
                         SharedPreferences prefs =

@@ -20,8 +20,14 @@ class VerificationRoute {
   final String email;
   final String countryCode;
   final String number;
+  final bool fromLogin;
 
-  VerificationRoute({required this.email, required this.countryCode, required this.number});
+  VerificationRoute({
+    required this.email,
+    required this.countryCode,
+    required this.number,
+    required this.fromLogin,
+  });
 }
 
 class ResetPasswordScreenRoute {

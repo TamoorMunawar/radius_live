@@ -8,18 +8,20 @@ part 'profile_state.dart';
 class ProfileCubit extends Cubit<ProfileState> {
   final ProfileUsecase usecase;
   ProfileCubit(this.usecase) : super(ProfileInitial());
+
+  ProfileModel? result;
+
   void getProfileDetails() async {
     try {
       emit(ProfilLoading());
-      ProfileModel? result = await usecase.getProfileDetail();
-      emit(ProfileSuccess(profileModel: result));
+      result = await usecase.getProfileDetail();
+      emit(ProfileSuccess(profileModel: result!));
     } on Exception catch (e) {
       emit(
         ProfileFailed(
           errorMessage: e.toString(),
         ),
       );
-
     }
   }
 }

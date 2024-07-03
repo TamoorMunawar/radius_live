@@ -8,7 +8,7 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:radar/constants/app_utils.dart';
 import 'package:radar/constants/colors.dart';
 import 'package:radar/constants/extensions.dart';
-import 'package:radar/constants/router.dart';
+import 'package:radar/constants/generate_route.dart';
 import 'package:radar/constants/size_config.dart';
 import 'package:radar/data/radar_mobile_repository_impl.dart';
 import 'package:radar/domain/usecase/verification/verification_usecase.dart';
@@ -20,7 +20,8 @@ import 'package:radar/presentation/widgets/button_widget.dart';
 class VerificationDialog extends StatefulWidget {
   final String email;
   final String countryCode;
-  const VerificationDialog({super.key, required this.email, required this.countryCode});
+  final bool fromLogin;
+  const VerificationDialog({super.key, required this.email, required this.countryCode, required this.fromLogin});
 
   @override
   State<VerificationDialog> createState() => _VerificationDialogState();
@@ -45,7 +46,7 @@ class _VerificationDialogState extends State<VerificationDialog> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => VerificationCubit(VerificationUsecase(repository: RadarMobileRepositoryImpl())),
+      create: (_) => VerificationCubit(VerificationUsecase(repository: RadarMobileRepositoryImpl())),
       child: Container(
         decoration: BoxDecoration(color: GlobalColors.backgroundColor, borderRadius: BorderRadius.circular(12)),
         child: Column(
@@ -145,8 +146,15 @@ class _VerificationDialogState extends State<VerificationDialog> {
                       AppUtils.showFlushBar(state.errorMessage, context);
                     }
                     if (state is CheckOtpSuccess) {
-                      AppUtils.showFlushBar("Account Verified Successfully", context);
-                      Navigator.pop(context);
+                      if (widget.fromLogin) {
+                        AppUtils.showFlushBar("Account Verified Successfully", context);
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context) => splashScreen(isProfile: true)),
+                          (Route<dynamic> route) => false,
+                        );
+                      } else {
+                        Navigator.pop(context);
+                      }
                     }
                   },
                   builder: (context, state) {

@@ -92,7 +92,8 @@ Route? onGenerateRoute(RouteSettings settings) {
   if (settings.name == AppRoutes.verification) {
     final args = settings.arguments as VerificationRoute;
     return MaterialPageRoute(
-      builder: (context) => _verification(email: args.email, countryCode: args.countryCode, number: args.number),
+      builder: (context) => _verification(
+          email: args.email, countryCode: args.countryCode, number: args.number, fromLogin: args.fromLogin),
     );
   }
   if (settings.name == AppRoutes.usherListScreenRoute) {
@@ -384,7 +385,8 @@ MultiBlocProvider _login() {
   ], child: Login());
 }
 
-MultiBlocProvider _verification({required String email, required String countryCode, required String number}) {
+MultiBlocProvider _verification(
+    {required String email, required String countryCode, required String number, required bool fromLogin}) {
   return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -395,6 +397,7 @@ MultiBlocProvider _verification({required String email, required String countryC
         email: email,
         countryCode: countryCode,
         number: number,
+        fromLogin: fromLogin,
       ));
 }
 
@@ -587,6 +590,13 @@ MultiBlocProvider editProfile({required bool isBack, required bool isFromLogin, 
         BlocProvider(
           create: (context) => ProfileCubit(
             ProfileUsecase(
+              repository: repository,
+            ),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => VerificationCubit(
+            VerificationUsecase(
               repository: repository,
             ),
           ),

@@ -293,8 +293,8 @@ class RadarMobileRepositoryImpl implements RadarMobileRepository {
         "date_of_birth": registerPayload?.dateOfBirth ?? "",
         "city": registerPayload?.city ?? "",
         "device_token": registerPayload?.deviceToken ?? "",
-        "device_name": registerPayload?.deviceToken ?? "",
-        "device_id": registerPayload?.deviceToken ?? "",
+        "device_name": registerPayload?.deviceName ?? "",
+        "device_id": registerPayload?.deviceId ?? "",
         "whatsapp_number": registerPayload?.whatsappNumber ?? "",
         "whatsapp_number_country_code": registerPayload?.whatsappCountryCode ?? "",
       };

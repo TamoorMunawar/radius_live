@@ -68,8 +68,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               onPressed: () async {
                 // Add your account deletion logic here
                 // Dismiss the dialog
-                Navigator.pushNamedAndRemoveUntil(
-                    context, AppRoutes.loginScreenRoute, (route) => false);
+                Navigator.pushNamedAndRemoveUntil(context, AppRoutes.loginScreenRoute, (route) => false);
                 SharedPreferences prefs = await SharedPreferences.getInstance();
                 prefs.clear();
               },
@@ -185,19 +184,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             children: [
                               ElevatedButton(
                                   onPressed: () async {
-                                    SharedPreferences prefs =
-                                        await SharedPreferences.getInstance();
+                                    SharedPreferences prefs = await SharedPreferences.getInstance();
                                     prefs.setBool("isEnglish", true);
-                                    await (context
-                                        .setLocale(const Locale('en')));
+                                    await (context.setLocale(const Locale('en')));
 
                                     Navigator.of(context).pop();
                                   },
                                   child: const Text('English')),
                               ElevatedButton(
                                 onPressed: () async {
-                                  SharedPreferences prefs =
-                                      await SharedPreferences.getInstance();
+                                  SharedPreferences prefs = await SharedPreferences.getInstance();
                                   prefs.setBool("isEnglish", false);
                                   await (context.setLocale(const Locale('ar')));
                                   Navigator.of(context).pop();
@@ -230,8 +226,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             onPressed: () {
               Navigator.pushNamed(context, AppRoutes.editProfileScreenRoute,
-                  arguments: EditProfileScreenArgs(
-                      isFromLogin: false, phoneCode: "+92"));
+                  arguments: EditProfileScreenArgs(isFromLogin: false, phoneCode: "+92"));
             },
             icon: Icon(
               Symbols.stylus,
@@ -259,17 +254,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       (image.contains("http"))
                           ? CircleAvatar(
                               backgroundImage: NetworkImage(image),
-                              //                backgroundColor: Colors.red,
+                              //backgroundColor: Colors.red,
                               radius: 0.11.sw,
                             )
                           : CircleAvatar(
-                              backgroundImage: const AssetImage(
-                                  "assets/icons/profile_icon.png"),
+                              backgroundImage: const AssetImage("assets/icons/profile_icon.png"),
                               //                backgroundColor: Colors.red,
                               radius: 0.11.sw,
                             ),
                       Text(
-                        "Taimoor",
+                        name,
                         style: TextStyle(
                           color: GlobalColors.whiteColor,
                           fontWeight: FontWeight.w500,
@@ -286,11 +280,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       SizedBox(height: 0.01.sh),
                       Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 0.03.sw, vertical: 0.01.sw),
+                        padding: EdgeInsets.symmetric(horizontal: 0.03.sw, vertical: 0.01.sw),
                         decoration: BoxDecoration(
-                            color: GlobalColors.submitButtonColor,
-                            borderRadius: BorderRadius.circular(8)),
+                            color: GlobalColors.submitButtonColor, borderRadius: BorderRadius.circular(8)),
                         child: Text(
                           "Flutter Developer",
                           style: TextStyle(
@@ -351,8 +343,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           : ProfileButton(
                               //    width: SizeConfig.width(context, 0.5),
                               onPressed: () async {
-                                Navigator.pushNamed(
-                                    context, AppRoutes.qrCodeScreenRoute);
+                                Navigator.pushNamed(context, AppRoutes.qrCodeScreenRoute);
                               },
                               title: 'Qr Code'.tr(), icon: Symbols.qr_code,
                             ),
@@ -362,8 +353,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ProfileButton(
                         //    width: SizeConfig.width(context, 0.5),
                         onPressed: () async {
-                          Navigator.pushNamed(context,
-                              AppRoutes.notificationSettingScreenRoute);
+                          Navigator.pushNamed(context, AppRoutes.notificationSettingScreenRoute);
                         },
                         title: 'Notification Settings'.tr(),
                         icon: Symbols.settings,
@@ -374,8 +364,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ProfileButton(
                         //    width: SizeConfig.width(context, 0.5),
                         onPressed: () async {
-                          Navigator.pushNamed(
-                              context, AppRoutes.changePasswordScreenRoute);
+                          Navigator.pushNamed(context, AppRoutes.changePasswordScreenRoute);
                         },
                         title: 'Change Password'.tr(), icon: Symbols.lock,
                       ),
@@ -383,8 +372,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ProfileButton(
                         //    width: SizeConfig.width(context, 0.5),
                         onPressed: () async {
-                          Navigator.pushNamed(
-                              context, AppRoutes.complainScreenRoute);
+                          Navigator.pushNamed(context, AppRoutes.complainScreenRoute);
                         },
                         title: 'Complain to Supervisor'.tr(),
                         icon: Symbols.report,
@@ -396,14 +384,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         gradientFirstColor: GlobalColors.logoutColor,
                         //    width: SizeConfig.width(context, 0.5),
                         onPressed: () async {
-                          SharedPreferences prefs =
-                              await SharedPreferences.getInstance();
+                          SharedPreferences prefs = await SharedPreferences.getInstance();
                           prefs.remove("qr_code");
                           prefs.clear();
                           prefs.setBool("isLocationDailog", true);
                           socket.disconnect();
-                          Navigator.pushNamedAndRemoveUntil(context,
-                              AppRoutes.loginScreenRoute, (route) => false);
+                          Navigator.pushNamedAndRemoveUntil(context, AppRoutes.loginScreenRoute, (route) => false);
                         },
                         title: 'Logout'.tr(), icon: Symbols.logout,
                       ),
@@ -412,8 +398,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ],
             ),
-            BlocConsumer<ScanQrCodeCubit, ScanQrCodeState>(
-                builder: (context, state) {
+            BlocConsumer<ScanQrCodeCubit, ScanQrCodeState>(builder: (context, state) {
               if (state is ScanQrcodeLoading) {
                 return Align(
                   alignment: Alignment.center,
