@@ -13,9 +13,7 @@ class ChangePasswordUsecase {
   }) async {
     try {
       return await repository.changePassword(
-          confirmPassword: confirmPassword,
-          currentPassword: currentPassword,
-          password: password);
+          confirmPassword: confirmPassword, currentPassword: currentPassword, password: password);
     } on Exception catch (e) {
       LogManager.error("changePassword::error", e);
       throw Exception(e.toString().substring(11));
@@ -28,32 +26,37 @@ class ChangePasswordUsecase {
     String? number,
   }) async {
     try {
-      return await repository.updateProfile(
-          number: number, image: image, name: name);
+      return await repository.updateProfile(number: number, image: image, name: name);
     } on Exception catch (e) {
       LogManager.error("updateProfile::error", e);
       throw Exception(e.toString().substring(11));
     }
   }
 
-  Future<bool> updateProfileV1({
-    String? name,
-    String? image,
-    String? number,
-    String? whatsappNumber,
-    String? iqamaId,
-    String? email,
-    String? mobileNumberCountryCode,
-    String? whatsappNumberCountryCode,
-  }) async {
+  Future<bool> updateProfileV1(
+      {String? name,
+      String? image,
+      String? number,
+      String? whatsappNumber,
+      String? iqamaId,
+      String? email,
+      String? mobileNumberCountryCode,
+      String? whatsappNumberCountryCode,
+      String? deviceId,
+      String? deviceName}) async {
     try {
       return await repository.updateProfileV1(
-          number: number,
-          image: image,
-          name: name,
-          whatsappNumber: whatsappNumber,mobileNumberCountryCode: mobileNumberCountryCode,whatsappNumberCountryCode: whatsappNumberCountryCode,
-          iqamaId: iqamaId,
-          email: email);
+        number: number,
+        image: image,
+        name: name,
+        whatsappNumber: whatsappNumber,
+        mobileNumberCountryCode: mobileNumberCountryCode,
+        whatsappNumberCountryCode: whatsappNumberCountryCode,
+        iqamaId: iqamaId,
+        email: email,
+        deviceId: deviceId,
+        deviceName: deviceName,
+      );
     } on Exception catch (e) {
       LogManager.error("updateProfileV1::error", e);
       throw Exception(e.toString().substring(11));

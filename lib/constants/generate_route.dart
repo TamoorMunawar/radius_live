@@ -33,7 +33,6 @@ import 'package:radar/presentation/cubits/dashboard/dashboard_cubit.dart';
 import 'package:radar/presentation/cubits/profile/profile_cubit.dart';
 import 'package:radar/presentation/cubits/verification/verification_cubit.dart';
 import 'package:radar/presentation/cubits/zone_seats/zone_seats_cubit.dart';
-import 'package:radar/presentation/screens/Authentication/verification_screen.dart';
 import 'package:radar/presentation/screens/dashboard/admin_dashboard_screen.dart';
 import 'package:radar/presentation/screens/event_detail.dart';
 import 'package:radar/presentation/cubits/accept_Invitation/accept_invitation_cubit.dart';
@@ -76,7 +75,6 @@ import 'package:radar/presentation/screens/notification_settings.dart';
 import 'package:radar/presentation/screens/pages.dart';
 import 'package:radar/presentation/screens/qr_attandance.dart';
 import 'package:radar/presentation/screens/qr_code_screen.dart';
-import 'package:radar/presentation/screens/scan_qr_code.dart';
 import 'package:radar/presentation/screens/splash_screen.dart';
 import 'package:radar/presentation/screens/usher_list_by_event.dart';
 import 'package:radar/presentation/screens/usher_list_screen.dart';
@@ -89,13 +87,13 @@ Route? onGenerateRoute(RouteSettings settings) {
       builder: (context) => _login(),
     );
   }
-  if (settings.name == AppRoutes.verification) {
-    final args = settings.arguments as VerificationRoute;
-    return MaterialPageRoute(
-      builder: (context) => _verification(
-          email: args.email, countryCode: args.countryCode, number: args.number, fromLogin: args.fromLogin),
-    );
-  }
+  // if (settings.name == AppRoutes.verification) {
+  //   final args = settings.arguments as VerificationRoute;
+  //   return MaterialPageRoute(
+  //     builder: (context) => _verification(
+  //         email: args.email, countryCode: args.countryCode, number: args.number, fromLogin: args.fromLogin),
+  //   );
+  // }
   if (settings.name == AppRoutes.usherListScreenRoute) {
     return MaterialPageRoute(
       builder: (context) => usherListScreen(),
@@ -385,21 +383,21 @@ MultiBlocProvider _login() {
   ], child: Login());
 }
 
-MultiBlocProvider _verification(
-    {required String email, required String countryCode, required String number, required bool fromLogin}) {
-  return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => VerificationCubit(VerificationUsecase(repository: repository)),
-        ),
-      ],
-      child: VerificationScreen(
-        email: email,
-        countryCode: countryCode,
-        number: number,
-        fromLogin: fromLogin,
-      ));
-}
+// MultiBlocProvider _verification(
+//     {required String email, required String countryCode, required String number, required bool fromLogin}) {
+//   return MultiBlocProvider(
+//       providers: [
+//         BlocProvider(
+//           create: (context) => VerificationCubit(VerificationUsecase(repository: repository)),
+//         ),
+//       ],
+//       child: VerificationScreen(
+//         email: email,
+//         countryCode: countryCode,
+//         number: number,
+//         fromLogin: fromLogin,
+//       ));
+// }
 
 MultiBlocProvider _changePassword() {
   return MultiBlocProvider(providers: [
@@ -696,9 +694,16 @@ MultiBlocProvider _resetPassword(
       ));
 }
 
-BlocProvider<ScanQrCodeCubit> profileScreen({required bool isBack}) {
-  return BlocProvider(
-    create: (context) => ScanQrCodeCubit(ScanQrCodeUsecase(repository: repository)),
+MultiBlocProvider profileScreen({required bool isBack}) {
+  return MultiBlocProvider(
+    providers: [
+      BlocProvider(
+        create: (context) => ScanQrCodeCubit(ScanQrCodeUsecase(repository: repository)),
+      ),
+      BlocProvider(
+        create: (context) => ProfileCubit(ProfileUsecase(repository: repository)),
+      )
+    ],
     child: ProfileScreen(isBack: isBack),
   );
 }

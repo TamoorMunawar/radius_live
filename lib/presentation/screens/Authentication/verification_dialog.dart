@@ -3,17 +3,11 @@ import 'dart:developer';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:radar/constants/app_utils.dart';
 import 'package:radar/constants/colors.dart';
 import 'package:radar/constants/extensions.dart';
-import 'package:radar/constants/generate_route.dart';
 import 'package:radar/constants/size_config.dart';
-import 'package:radar/data/radar_mobile_repository_impl.dart';
-import 'package:radar/domain/usecase/verification/verification_usecase.dart';
 import 'package:radar/presentation/cubits/verification/verification_cubit.dart';
-import 'package:radar/presentation/cubits/verification/verification_state.dart';
 import 'package:radar/presentation/widgets/LoadingWidget.dart';
 import 'package:radar/presentation/widgets/button_widget.dart';
 
@@ -21,7 +15,9 @@ class VerificationDialog extends StatefulWidget {
   final String email;
   final String countryCode;
   final bool fromLogin;
-  const VerificationDialog({super.key, required this.email, required this.countryCode, required this.fromLogin});
+  final VerificationCubit cubit;
+  const VerificationDialog(
+      {super.key, required this.email, required this.countryCode, required this.fromLogin, required this.cubit});
 
   @override
   State<VerificationDialog> createState() => _VerificationDialogState();
@@ -29,6 +25,9 @@ class VerificationDialog extends StatefulWidget {
 
 class _VerificationDialogState extends State<VerificationDialog> {
   late final TextEditingController _otpController;
+
+  final _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
   @override
   void initState() {
     log(widget.email);
@@ -45,8 +44,8 @@ class _VerificationDialogState extends State<VerificationDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => VerificationCubit(VerificationUsecase(repository: RadarMobileRepositoryImpl())),
+    return Form(
+      key: _formKey,
       child: Container(
         decoration: BoxDecoration(color: GlobalColors.backgroundColor, borderRadius: BorderRadius.circular(12)),
         child: Column(
@@ -140,43 +139,56 @@ class _VerificationDialogState extends State<VerificationDialog> {
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                    child: BlocConsumer<VerificationCubit, VerificationState>(
-                  listener: (context, state) {
-                    if (state is CheckOtpFailure) {
-                      AppUtils.showFlushBar(state.errorMessage, context);
-                    }
-                    if (state is CheckOtpSuccess) {
-                      if (widget.fromLogin) {
-                        AppUtils.showFlushBar("Account Verified Successfully", context);
-                        Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(builder: (context) => splashScreen(isProfile: true)),
-                          (Route<dynamic> route) => false,
-                        );
-                      } else {
-                        Navigator.pop(context);
-                      }
-                    }
-                  },
-                  builder: (context, state) {
-                    return SubmitButton(
-                      onPressed: () {
-                        context
-                            .read<VerificationCubit>()
-                            .checkOtp(email: widget.email, otp: _otpController.text, countryCode: widget.countryCode);
-                      },
-                      child: state is CheckOtpLoading
-                          ? const LoadingWidget()
-                          : Text(
-                              "Verify".tr(),
-                              style: TextStyle(
-                                color: GlobalColors.submitButtonTextColor,
-                                fontSize: SizeConfig.width(context, 0.04),
-                                fontWeight: FontWeight.w500,
-                              ),
+                  // child: BlocConsumer<VerificationCubit, VerificationState>(
+                  // listener: (context, state) {
+                  //   if (state is CheckOtpFailure) {
+                  //     AppUtils.showFlushBar(state.errorMessage, context);
+                  //   }
+                  //   if (state is CheckOtpSuccess) {
+                  //     if (widget.fromLogin) {
+                  //       AppUtils.showFlushBar("Account Verified Successfully", context);
+                  //       Navigator.of(context).pushAndRemoveUntil(
+                  //         MaterialPageRoute(builder: (context) => splashScreen(isProfile: true)),
+                  //         (Route<dynamic> route) => false,
+                  //       );
+                  //     } else {
+                  //       Navigator.pop(context);
+                  //     }
+                  //   }
+                  // },
+                  // builder: (context, state) {
+                  child: _isLoading
+                      ? const LoadingWidget()
+                      : SubmitButton(
+                          onPressed: () async {
+                            if (!_formKey.currentState!.validate()) {
+                              return;
+                            }
+                            setState(() {
+                              _isLoading = true;
+                            });
+
+                            _formKey.currentState!.save();
+                            widget.cubit
+                                .checkOtp(
+                                    email: widget.email, otp: _otpController.text, countryCode: widget.countryCode)
+                                .then((val) {
+                              setState(() {
+                                _isLoading = false;
+                              });
+                              Navigator.pop(context);
+                            });
+                          },
+                          child: Text(
+                            "Verify".tr(),
+                            style: TextStyle(
+                              color: GlobalColors.submitButtonTextColor,
+                              fontSize: SizeConfig.width(context, 0.04),
+                              fontWeight: FontWeight.w500,
                             ),
-                    );
-                  },
-                )),
+                          ),
+                        ),
+                ),
                 const SizedBox(width: 10),
               ],
             ),

@@ -1333,6 +1333,8 @@ class RadarMobileRepositoryImpl implements RadarMobileRepository {
     String? email,
     String? mobileNumberCountryCode,
     String? whatsappNumberCountryCode,
+    String? deviceId,
+    String? deviceName,
   }) async {
     try {
       var url = Uri.parse('${NetworkUtils.baseUrl}/profile/update');
@@ -1347,6 +1349,8 @@ class RadarMobileRepositoryImpl implements RadarMobileRepository {
           "whatsapp_number": whatsappNumber ?? "",
           "country_phonecode": mobileNumberCountryCode ?? "",
           "whatsapp_number_country_code": whatsappNumberCountryCode ?? "",
+          "device_id": deviceId ?? "",
+          "device_name": deviceName ?? "",
         };
         print("repository::updateProfileV1::url: $url\n");
         print("repository::updateProfileV1::jsonBody: $jsonBody\n");

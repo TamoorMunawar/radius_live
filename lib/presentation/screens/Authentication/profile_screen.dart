@@ -10,7 +10,9 @@ import 'package:radar/constants/router.dart';
 import 'package:radar/constants/size_config.dart';
 import 'package:radar/domain/entities/scan_qr_code/Scan_qr_code_payload.dart';
 import 'package:radar/main.dart';
+import 'package:radar/presentation/cubits/profile/profile_cubit.dart';
 import 'package:radar/presentation/cubits/scan_qr_code/scan_qrcode_cubit.dart';
+import 'package:radar/presentation/widgets/LoadingWidget.dart';
 import 'package:radar/presentation/widgets/button_widget.dart';
 
 import 'package:radar/presentation/widgets/radius_text_field.dart';
@@ -104,7 +106,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     getUserDetailsFromLocal();
+    context.read<ProfileCubit>().getProfileDetails();
     scanQrcodeCubit = BlocProvider.of<ScanQrCodeCubit>(context);
+
     // TODO: implement initState
     super.initState();
   }
@@ -248,63 +252,69 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 SizedBox(height: 0.01.sh),
                 SizedBox(
                   width: double.infinity,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      (image.contains("http"))
-                          ? CircleAvatar(
-                              backgroundImage: NetworkImage(image),
-                              //backgroundColor: Colors.red,
-                              radius: 0.11.sw,
-                            )
-                          : CircleAvatar(
-                              backgroundImage: const AssetImage("assets/icons/profile_icon.png"),
-                              //                backgroundColor: Colors.red,
-                              radius: 0.11.sw,
+                  child: BlocBuilder<ProfileCubit, ProfileState>(
+                    builder: (context, state) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          (image.contains("http"))
+                              ? CircleAvatar(
+                                  backgroundImage: NetworkImage(image),
+                                  //backgroundColor: Colors.red,
+                                  radius: 0.11.sw,
+                                )
+                              : CircleAvatar(
+                                  backgroundImage: const AssetImage("assets/icons/profile_icon.png"),
+                                  //                backgroundColor: Colors.red,
+                                  radius: 0.11.sw,
+                                ),
+                          Text(
+                            name,
+                            style: TextStyle(
+                              color: GlobalColors.whiteColor,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 0.04.sw,
                             ),
-                      Text(
-                        name,
-                        style: TextStyle(
-                          color: GlobalColors.whiteColor,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 0.04.sw,
-                        ),
-                      ),
-                      Text(
-                        "M321DYBZ1",
-                        style: TextStyle(
-                          color: GlobalColors.whiteColor,
-                          fontWeight: FontWeight.w300,
-                          fontSize: 0.03.sw,
-                        ),
-                      ),
-                      SizedBox(height: 0.01.sh),
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 0.03.sw, vertical: 0.01.sw),
-                        decoration: BoxDecoration(
-                            color: GlobalColors.submitButtonColor, borderRadius: BorderRadius.circular(8)),
-                        child: Text(
-                          "Flutter Developer",
-                          style: TextStyle(
-                            color: GlobalColors.whiteColor,
-                            fontWeight: FontWeight.w300,
-                            fontSize: 0.03.sw,
                           ),
-                        ),
-                      )
-                    ],
+                          Text(
+                            state is ProfileSuccess ? state.profileModel.deviceId ?? "" : "",
+                            style: TextStyle(
+                              color: GlobalColors.whiteColor,
+                              fontWeight: FontWeight.w300,
+                              fontSize: 0.03.sw,
+                            ),
+                          ),
+                          SizedBox(height: 0.01.sh),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 0.03.sw, vertical: 0.01.sw),
+                            decoration: BoxDecoration(
+                                color: GlobalColors.submitButtonColor, borderRadius: BorderRadius.circular(8)),
+                            child: Text(
+                              state is ProfileSuccess
+                                  ? state.profileModel.jobName ?? "Job Not Assigned"
+                                  : "Job Not Assigned",
+                              style: TextStyle(
+                                color: GlobalColors.whiteColor,
+                                fontWeight: FontWeight.w300,
+                                fontSize: 0.03.sw,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 0.04.sh,
+                          ),
+                          const Row(
+                            children: [
+                              WorkInfoItem(title: "Total Jobs", value: "4"),
+                              WorkInfoItem(title: "Total events", value: "80"),
+                              WorkInfoItem(title: "ratting", value: "1"),
+                              WorkInfoItem(title: "last pay", value: "\$1200"),
+                            ],
+                          ),
+                        ],
+                      );
+                    },
                   ),
-                ),
-                SizedBox(
-                  height: 0.04.sh,
-                ),
-                const Row(
-                  children: [
-                    WorkInfoItem(title: "Total Jobs", value: "4"),
-                    WorkInfoItem(title: "Total events", value: "80"),
-                    WorkInfoItem(title: "ratting", value: "1"),
-                    WorkInfoItem(title: "last pay", value: "\$1200"),
-                  ],
                 ),
                 SizedBox(height: 0.04.sh),
                 Container(

@@ -103,6 +103,8 @@ abstract class RadarMobileRepository {
     String? email,
     String? mobileNumberCountryCode,
     String? whatsappNumberCountryCode,
+    String? deviceId,
+    String? deviceName,
   });
   Future<List<LatestEventModel>> latestEvent();
 

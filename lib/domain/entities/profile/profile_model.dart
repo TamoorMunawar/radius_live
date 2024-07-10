@@ -78,6 +78,7 @@ class ProfileModel {
     this.deviceName,
     this.whatsappNumber,
     this.imageUrl,
+    this.jobName,
   });
 
   ProfileModel.fromJson(dynamic json) {
@@ -118,10 +119,11 @@ class ProfileModel {
     trialEndsAt = json['trial_ends_at'];
     qrImage = json['qr_image'];
     deviceToken = json['device_token'];
-    deviceToken = json['device_id'];
-    deviceToken = json['device_name'];
+    deviceId = json['device_id'];
+    deviceName = json['device_name'];
     whatsappNumber = json['whatsapp_number'];
     imageUrl = json['image_url'];
+    jobName = json['job_name'];
   }
   int? id;
   int? companyId;
@@ -164,6 +166,7 @@ class ProfileModel {
   String? whatsappCountryCode;
   String? whatsappNumber;
   String? imageUrl;
+  String? jobName;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -206,6 +209,7 @@ class ProfileModel {
     map['device_name'] = deviceName;
     map['whatsapp_number'] = whatsappNumber;
     map['image_url'] = imageUrl;
+    map['job_name'] = jobName;
     return map;
   }
 }

@@ -1,5 +1,6 @@
+import 'dart:developer';
 import 'dart:io';
-import 'dart:math';
+import 'dart:math' as math;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
@@ -17,6 +18,7 @@ import 'package:image_picker/image_picker.dart';
 //import 'package:intl_phone_field/phone_number.dart';
 import 'package:radar/constants/app_utils.dart';
 import 'package:radar/constants/colors.dart';
+import 'package:radar/constants/generate_route.dart';
 import 'package:radar/constants/logger.dart';
 import 'package:radar/constants/route_arguments.dart';
 import 'package:radar/constants/router.dart';
@@ -77,7 +79,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   String email = "";
   String name = "";
   String imageUrl = "";
-  late ChangePasswordCubit changePasswordCubit;
+  // late ChangePasswordCubit changePasswordCubit;
   late ProfileCubit profileCubit;
   bool isLoading = false;
   List<CountryCodeModel> countryList = [];
@@ -133,7 +135,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   void initState() {
     print("widget.phoneCode1 ${widget.phoneCode}");
-    changePasswordCubit = BlocProvider.of<ChangePasswordCubit>(context);
+    // changePasswordCubit = BlocProvider.of<ChangePasswordCubit>(context);
     profileCubit = BlocProvider.of<ProfileCubit>(context);
     profileCubit.getProfileDetails();
     //  getUserDetailsFromLocal();
@@ -163,11 +165,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             right: SizeConfig.width(context, 0.07),
           ),
           child: BlocConsumer<VerificationCubit, VerificationState>(
-            listener: (context, vState) {
-              if (vState is SendOtpFailure) {
-                AppUtils.showFlushBar(vState.errorMessage, context);
+            listener: (context, v) {
+              if (v is SendOtpFailure) {
+                AppUtils.showFlushBar(v.errorMessage, context);
               }
-              if (vState is SendOtpSuccess) {
+              if (v is SendOtpSuccess) {
                 AppUtils.showFlushBar("Otp Sent successfully", context);
                 showDialog(
                     builder: (c) => Container(
@@ -180,17 +182,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               email: profileCubit.result?.email ?? _emailController.text,
                               countryCode: profileCubit.result?.email ?? _emailController.text,
                               fromLogin: false,
+                              cubit: context.read<VerificationCubit>(),
                             ),
                           ),
                         ),
                     context: context);
               }
 
-              if (vState is CheckOtpFailure) {
-                AppUtils.showFlushBar(vState.errorMessage, context);
+              if (v is CheckOtpFailure) {
+                AppUtils.showFlushBar(v.errorMessage, context);
               }
-              if (vState is CheckOtpSuccess) {
-                changePasswordCubit.updateProfileV1(
+              if (v is CheckOtpSuccess) {
+                context.read<ChangePasswordCubit>().updateProfileV1(
                     mobileNumberCountryCode: "+966",
                     email: _emailController.text.trim(),
                     iqamaId: _idController.text.trim(),
@@ -224,15 +227,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     if (state is UpdateProfileSuccess) {
                       SharedPreferences prefs = await SharedPreferences.getInstance();
                       prefs.setBool("isProfileUpdated", true);
-
-                      Navigator.pushNamedAndRemoveUntil(context, AppRoutes.pagesScreenRoute, (route) => false,
-                          arguments: 0);
                       AppUtils.showFlushBar("Profile Updated Successfully".tr(), context);
+
+                      if (widget.isFromLogin) {
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context) => splashScreen(isProfile: false)),
+                          (Route<dynamic> route) => false,
+                        );
+                      } else {
+                        Navigator.pushNamedAndRemoveUntil(context, AppRoutes.pagesScreenRoute, (route) => false,
+                            arguments: 0);
+                      }
                     }
                   },
                   builder: (context, state) {
                     if (state is ChangePasswordLoading) {
-                      return LoadingWidget();
+                      return const LoadingWidget();
                     }
 
                     return Text(
@@ -333,7 +343,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                     InkWell(
                       onTap: () async {
-                        var rng = Random();
+                        var rng = math.Random();
                         var code = rng.nextInt(900000) + 100000;
                         image = await _picker.pickImage(
                           source: ImageSource.gallery,

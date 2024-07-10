@@ -6,11 +6,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 //import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:location/location.dart';
 import 'package:radar/constants/app_utils.dart';
 import 'package:radar/constants/device_utils.dart';
 import 'package:radar/constants/size_config.dart';
+import 'package:radar/observer.dart';
 import 'package:radar/presentation/screens/job_dashboard_screen.dart';
 import 'package:radar/presentation/screens/splash_screen.dart';
 import 'package:radar/presentation/screens/pages.dart';
@@ -75,6 +77,7 @@ getLocationFromLocation() async {
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Bloc.observer = const RadiusObserver();
 
   Platform.isAndroid
       ? await Firebase.initializeApp(

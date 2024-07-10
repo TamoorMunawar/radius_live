@@ -35,7 +35,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   bool appUpdate = false;
 
-  bool isProfileUpdated = false;
+  // bool isProfileUpdated = false;
+  bool isVerified = false;
 
   Future<void> checkAppVersion() async {
     // Get the current installed app version
@@ -87,7 +88,9 @@ class _SplashScreenState extends State<SplashScreen> {
     bool isEnglish = prefs.getBool("isEnglish") ?? true;
     await (isEnglish ? context.setLocale(const Locale('en')) : context.setLocale(Locale('ar')));
     token = prefs.getString("token") ?? "";
-    isProfileUpdated = prefs.getBool("isProfileUpdated") ?? false;
+    // isProfileUpdated = prefs.getBool("isProfileUpdated") ?? false;
+    isVerified = prefs.getBool("isVerified") ?? false;
+
     PermissionStatus permissionStatus = await location.hasPermission();
     print("permission status ${permissionStatus.name}");
     print("token aaa $token");
@@ -99,7 +102,7 @@ class _SplashScreenState extends State<SplashScreen> {
       const Duration(seconds: 3),
     );
     print("user token $token");
-    print("isProfileUpdated $isProfileUpdated");
+    // print("isProfileUpdated $isProfileUpdated");
     print("appUpdate $appUpdate");
 
     if (appUpdate) {
@@ -111,21 +114,30 @@ class _SplashScreenState extends State<SplashScreen> {
           AppRoutes.loginScreenRoute,
           (route) => false,
         );
-      } else if (token != null && token != "" && isProfileUpdated) {
-        print("indie 22");
-        if (widget.isProfile) {
-          Navigator.pushNamed(context, AppRoutes.editProfileScreenRoute,
-              arguments: EditProfileScreenArgs(isFromLogin: true, phoneCode: "+92"));
-        } else {
+        // } else if (token != null && token != "" && isProfileUpdated) {
+      } else if (token != null && token != "") {
+        if (isVerified) {
           Navigator.pushNamedAndRemoveUntil(
             context,
             AppRoutes.pagesScreenRoute,
             (route) => false,
             arguments: 0,
           );
+        } else {
+          Navigator.pushNamed(context, AppRoutes.editProfileScreenRoute,
+              arguments: EditProfileScreenArgs(isFromLogin: true, phoneCode: "+92"));
         }
+        // print("indie 22");
+        // if (widget.isProfile) {
+        // } else {
+        //   Navigator.pushNamedAndRemoveUntil(
+        //     context,
+        //     AppRoutes.pagesScreenRoute,
+        //     (route) => false,
+        //     arguments: 0,
+        //   );
+        // }
       } else {
-        print("indie 33");
         Navigator.pushNamedAndRemoveUntil(
           context,
           AppRoutes.loginScreenRoute,

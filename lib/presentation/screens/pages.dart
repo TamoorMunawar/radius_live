@@ -33,33 +33,29 @@ class RouteArgument {
 class PagesWidget extends StatefulWidget {
   dynamic currentTab;
   //RouteArgument? routeArgument;
-    Widget? currentPage ;
+  Widget? currentPage;
 
-  PagesWidget({super.key, this.currentTab, required this.currentPage}) {
-
-  }
+  PagesWidget({super.key, this.currentTab, required this.currentPage}) {}
 
   @override
   _PagesWidgetState createState() => _PagesWidgetState();
 }
 
 class _PagesWidgetState extends State<PagesWidget> {
-
   String? roleName;
   final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
 
   Future getUserDetailsFromLocal() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    roleName =prefs.getString(
-      "role_name",
-    ) ??
+    roleName = prefs.getString(
+          "role_name",
+        ) ??
         "";
-    widget.currentPage=roleName!="Usher"?adminDashBoard():dashBoard();
+    widget.currentPage = roleName != "Usher" ? adminDashBoard() : dashBoard();
 
     print("role name pages $roleName");
-    setState(() {
-});
+    setState(() {});
   }
 
   @override
@@ -79,36 +75,33 @@ class _PagesWidgetState extends State<PagesWidget> {
     setState(() {
       widget.currentTab = tabItem;
       switch (tabItem) {
-
         case 0:
           print("inside case 0 $roleName ${roleName != "Usher"}");
           widget.currentPage = //latlng();
-          //dashBoard();
-           (roleName != "Usher")?adminDashBoard():  dashBoard();
+              //dashBoard();
+              (roleName != "Usher") ? adminDashBoard() : dashBoard();
           break;
         case 1:
           print("inside case 1");
           widget.currentPage = //MapChecking();
-          (roleName != "Usher"&&roleName != "Client") ? usherListScreen() : announcement(
-              hideBackButton: true);
+              (roleName != "Usher" && roleName != "Client") ? usherListScreen() : announcement(hideBackButton: true);
           break;
         case 2:
           print("inside case 2");
-      //    widget.currentPage = usherListScreenByEvent();
-         widget.currentPage = eventScreen();
+          //    widget.currentPage = usherListScreenByEvent();
+          widget.currentPage = eventScreen();
           break;
         case 3:
           print("inside case 3");
           widget.currentPage =
-          (roleName == "Usher"||roleName =="Client") ? attandanceDetails(false) : qrAttandance();
+              (roleName == "Usher" || roleName == "Client") ? attandanceDetails(false) : qrAttandance();
           break;
         case 4:
           print("inside case 4");
-        // widget.currentPage = RequestScreen(); //FavoritesWidget(parentScaffoldKey: widget.scaffoldKey);
+          // widget.currentPage = RequestScreen(); //FavoritesWidget(parentScaffoldKey: widget.scaffoldKey);
           widget.currentPage =
-          //UsherListScreen();
-          profileScreen(
-              isBack: false); //FavoritesWidget(parentScaffoldKey: widget.scaffoldKey);
+              //UsherListScreen();
+              profileScreen(isBack: false); //FavoritesWidget(parentScaffoldKey: widget.scaffoldKey);
           break;
         /*case 5:
           print("inside case 5");
@@ -131,49 +124,49 @@ class _PagesWidgetState extends State<PagesWidget> {
         items: [
           widget.currentTab == 0
               ? Image.asset(
-            "assets/icons/home_icon.png",
-            width: SizeConfig.width(context, 0.07),
-          )
+                  "assets/icons/home_icon.png",
+                  width: SizeConfig.width(context, 0.07),
+                )
               : Image.asset(
-            "assets/icons/home_icon.png",
-            width: SizeConfig.width(context, 0.06),
-          ),
+                  "assets/icons/home_icon.png",
+                  width: SizeConfig.width(context, 0.06),
+                ),
           widget.currentTab == 1
               ? Image.asset(
-            "assets/icons/attandance_icon.png",
-            width: SizeConfig.width(context, 0.07),
-          )
+                  "assets/icons/attandance_icon.png",
+                  width: SizeConfig.width(context, 0.07),
+                )
               : Image.asset(
-            "assets/icons/attandance_icon.png",
-            width: SizeConfig.width(context, 0.06),
-          ),
+                  "assets/icons/attandance_icon.png",
+                  width: SizeConfig.width(context, 0.06),
+                ),
           widget.currentTab == 2
               ? Image.asset(
-            "assets/icons/cal.png",
-            width: SizeConfig.width(context, 0.07),
-          )
+                  "assets/icons/cal.png",
+                  width: SizeConfig.width(context, 0.07),
+                )
               : Image.asset(
-            "assets/icons/cal.png",
-            width: SizeConfig.width(context, 0.06),
-          ),
+                  "assets/icons/cal.png",
+                  width: SizeConfig.width(context, 0.06),
+                ),
           widget.currentTab == 3
               ? Image.asset(
-            "assets/icons/job_icon.png",
-            width: SizeConfig.width(context, 0.07),
-          )
+                  "assets/icons/job_icon.png",
+                  width: SizeConfig.width(context, 0.07),
+                )
               : Image.asset(
-            "assets/icons/job_icon.png",
-            width: SizeConfig.width(context, 0.06),
-          ),
+                  "assets/icons/job_icon.png",
+                  width: SizeConfig.width(context, 0.06),
+                ),
           widget.currentTab == 4
               ? Image.asset(
-            "assets/icons/profile.png",
-            width: SizeConfig.width(context, 0.07),
-          )
+                  "assets/icons/profile.png",
+                  width: SizeConfig.width(context, 0.07),
+                )
               : Image.asset(
-            "assets/icons/profile.png",
-            width: SizeConfig.width(context, 0.06),
-          )
+                  "assets/icons/profile.png",
+                  width: SizeConfig.width(context, 0.06),
+                )
         ],
         color: GlobalColors.backgroundColor,
 

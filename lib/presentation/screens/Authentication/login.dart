@@ -13,7 +13,6 @@ import 'package:radar/constants/device_utils.dart';
 import 'package:radar/constants/generate_route.dart';
 import 'package:radar/constants/route_arguments.dart';
 import 'package:radar/main.dart';
-import 'package:radar/presentation/screens/Authentication/verification_screen.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -26,7 +25,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:intl_phone_field/countries.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:intl_phone_field/phone_number.dart';
 import 'package:radar/constants/app_utils.dart';
@@ -1131,13 +1129,12 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                         _idNumberController.clear();
                       });
 
-                      await Navigator.pushNamed(context, AppRoutes.verification,
-                          arguments: VerificationRoute(
-                            email: state.register.email ?? "",
-                            countryCode: state.register.countryPhonecode ?? "",
-                            number: state.register.mobile ?? "",
-                            fromLogin: true,
-                          ));
+                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                      prefs.setBool("isVerified", state.register.isVerified ?? false);
+
+                      // await Navigator.pushNamed(context, AppRoutes.editProfileScreenRoute,
+                      //     arguments: EditProfileScreenArgs(
+                      //         isFromLogin: true, phoneCode: state.register.countryPhonecode ?? "+966"));
 
                       setState(() {
                         isLogin = true;
@@ -1450,7 +1447,9 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                         prefs.setBool("isProfileUpdated", true);
                       }*/
                       SharedPreferences prefs = await SharedPreferences.getInstance();
-                      prefs.setBool("isProfileUpdated", true);
+                      prefs.setBool("isVerified", state.loginModel.isVerified ?? false);
+
+                      // prefs.setBool("isProfileUpdated", true);
 
                       if (state.loginModel.isVerified!) {
                         Navigator.of(context).pushAndRemoveUntil(
@@ -1460,13 +1459,9 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                           (Route<dynamic> route) => false,
                         );
                       } else {
-                        Navigator.pushNamed(context, AppRoutes.verification,
-                            arguments: VerificationRoute(
-                              email: state.loginModel.email ?? "",
-                              countryCode: state.loginModel.countryPhonecode ?? "",
-                              number: state.loginModel.mobile ?? "",
-                              fromLogin: true,
-                            ));
+                        Navigator.pushNamed(context, AppRoutes.editProfileScreenRoute,
+                            arguments: EditProfileScreenArgs(
+                                isFromLogin: true, phoneCode: state.loginModel.countryPhonecode ?? "+966"));
                       }
 
                       /*  if (state.loginModel.whatsappNumber != null) {
