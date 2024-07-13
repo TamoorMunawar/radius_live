@@ -23,6 +23,7 @@ import 'package:radar/domain/usecase/job/job_usecase.dart';
 import 'package:radar/domain/usecase/login/login_usecase.dart';
 import 'package:radar/domain/usecase/profile/profile_usecase.dart';
 import 'package:radar/domain/usecase/register/register_usecase.dart';
+import 'package:radar/domain/usecase/review/review_usecase.dart';
 import 'package:radar/domain/usecase/scan_qr_code/scan_qr_code_usecase.dart';
 import 'package:radar/domain/usecase/supervisor/supervisior_usecase.dart';
 import 'package:radar/domain/usecase/ushers/usher_usecase.dart';
@@ -31,6 +32,7 @@ import 'package:radar/domain/usecase/zone/zone_usecase.dart';
 import 'package:radar/domain/usecase/zone_seats/zone_seats_usecase.dart';
 import 'package:radar/presentation/cubits/dashboard/dashboard_cubit.dart';
 import 'package:radar/presentation/cubits/profile/profile_cubit.dart';
+import 'package:radar/presentation/cubits/review/review_cubit.dart';
 import 'package:radar/presentation/cubits/verification/verification_cubit.dart';
 import 'package:radar/presentation/cubits/zone_seats/zone_seats_cubit.dart';
 import 'package:radar/presentation/screens/dashboard/admin_dashboard_screen.dart';
@@ -75,6 +77,7 @@ import 'package:radar/presentation/screens/notification_settings.dart';
 import 'package:radar/presentation/screens/pages.dart';
 import 'package:radar/presentation/screens/qr_attandance.dart';
 import 'package:radar/presentation/screens/qr_code_screen.dart';
+import 'package:radar/presentation/screens/review_screen.dart';
 import 'package:radar/presentation/screens/splash_screen.dart';
 import 'package:radar/presentation/screens/usher_list_by_event.dart';
 import 'package:radar/presentation/screens/usher_list_screen.dart';
@@ -238,6 +241,13 @@ Route? onGenerateRoute(RouteSettings settings) {
   if (settings.name == AppRoutes.adminDashboardScreenRoute) {
     return MaterialPageRoute(
       builder: (context) => adminDashBoard(),
+    );
+  }
+  if (settings.name == AppRoutes.addReviewScreenRoute) {
+    final args = settings.arguments as ReviewScreenArgs;
+
+    return MaterialPageRoute(
+      builder: (context) => reviewScreen(args),
     );
   }
   /*if (settings.name == AppRoutes.scanQrCodeScreenRoute) {
@@ -705,6 +715,20 @@ MultiBlocProvider profileScreen({required bool isBack}) {
       )
     ],
     child: ProfileScreen(isBack: isBack),
+  );
+}
+
+MultiBlocProvider reviewScreen(ReviewScreenArgs args) {
+  return MultiBlocProvider(
+    providers: [
+      BlocProvider(
+        create: (context) => ReviewCubit(ReviewUsecase(repository: repository)),
+      ),
+    ],
+    child: ReviewScreen(
+      usherId: args.usherId,
+      department: args.department,
+    ),
   );
 }
 

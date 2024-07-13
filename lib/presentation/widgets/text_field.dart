@@ -18,7 +18,9 @@ class RadiusTextField extends StatefulWidget {
   double? leftPadding;
   double? rightPadding;
   int? maxLength;
+  final bool expands;
   List<TextInputFormatter>? inputFormatters;
+  TextAlignVertical? textAlignVertical;
 
   RadiusTextField({
     super.key,
@@ -33,9 +35,11 @@ class RadiusTextField extends StatefulWidget {
     this.rightPadding,
     this.leftPadding,
     this.textCapitalization,
-    this.maxLength,
+    this.maxLength = 1,
     this.textInputType,
     this.readOnly,
+    this.expands = false,
+    this.textAlignVertical,
   });
 
   @override
@@ -66,82 +70,83 @@ class _RadiusTextFieldState extends State<RadiusTextField> {
           inputFormatters: widget.inputFormatters,
           onTap: widget.onTap,
           enabled: widget.readOnly,
-          maxLines: widget.maxLength ?? 1,
+          maxLines: widget.maxLength,
+          expands: widget.expands,
+          textAlignVertical: widget.textAlignVertical,
+
           //maxLength:25,
           validator: widget.validator,
           controller: widget.controller,
           obscureText: secureText ?? false,
           keyboardType: (widget.textInputType) ?? TextInputType.emailAddress,
           decoration: InputDecoration(
-              filled: false,
-              //    enabled: widget.readOnly??true,
-              border: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: GlobalColors.hintTextColor,
-                ),
-                borderRadius: BorderRadius.circular(
-                  SizeConfig.width(context, 0.02),
-                ),
+            filled: false,
+            //    enabled: widget.readOnly??true,
+            border: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: GlobalColors.hintTextColor,
               ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: GlobalColors.hintTextColor,
-                ),
-                borderRadius: BorderRadius.circular(
-                  SizeConfig.width(context, 0.02),
-                ),
+              borderRadius: BorderRadius.circular(
+                SizeConfig.width(context, 0.02),
               ),
-              errorBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: GlobalColors.hintTextColor,
-                  // width: SizeConfig.width(context, 0.005),
-                ),
-                borderRadius: BorderRadius.circular(
-                  SizeConfig.width(context, 0.02),
-                ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: GlobalColors.hintTextColor,
               ),
-              disabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: GlobalColors.hintTextColor,
-                ),
-                borderRadius: BorderRadius.circular(
-                  SizeConfig.width(context, 0.02),
-                ),
+              borderRadius: BorderRadius.circular(
+                SizeConfig.width(context, 0.02),
               ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: GlobalColors.hintTextColor,
-                ),
-                borderRadius: BorderRadius.circular(
-                  SizeConfig.width(context, 0.02),
-                ),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: GlobalColors.hintTextColor,
+                // width: SizeConfig.width(context, 0.005),
               ),
-              hintText: widget.hintText,
-              hintStyle: TextStyle(
-                fontWeight: FontWeight.w400,
-                color: GlobalColors.textFieldHintColor,
+              borderRadius: BorderRadius.circular(
+                SizeConfig.width(context, 0.02),
               ),
-                    suffixIcon: (widget.isPassword)
-              ? IconButton(
-            onPressed: () {
-              setState(() {
-                secureText = !secureText! ?? false;
-              });
-            },
-            icon: Icon(!secureText! ?? false
-                ? Icons.visibility_off
-                : Icons.visibility),
-          )
-              : IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.visibility, color: Colors.transparent),
-          ),),
+            ),
+            disabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: GlobalColors.hintTextColor,
+              ),
+              borderRadius: BorderRadius.circular(
+                SizeConfig.width(context, 0.02),
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: GlobalColors.hintTextColor,
+              ),
+              borderRadius: BorderRadius.circular(
+                SizeConfig.width(context, 0.02),
+              ),
+            ),
+            hintText: widget.hintText,
+            hintStyle: TextStyle(
+              fontWeight: FontWeight.w400,
+              color: GlobalColors.textFieldHintColor,
+            ),
+            suffixIcon: (widget.isPassword)
+                ? IconButton(
+                    onPressed: () {
+                      setState(() {
+                        secureText = !secureText! ?? false;
+                      });
+                    },
+                    icon: Icon(!secureText! ?? false ? Icons.visibility_off : Icons.visibility),
+                  )
+                : IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.visibility, color: Colors.transparent),
+                  ),
+          ),
           style: TextStyle(
             color: GlobalColors.textFieldHintColor,
             fontSize: SizeConfig.width(context, 0.04),
             fontFamily: 'Poppins',
             fontWeight: FontWeight.w400,
-
           ),
           autovalidateMode: AutovalidateMode.onUserInteraction,
 

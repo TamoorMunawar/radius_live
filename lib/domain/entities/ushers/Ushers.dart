@@ -43,52 +43,53 @@ import 'EmployeeDetail.dart';
 
 class Ushers {
   Ushers({
-      this.id, 
-      this.companyId, 
-      this.name, 
-      this.email, 
-      this.iqamaId,
-      this.twoFactorSecret,
-      this.twoFactorRecoveryCodes, 
-      this.twoFactorConfirmed, 
-      this.twoFactorEmailConfirmed, 
-      this.image, 
-      this.countryPhonecode, 
-      this.mobile, 
-      this.whatsappNumber,
-      this.whatsappNumberCountryCode,
-      this.gender,
-      this.salutation, 
-      this.locale, 
-      this.status, 
-      this.login, 
-      this.onesignalPlayerId, 
-      this.lastLogin, 
-      this.emailNotifications, 
-      this.countryId, 
-      this.darkTheme, 
-      this.rtl, 
-      this.twoFaVerifyVia, 
-      this.twoFactorCode, 
-      this.twoFactorExpiresAt, 
-      this.adminApproval, 
-      this.permissionSync, 
-      this.googleCalendarStatus, 
-      this.customisedPermissions, 
-      this.stripeId, 
-      this.pmType, 
-      this.pmLastFour, 
-      this.trialEndsAt, 
-      this.qrImage, 
-      this.imageUrl, 
-      this.modules, 
-      this.mobileWithPhonecode, 
-      this.clientDetails, 
-      this.employeeDetail, 
-      this.checkIn,
-      this.alertMessage,
-      this.jobName,
-      this.leaves,});
+    this.id,
+    this.companyId,
+    this.name,
+    this.email,
+    this.iqamaId,
+    this.twoFactorSecret,
+    this.twoFactorRecoveryCodes,
+    this.twoFactorConfirmed,
+    this.twoFactorEmailConfirmed,
+    this.image,
+    this.countryPhonecode,
+    this.mobile,
+    this.whatsappNumber,
+    this.whatsappNumberCountryCode,
+    this.gender,
+    this.salutation,
+    this.locale,
+    this.status,
+    this.login,
+    this.onesignalPlayerId,
+    this.lastLogin,
+    this.emailNotifications,
+    this.countryId,
+    this.darkTheme,
+    this.rtl,
+    this.twoFaVerifyVia,
+    this.twoFactorCode,
+    this.twoFactorExpiresAt,
+    this.adminApproval,
+    this.permissionSync,
+    this.googleCalendarStatus,
+    this.customisedPermissions,
+    this.stripeId,
+    this.pmType,
+    this.pmLastFour,
+    this.trialEndsAt,
+    this.qrImage,
+    this.imageUrl,
+    this.modules,
+    this.mobileWithPhonecode,
+    this.clientDetails,
+    this.employeeDetail,
+    this.checkIn,
+    this.alertMessage,
+    this.jobName,
+    this.leaves,
+  });
 
   Ushers.fromJson(dynamic json) {
     id = json['id'];
@@ -107,7 +108,7 @@ class Ushers {
     twoFactorEmailConfirmed = json['two_factor_email_confirmed'];
     image = json['image'];
     iqamaId = json['iqama_id'];
-    countryPhonecode = json['country_phonecode'].toString()??"";
+    countryPhonecode = json['country_phonecode'].toString() ?? "";
 
     gender = json['gender'];
     salutation = json['salutation'];
@@ -137,7 +138,6 @@ class Ushers {
     mobileWithPhonecode = json['mobile_with_phonecode'];
     clientDetails = json['client_details'];
     employeeDetail = json['employee_detail'] != null ? EmployeeDetail.fromJson(json['employee_detail']) : null;
-
   }
   int? id;
   int? companyId;
@@ -153,9 +153,9 @@ class Ushers {
   String? alertMessage;
   String? image;
   String? countryPhonecode;
-  String ?mobile;
-  String ?whatsappNumber;
-  String ?whatsappNumberCountryCode;
+  String? mobile;
+  String? whatsappNumber;
+  String? whatsappNumberCountryCode;
   String? gender;
   String? salutation;
   String? locale;
@@ -226,6 +226,7 @@ class Ushers {
     map['modules'] = modules;
     map['mobile_with_phonecode'] = mobileWithPhonecode;
     map['client_details'] = clientDetails;
+
     if (employeeDetail != null) {
       map['employee_detail'] = employeeDetail?.toJson();
     }
@@ -234,5 +235,4 @@ class Ushers {
     }
     return map;
   }
-
 }

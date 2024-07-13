@@ -44,7 +44,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
 
   final alertFormKey = GlobalKey<FormState>();
 
-  double percent=0.0;
+  double percent = 0.0;
 
   Future getUserDetailsFromLocal() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -91,9 +91,9 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   @override
   void dispose() {
     _timer?.cancel();
-  //  departmentCubit.close();
-   // attandanceCubit.close();
-   // createAlertCubit.close();
+    //  departmentCubit.close();
+    // attandanceCubit.close();
+    // createAlertCubit.close();
     // TODO: implement dispose
     super.dispose();
   }
@@ -104,8 +104,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   Widget build(BuildContext context) {
     DateTime specificDate = DateTime(2023, 1, 10);
     String formattedDate = DateFormat('dd MMM, yyyy').format(DateTime.now());
-    TimeOfDay specificTime =
-        TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
+    TimeOfDay specificTime = TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
     // Format the time as "9:45 AM" or "09:45 AM"
     String formattedTime = specificTime.format(context);
     print("aaaaa $formattedTime $formattedDate");
@@ -127,9 +126,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
       alignment: Alignment.center,
       child: Container(
         decoration: BoxDecoration(
-            color: GlobalColors.backgroundColor,
-            borderRadius:
-                BorderRadius.circular(SizeConfig.width(context, 0.02))),
+            color: GlobalColors.backgroundColor, borderRadius: BorderRadius.circular(SizeConfig.width(context, 0.02))),
         height: SizeConfig.height(context, 0.75),
         width: SizeConfig.width(context, 0.9),
         padding: EdgeInsets.only(
@@ -175,50 +172,47 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   margin: EdgeInsets.only(
                     top: SizeConfig.height(context, 0.01),
                   ),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          // color: Colors.red,
-                          width: SizeConfig.width(context, 0.55),
-                          child: ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            leading: GestureDetector(
-                              onTap: () {
-                                /*      Navigator.pushNamed(
+                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                    Container(
+                      // color: Colors.red,
+                      width: SizeConfig.width(context, 0.55),
+                      child: ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: GestureDetector(
+                          onTap: () {
+                            /*      Navigator.pushNamed(
                                     context, AppRoutes.profileScreenRoute);*/
-                              },
-                              child: (image.contains("http"))
-                                  ? CircleAvatar(
-                                      backgroundImage: NetworkImage(image),
-                                      radius: SizeConfig.width(context, 0.065),
-                                    )
-                                  : CircleAvatar(
-                                      backgroundImage:
-                                          AssetImage("assets/icons/person.png"),
-                                      radius: SizeConfig.width(context, 0.065),
-                                    ),
-                            ),
-                            title: Text(
-                              name,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: SizeConfig.width(context, 0.038),
-                              ),
-                            ),
-                            subtitle: Text(
-                              roleName == "Usher".tr() ? "Usher".tr() : "Supervisor".tr(),
-                              maxLines: 1,
-                              style: TextStyle(
-                                color: GlobalColors.goodMorningColor,
-                                fontWeight: FontWeight.w400,
-                                fontSize: SizeConfig.width(context, 0.030),
-                              ),
-                            ),
+                          },
+                          child: (image.contains("http"))
+                              ? CircleAvatar(
+                                  backgroundImage: NetworkImage(image),
+                                  radius: SizeConfig.width(context, 0.065),
+                                )
+                              : CircleAvatar(
+                                  backgroundImage: AssetImage("assets/icons/person.png"),
+                                  radius: SizeConfig.width(context, 0.065),
+                                ),
+                        ),
+                        title: Text(
+                          name,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: SizeConfig.width(context, 0.038),
                           ),
                         ),
-                      ]),
+                        subtitle: Text(
+                          roleName == "Usher".tr() ? "Usher".tr() : "Supervisor".tr(),
+                          maxLines: 1,
+                          style: TextStyle(
+                            color: GlobalColors.goodMorningColor,
+                            fontWeight: FontWeight.w400,
+                            fontSize: SizeConfig.width(context, 0.030),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ]),
                 ),
                 SizedBox(
                   height: SizeConfig.height(context, 0.02),
@@ -229,19 +223,13 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   child: DropdownButtonFormField<String>(
                     dropdownColor: GlobalColors.backgroundColor,
                     padding: EdgeInsets.only(),
-                    items: [
-                      "Accident".tr(),
-                        "Misbehave".tr(),
-                      "Overcrowd".tr(),
-                      "Food".tr(),
-                      "Fight".tr()
-                    ].map((String item) {
+                    items: ["Accident".tr(), "Misbehave".tr(), "Overcrowd".tr(), "Food".tr(), "Fight".tr()]
+                        .map((String item) {
                       return DropdownMenuItem<String>(
                         value: item,
                         child: Text(
                           item ?? "",
-                          style:
-                              TextStyle(color: GlobalColors.textFieldHintColor),
+                          style: TextStyle(color: GlobalColors.textFieldHintColor),
                         ),
                       );
                     }).toList(),
@@ -373,8 +361,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   width: SizeConfig.width(context, 0.85),
                   onPressed: () async {
                     if (alertFormKey.currentState!.validate()) {
-                      AppUtils.showFlushBar(
-                          "Your Message Has Been Sent Successfully".tr(), context);
+                      AppUtils.showFlushBar("Your Message Has Been Sent Successfully".tr(), context);
                       setState(() {
                         showAlert = false;
                       });
@@ -422,10 +409,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     );
   }
 
-  Widget buildDashboardWidget(
-      BuildContext context, String formattedDate, String formattedTime) {
-    return BlocConsumer<AttandanceCubit, AttandanceState>(
-        builder: (context, state) {
+  Widget buildDashboardWidget(BuildContext context, String formattedDate, String formattedTime) {
+    return BlocConsumer<AttandanceCubit, AttandanceState>(builder: (context, state) {
       if (state is DashBoardAttandanceSuccess) {
         return SingleChildScrollView(
           child: Column(
@@ -437,76 +422,69 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   //     left: SizeConfig.width(context, 0.05),
                   //     right: SizeConfig.width(context, 0.04)
                 ),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        // color: Colors.red,
-                        width: SizeConfig.width(context, 0.55),
-                        child: ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(
-                                  context, AppRoutes.profileScreenRoute);
-                            },
-                            child: (image.contains("http"))
-                                ? CircleAvatar(
-                                    backgroundImage: NetworkImage(image),
-                                    radius: SizeConfig.width(context, 0.065),
-                                  )
-                                : CircleAvatar(
-                                    backgroundImage:
-                                        AssetImage("assets/icons/person.png"),
-                                    radius: SizeConfig.width(context, 0.065),
-                                  ),
-                          ),
-                          title: Text(
-                            "${"Welcome".tr()} 👋🏻",
-                            style: TextStyle(
-                              color: GlobalColors.goodMorningColor,
-                              fontWeight: FontWeight.w400,
-                              fontSize: SizeConfig.width(context, 0.030),
-                            ),
-                          ),
-                          subtitle: Text(
-                            name,
-                            maxLines: 1,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: SizeConfig.width(context, 0.038),
-                            ),
-                          ),
+                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  Container(
+                    // color: Colors.red,
+                    width: SizeConfig.width(context, 0.55),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, AppRoutes.profileScreenRoute);
+                        },
+                        child: (image.contains("http"))
+                            ? CircleAvatar(
+                                backgroundImage: NetworkImage(image),
+                                radius: SizeConfig.width(context, 0.065),
+                              )
+                            : CircleAvatar(
+                                backgroundImage: AssetImage("assets/icons/person.png"),
+                                radius: SizeConfig.width(context, 0.065),
+                              ),
+                      ),
+                      title: Text(
+                        "${"Welcome".tr()} 👋🏻",
+                        style: TextStyle(
+                          color: GlobalColors.goodMorningColor,
+                          fontWeight: FontWeight.w400,
+                          fontSize: SizeConfig.width(context, 0.030),
                         ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              Navigator.pushNamed(context,
-                                  AppRoutes.attandanceDetailScreenRoute);
-                            },
-                            child: Image.asset(
-                              "assets/icons/message_icon.png",
-                              width: SizeConfig.width(context, 0.05),
-                            ),
-                          ),
-                          SizedBox(
-                            width: SizeConfig.width(context, 0.04),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              Navigator.pushNamed(
-                                  context, AppRoutes.announcementScreen);
-                            },
-                            child: Image.asset("assets/icons/notification.png",
-                                width: SizeConfig.width(context, 0.05)),
-                          ),
-                        ],
-                      )
-                    ]),
+                      subtitle: Text(
+                        name,
+                        maxLines: 1,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: SizeConfig.width(context, 0.038),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(context, AppRoutes.attandanceDetailScreenRoute);
+                        },
+                        child: Image.asset(
+                          "assets/icons/message_icon.png",
+                          width: SizeConfig.width(context, 0.05),
+                        ),
+                      ),
+                      SizedBox(
+                        width: SizeConfig.width(context, 0.04),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(context, AppRoutes.announcementScreen);
+                        },
+                        child: Image.asset("assets/icons/notification.png", width: SizeConfig.width(context, 0.05)),
+                      ),
+                    ],
+                  )
+                ]),
               ),
               Container(
                 //  color: Colors.red,
@@ -555,26 +533,27 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 radius: 100.0,
                 lineWidth: 20.0,
                 animation: true,
-                percent: state.attandanceData.clockOutTime!=null?0.0:percent,
+                percent: state.attandanceData.clockOutTime != null ? 0.0 : percent,
                 backgroundColor: Color(0xFFEF4A4A).withOpacity(0.2),
                 center: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    (state.attandanceData.clockOutTime!=null)?Text(
-                      "${0}:${0}",
-                      style: new TextStyle(
-                          fontWeight: FontWeight.w400,
-                          color: Colors.white,
-                          fontSize: SizeConfig.width(context, 0.05)),
-                    ):
-                    Text(
-                      "${state.attandanceData.timeDiff?.h}:${state.attandanceData.timeDiff?.i}",
-                      style: new TextStyle(
-                          fontWeight: FontWeight.w400,
-                          color: Colors.white,
-                          fontSize: SizeConfig.width(context, 0.05)),
-                    ),
+                    (state.attandanceData.clockOutTime != null)
+                        ? Text(
+                            "${0}:${0}",
+                            style: new TextStyle(
+                                fontWeight: FontWeight.w400,
+                                color: Colors.white,
+                                fontSize: SizeConfig.width(context, 0.05)),
+                          )
+                        : Text(
+                            "${state.attandanceData.timeDiff?.h}:${state.attandanceData.timeDiff?.i}",
+                            style: new TextStyle(
+                                fontWeight: FontWeight.w400,
+                                color: Colors.white,
+                                fontSize: SizeConfig.width(context, 0.05)),
+                          ),
                     Text(
                       "RemainingTime".tr(),
                       textAlign: TextAlign.center,
@@ -608,8 +587,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                       height: SizeConfig.height(context, 0.1),
                       width: SizeConfig.width(context, 0.27),
                       decoration: BoxDecoration(
-                        border:
-                            Border.all(color: GlobalColors.textFieldHintColor),
+                        border: Border.all(color: GlobalColors.textFieldHintColor),
                         borderRadius: BorderRadius.circular(
                           SizeConfig.width(context, 0.03),
                         ),
@@ -701,76 +679,69 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 //     left: SizeConfig.width(context, 0.05),
                 //     right: SizeConfig.width(context, 0.04)
               ),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      // color: Colors.red,
-                      width: SizeConfig.width(context, 0.55),
-                      child: ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        leading: GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(
-                                context, AppRoutes.profileScreenRoute);
-                          },
-                          child: (image.contains("http"))
-                              ? CircleAvatar(
-                                  backgroundImage: NetworkImage(image),
-                                  radius: SizeConfig.width(context, 0.065),
-                                )
-                              : CircleAvatar(
-                                  backgroundImage:
-                                      AssetImage("assets/icons/person.png"),
-                                  radius: SizeConfig.width(context, 0.065),
-                                ),
-                        ),
-                        title: Text(
-                          "${"Welcome".tr()} 👋🏻",
-                          style: TextStyle(
-                            color: GlobalColors.goodMorningColor,
-                            fontWeight: FontWeight.w400,
-                            fontSize: SizeConfig.width(context, 0.035),
-                          ),
-                        ),
-                        subtitle: Text(
-                          name,
-                          maxLines: 1,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: SizeConfig.width(context, 0.038),
-                          ),
-                        ),
+              child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                Container(
+                  // color: Colors.red,
+                  width: SizeConfig.width(context, 0.55),
+                  child: ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, AppRoutes.profileScreenRoute);
+                      },
+                      child: (image.contains("http"))
+                          ? CircleAvatar(
+                              backgroundImage: NetworkImage(image),
+                              radius: SizeConfig.width(context, 0.065),
+                            )
+                          : CircleAvatar(
+                              backgroundImage: AssetImage("assets/icons/person.png"),
+                              radius: SizeConfig.width(context, 0.065),
+                            ),
+                    ),
+                    title: Text(
+                      "${"Welcome".tr()} 👋🏻",
+                      style: TextStyle(
+                        color: GlobalColors.goodMorningColor,
+                        fontWeight: FontWeight.w400,
+                        fontSize: SizeConfig.width(context, 0.035),
                       ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.pushNamed(
-                                context, AppRoutes.attandanceDetailScreenRoute);
-                          },
-                          child: Image.asset(
-                            "assets/icons/message_icon.png",
-                            width: SizeConfig.width(context, 0.05),
-                          ),
-                        ),
-                        SizedBox(
-                          width: SizeConfig.width(context, 0.04),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            Navigator.pushNamed(
-                                context, AppRoutes.announcementScreen);
-                          },
-                          child: Image.asset("assets/icons/notification.png",
-                              width: SizeConfig.width(context, 0.05)),
-                        ),
-                      ],
-                    )
-                  ]),
+                    subtitle: Text(
+                      name,
+                      maxLines: 1,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: SizeConfig.width(context, 0.038),
+                      ),
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, AppRoutes.attandanceDetailScreenRoute);
+                      },
+                      child: Image.asset(
+                        "assets/icons/message_icon.png",
+                        width: SizeConfig.width(context, 0.05),
+                      ),
+                    ),
+                    SizedBox(
+                      width: SizeConfig.width(context, 0.04),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, AppRoutes.announcementScreen);
+                      },
+                      child: Image.asset("assets/icons/notification.png", width: SizeConfig.width(context, 0.05)),
+                    ),
+                  ],
+                )
+              ]),
             ),
             Container(
               //  color: Colors.red,
@@ -828,9 +799,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   Text(
                     "00:00",
                     style: new TextStyle(
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white,
-                        fontSize: SizeConfig.width(context, 0.05)),
+                        fontWeight: FontWeight.w400, color: Colors.white, fontSize: SizeConfig.width(context, 0.05)),
                   ),
                   Text(
                     "RemainingTime".tr(),
@@ -865,8 +834,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                     height: SizeConfig.height(context, 0.1),
                     width: SizeConfig.width(context, 0.27),
                     decoration: BoxDecoration(
-                      border:
-                          Border.all(color: GlobalColors.textFieldHintColor),
+                      border: Border.all(color: GlobalColors.textFieldHintColor),
                       borderRadius: BorderRadius.circular(
                         SizeConfig.width(context, 0.03),
                       ),
@@ -942,9 +910,9 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     }, listener: (context, state) {
       if (state is DashBoardAttandanceSuccess) {
         if (state.attandanceData.timeDiff?.h == null) {
-           percent = 0;
+          percent = 0;
         } else {
-        percent=  ((state.attandanceData.timeDiff?.h)??1 + (state.attandanceData.timeDiff?.m??1) / 60) / 24;
+          percent = ((state.attandanceData.timeDiff?.h) ?? 1 + (state.attandanceData.timeDiff?.m ?? 1) / 60) / 24;
         }
         _timer = Timer.periodic(Duration(seconds: 60), (timer) async {
           if (mounted) {
@@ -953,7 +921,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
         });
       }
       if (state is AttandanceFailure) {
-      //  AppUtils.showFlushBar(state.errorMessage, context);
+        //  AppUtils.showFlushBar(state.errorMessage, context);
       }
     });
   }

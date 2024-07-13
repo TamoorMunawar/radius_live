@@ -13,6 +13,7 @@ import 'package:radar/domain/entities/outside_event_usher/outside_event_usher.da
 import 'package:radar/domain/entities/profile/profile_model.dart';
 import 'package:radar/domain/entities/register/Register.dart';
 import 'package:radar/domain/entities/register_payload/Register_payload.dart';
+import 'package:radar/domain/entities/review_payload/review_playload.dart';
 import 'package:radar/domain/entities/scan_qr_code/Scan_qr_code_payload.dart';
 import 'package:radar/domain/entities/supervisior/Supervisior.dart';
 import 'package:radar/domain/entities/user_detail/User_detail.dart';
@@ -153,4 +154,6 @@ abstract class RadarMobileRepository {
   Future<UserDetail> userDetails();
 
   Future<List<Attandance>> getAttandance();
+
+  Future<bool> addReview(ReviewPayload reviewPayload);
 }

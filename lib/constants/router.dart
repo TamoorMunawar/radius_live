@@ -29,4 +29,5 @@ class AppRoutes {
   static String scanQrCodeScreenRoute = '/scanQrCodeScreenRoute';
   static String createJobScreenRoute = '/createJobScreenArgs';
   static String createZoneScreenRoute = '/createZoneScreenRoute';
+  static String addReviewScreenRoute = '/addReviewRoute';
 }

@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:radar/constants/app_utils.dart';
 import 'package:radar/constants/colors.dart';
+import 'package:radar/constants/route_arguments.dart';
+import 'package:radar/constants/router.dart';
 import 'package:radar/constants/size_config.dart';
 import 'package:radar/domain/entities/ushers/Ushers.dart';
 import 'package:radar/domain/entities/zone/Zone.dart';
@@ -13,6 +15,8 @@ import 'package:radar/presentation/cubits/zone/zone_cubit.dart';
 import 'package:radar/presentation/screens/job_dashboard_screen.dart';
 import 'package:radar/presentation/widgets/LoadingWidget.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../domain/entities/ushers/Department.dart';
 
 class UsherListScreen extends StatefulWidget {
   const UsherListScreen({super.key});
@@ -32,16 +36,14 @@ class _UsherListScreenState extends State<UsherListScreen> {
 
   Future _initialScrollListener() async {
     if (isLoadingMore) return;
-    if (initialScrollController.position.pixels ==
-        initialScrollController.position.maxScrollExtent) {
+    if (initialScrollController.position.pixels == initialScrollController.position.maxScrollExtent) {
       print("if scroll listener called");
       setState(() {
         isLoadingMore = true;
       });
       count = count + 1;
 
-      usherList.addAll(await usherCubit.getUsher(
-          zoneId: zoneValue?.id, isZoneSelected: isZoneSelected, page: count));
+      usherList.addAll(await usherCubit.getUsher(zoneId: zoneValue?.id, isZoneSelected: isZoneSelected, page: count));
     }
     setState(() {
       isLoadingMore = false;
@@ -134,7 +136,8 @@ class _UsherListScreenState extends State<UsherListScreen> {
                 return LoadingWidget();
               }
               if (state is ZoneSuccess) {
-                return DropdownButtonFormField<Zone>(//isDense: true,
+                return DropdownButtonFormField<Zone>(
+                  //isDense: true,
 
                   isExpanded: true,
                   dropdownColor: GlobalColors.backgroundColor,
@@ -150,14 +153,11 @@ class _UsherListScreenState extends State<UsherListScreen> {
                         children: [
                           Text(
                             "${item.categoryName ?? ""}   \n  ${item.invitationCount ?? ""}",
-                            style: TextStyle(
-                                color: GlobalColors.textFieldHintColor),
+                            style: TextStyle(color: GlobalColors.textFieldHintColor),
                           ),
                           Text(
                             "${item.suppervisor}",
-                            style: TextStyle(
-                                color: GlobalColors.textFieldHintColor,
-                                overflow: TextOverflow.clip),
+                            style: TextStyle(color: GlobalColors.textFieldHintColor, overflow: TextOverflow.clip),
                           ),
                         ],
                       ),
@@ -187,56 +187,52 @@ class _UsherListScreenState extends State<UsherListScreen> {
                           isZoneSelected: isZoneSelected, page: count);*/
                     } else {
                       usherList.addAll(await usherCubit.getUsher(
-                          isZoneSelected: isZoneSelected,
-                          zoneId: zoneValue?.id,
-                          page: count));
+                          isZoneSelected: isZoneSelected, zoneId: zoneValue?.id, page: count));
                       foundUshersList = usherList;
                     }
                     setState(() {
                       isLoadingMore = false;
                     });
                   },
-                  decoration: InputDecoration(isDense: true, contentPadding: EdgeInsets.symmetric(
-                    horizontal: SizeConfig.width(context, 0.02),
-                    vertical: SizeConfig.height(context, 0.012),
-                  ),
+                  decoration: InputDecoration(
+                    isDense: true,
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: SizeConfig.width(context, 0.02),
+                      vertical: SizeConfig.height(context, 0.012),
+                    ),
                     filled: false,
                     hintText: 'Select Zone'.tr(),
                     hintStyle: TextStyle(
                       color: GlobalColors.textFieldHintColor,
                     ),
                     errorBorder: OutlineInputBorder(
-                      borderSide:
-                          const BorderSide(color: GlobalColors.whiteColor
-                              //    color: GlobalColors.ftsTextColor,
-                              ),
+                      borderSide: const BorderSide(color: GlobalColors.whiteColor
+                          //    color: GlobalColors.ftsTextColor,
+                          ),
                       borderRadius: BorderRadius.circular(
                         SizeConfig.width(context, 0.03),
                       ),
                     ),
                     disabledBorder: OutlineInputBorder(
-                      borderSide:
-                          const BorderSide(color: GlobalColors.whiteColor
-                              //    color: GlobalColors.ftsTextColor,
-                              ),
+                      borderSide: const BorderSide(color: GlobalColors.whiteColor
+                          //    color: GlobalColors.ftsTextColor,
+                          ),
                       borderRadius: BorderRadius.circular(
                         SizeConfig.width(context, 0.03),
                       ),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderSide:
-                          const BorderSide(color: GlobalColors.whiteColor
-                              //    color: GlobalColors.ftsTextColor,
-                              ),
+                      borderSide: const BorderSide(color: GlobalColors.whiteColor
+                          //    color: GlobalColors.ftsTextColor,
+                          ),
                       borderRadius: BorderRadius.circular(
                         SizeConfig.width(context, 0.03),
                       ),
                     ),
                     border: OutlineInputBorder(
-                      borderSide:
-                          const BorderSide(color: GlobalColors.whiteColor
-                              //    color: GlobalColors.ftsTextColor,
-                              ),
+                      borderSide: const BorderSide(color: GlobalColors.whiteColor
+                          //    color: GlobalColors.ftsTextColor,
+                          ),
                       borderRadius: BorderRadius.circular(
                         SizeConfig.width(context, 0.03),
                       ),
@@ -348,10 +344,7 @@ class _UsherListScreenState extends State<UsherListScreen> {
                                             value.toLowerCase(),
                                           ) ??
                                       false) ||
-                                  (dH.iqamaId
-                                          ?.toLowerCase()
-                                          .contains(value.toLowerCase()) ??
-                                      false) ||
+                                  (dH.iqamaId?.toLowerCase().contains(value.toLowerCase()) ?? false) ||
                                   ("${dH.whatsappNumberCountryCode}${dH.whatsappNumber}"
                                           ?.toLowerCase()
                                           .contains(value.toLowerCase()) ??
@@ -362,21 +355,21 @@ class _UsherListScreenState extends State<UsherListScreen> {
                       setState(() {
                         foundUshersList = results;
                         if (kDebugMode) {
-                          print(
-                              "foundUshersList $foundUshersList ${foundUshersList.length}");
+                          print("foundUshersList $foundUshersList ${foundUshersList.length}");
                         }
                       });
                     },
                   ),
                 ),
-          SizedBox(height: SizeConfig.height(context, 0.02),),
+          SizedBox(
+            height: SizeConfig.height(context, 0.02),
+          ),
           (isLoadingMore)
               ? const LoadingWidget()
               : (usherList.isEmpty || foundUshersList.isEmpty)
                   ? Center(
                       child: Padding(
-                        padding: EdgeInsets.only(
-                            top: SizeConfig.height(context, 0.2)),
+                        padding: EdgeInsets.only(top: SizeConfig.height(context, 0.2)),
                         child: Text(
                           "No Data Found".tr(),
                           style: TextStyle(
@@ -388,287 +381,267 @@ class _UsherListScreenState extends State<UsherListScreen> {
                     )
                   : Expanded(
                       child: ListView.separated(
-                      padding: EdgeInsets.only(
-                          bottom: SizeConfig.height(context, 0.1)),
+                      padding: EdgeInsets.only(bottom: SizeConfig.height(context, 0.1)),
                       controller: initialScrollController,
                       separatorBuilder: (context, index) {
-                        return buildDividerWidget(context: context,padding: EdgeInsets.symmetric(
-                            horizontal: SizeConfig.width(context, 0.05),
-                            vertical: SizeConfig.height(context, 0.015),
-                        ));
+                        return buildDividerWidget(
+                            context: context,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: SizeConfig.width(context, 0.05),
+                              vertical: SizeConfig.height(context, 0.015),
+                            ));
                       },
                       itemBuilder: (context, index) {
                         var item = foundUshersList.elementAt(index);
-                        if (index < foundUshersList!.length) {
-                          return Container(
-                            //  height: SizeConfig.height(context, 0.135),
-                            width: SizeConfig.width(context, 0.9),
-                            margin: EdgeInsets.only(
-                            //  top: SizeConfig.height(context, 0.02),
-                              left: SizeConfig.width(context, 0.05),
-                              right: SizeConfig.width(context, 0.05),
-                            ),
+                        if (index < foundUshersList.length) {
+                          return InkWell(
+                            onTap: () {
+                              final args = ReviewScreenArgs(
+                                  usherId: foundUshersList[index].id!,
+                                  department: foundUshersList[index].employeeDetail!.department);
 
-                            padding: EdgeInsets.only(
-                              top: SizeConfig.height(context, 0.01),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    CircleAvatar(
-                                      backgroundColor: Colors.transparent,
-                                      backgroundImage:
-                                          NetworkImage(item.imageUrl ?? ""),
-                                      radius: SizeConfig.width(context, 0.08),
-                                    ),
-                                    SizedBox(
-                                      width: SizeConfig.width(context, 0.03),
-                                    ),
-                                    Container(
-                                     // color: Colors.red,
-                                      width: SizeConfig.width(context,0.55),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            item.name ?? "",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: SizeConfig.width(
-                                                  context, 0.032),
-                                            ),
-                                          ),
-                                          RichText(
-                                              text: TextSpan(children: [
-                                                TextSpan(
-                                                  text:
-                                                  "Email".tr(),
-                                                  style: TextStyle(
-                                                    color: GlobalColors
-                                                        .textFieldHintColor,
-                                                    fontWeight: FontWeight.w700,
-                                                    fontSize: SizeConfig.width(
-                                                        context, 0.032),
-                                                  ),
-                                                ),
-                                                TextSpan(
-                                                  text:
-                                                  ":  ${item.email}",
-                                                  style: TextStyle(
-                                                    color: GlobalColors
-                                                        .textFieldHintColor,
-                                                    fontWeight: FontWeight.w700,
-                                                    fontSize: SizeConfig.width(
-                                                        context, 0.032),
-                                                  ),
-                                                ),
-                                              ])),
-
-
-                                          RichText(
-                                              text: TextSpan(children: [
-                                            TextSpan(
-                                              text:
-                                                  "${"Job".tr()}",
-                                              style: TextStyle(
-                                                color: GlobalColors
-                                                    .textFieldHintColor,
-                                                fontWeight: FontWeight.w700,
-                                                fontSize: SizeConfig.width(
-                                                    context, 0.032),
-                                              ),
-                                            ),
-                                            TextSpan(
-                                              text:
-                                                  ":  ${item.jobName}",
-                                              style: TextStyle(
-                                                color: GlobalColors
-                                                    .submitButtonColor,
-                                                fontWeight: FontWeight.w700,
-                                                fontSize: SizeConfig.width(
-                                                    context, 0.032),
-                                              ),
-                                            ),
-                                          ])),
-                                          RichText(
-                                              text: TextSpan(children: [
-                                            TextSpan(
-                                              text:
-                                                  "${"Check In".tr()}",
-                                              style: TextStyle(
-                                                color: GlobalColors
-                                                    .textFieldHintColor,
-                                                fontWeight: FontWeight.w700,
-                                                fontSize: SizeConfig.width(
-                                                    context, 0.032),
-                                              ),
-                                            ),
-                                            TextSpan(
-                                              text:
-                                                  ":  ${item.checkIn == null ? "No".tr() : "Yes".tr()}",
-                                              style: TextStyle(
-                                                color: GlobalColors
-                                                    .submitButtonColor,
-                                                fontWeight: FontWeight.w700,
-                                                fontSize: SizeConfig.width(
-                                                    context, 0.032),
-                                              ),
-                                            ),
-                                          ])),
-
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Container(
-                                        // color: Colors.yellow,
-                                        width: SizeConfig.width(context, 0.12),
-                                        //     height: 300,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            (item.mobile == null)
-                                                ? Container()
-                                                : InkWell(
-                                                    onTap: () {
-                                                      makePhoneCall(
-                                                          phoneNumber:
-                                                              "+${item.countryPhonecode}${item.whatsappNumber}");
-                                                    },
-                                                    child: Icon(
-                                                      Icons.call_outlined,
-                                                      color: Colors.grey,
-                                                      size: SizeConfig.width(
-                                                          context, 0.07),
-                                                    ),
-                                                  ),
-                                            SizedBox(
-                                              height: 10,
-                                            ),
-                                            (item.whatsappNumber == null)
-                                                ? Container()
-                                                : InkWell(
-                                                    onTap: () {
-                                                      print(
-                                                          "whatsapp number ${item.whatsappNumber}");
-                                                      launchWhatsapp(
-                                                          phoneNumber:
-                                                              "+${item.countryPhonecode}${item.whatsappNumber}");
-                                                    },
-                                                    child: Icon(
-                                                      Icons
-                                                          .messenger_outline_sharp,
-                                                      color: Colors.grey,
-                                                      size: SizeConfig.width(
-                                                          context, 0.07),
-                                                    ),
-                                                  ),
-                                          ],
-                                        ))
-                                  ],
-                                )
-                              ],
-                            )
-                            /*ListTile(
-                              contentPadding: EdgeInsets.zero,
-                              leading: CircleAvatar(
-                                backgroundColor: Colors.yellow,
-                                backgroundImage:
-                                    NetworkImage(item.imageUrl ?? ""),
-                                radius: SizeConfig.width(context, 0.08),
+                              Navigator.pushNamed(context, AppRoutes.addReviewScreenRoute, arguments: args);
+                            },
+                            child: Container(
+                              //  height: SizeConfig.height(context, 0.135),
+                              width: SizeConfig.width(context, 0.9),
+                              margin: EdgeInsets.only(
+                                //  top: SizeConfig.height(context, 0.02),
+                                left: SizeConfig.width(context, 0.05),
+                                right: SizeConfig.width(context, 0.05),
                               ),
-                              title: Text(
-                                item.name ?? "",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: SizeConfig.width(context, 0.032),
-                                ),
+
+                              padding: EdgeInsets.only(
+                                top: SizeConfig.height(context, 0.01),
                               ),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    item.email ?? "",
-                                    style: TextStyle(
-                                      color: GlobalColors.textFieldHintColor,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize:
-                                          SizeConfig.width(context, 0.032),
-                                    ),
-                                  ),
-                                  Text(
-                                    "${"Job".tr()} : ${item.jobName}" ?? "",
-                                    style: TextStyle(
-                                      color: GlobalColors.textFieldHintColor,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize:
-                                          SizeConfig.width(context, 0.032),
-                                    ),
-                                  ),
-                                  Text(
-                                    "${"Check In".tr()} : ${item.checkIn == null ? "No".tr() : "Yes".tr()}",
-                                    style: TextStyle(
-                                      color: GlobalColors.textFieldHintColor,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize:
-                                          SizeConfig.width(context, 0.032),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              trailing: Container(
-                                  //color: Colors.yellow,
-                                  width: SizeConfig.width(context, 0.1),
-                                  //     height: 300,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
+                                  Row(
                                     children: [
-                                      (item.mobile == null)
-                                          ? Container()
-                                          : InkWell(
-                                              onTap: () {
-                                                makePhoneCall(
-                                                    phoneNumber:
-                                                        "+${item.countryPhonecode}${item.whatsappNumber}");
-                                              },
-                                              child: Icon(
-                                                Icons.call_outlined,
-                                                color: Colors.grey,
-                                                size: SizeConfig.width(
-                                                    context, 0.07),
+                                      CircleAvatar(
+                                        backgroundColor: Colors.transparent,
+                                        backgroundImage: NetworkImage(item.imageUrl ?? ""),
+                                        radius: SizeConfig.width(context, 0.08),
+                                      ),
+                                      SizedBox(
+                                        width: SizeConfig.width(context, 0.03),
+                                      ),
+                                      Container(
+                                        // color: Colors.red,
+                                        width: SizeConfig.width(context, 0.55),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              item.name ?? "",
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: SizeConfig.width(context, 0.032),
                                               ),
                                             ),
-                                      SizedBox(
-                                        height: 10,
+                                            RichText(
+                                                text: TextSpan(children: [
+                                              TextSpan(
+                                                text: "Email".tr(),
+                                                style: TextStyle(
+                                                  color: GlobalColors.textFieldHintColor,
+                                                  fontWeight: FontWeight.w700,
+                                                  fontSize: SizeConfig.width(context, 0.032),
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: ":  ${item.email}",
+                                                style: TextStyle(
+                                                  color: GlobalColors.textFieldHintColor,
+                                                  fontWeight: FontWeight.w700,
+                                                  fontSize: SizeConfig.width(context, 0.032),
+                                                ),
+                                              ),
+                                            ])),
+                                            RichText(
+                                                text: TextSpan(children: [
+                                              TextSpan(
+                                                text: "${"Job".tr()}",
+                                                style: TextStyle(
+                                                  color: GlobalColors.textFieldHintColor,
+                                                  fontWeight: FontWeight.w700,
+                                                  fontSize: SizeConfig.width(context, 0.032),
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: ":  ${item.jobName}",
+                                                style: TextStyle(
+                                                  color: GlobalColors.submitButtonColor,
+                                                  fontWeight: FontWeight.w700,
+                                                  fontSize: SizeConfig.width(context, 0.032),
+                                                ),
+                                              ),
+                                            ])),
+                                            RichText(
+                                                text: TextSpan(children: [
+                                              TextSpan(
+                                                text: "${"Check In".tr()}",
+                                                style: TextStyle(
+                                                  color: GlobalColors.textFieldHintColor,
+                                                  fontWeight: FontWeight.w700,
+                                                  fontSize: SizeConfig.width(context, 0.032),
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: ":  ${item.checkIn == null ? "No".tr() : "Yes".tr()}",
+                                                style: TextStyle(
+                                                  color: GlobalColors.submitButtonColor,
+                                                  fontWeight: FontWeight.w700,
+                                                  fontSize: SizeConfig.width(context, 0.032),
+                                                ),
+                                              ),
+                                            ])),
+                                          ],
+                                        ),
                                       ),
-                                      (item.whatsappNumber == null)
-                                          ? Container()
-                                          : InkWell(
-                                              onTap: () {
-                                                print(
-                                                    "whatsapp number ${item.whatsappNumber}");
-                                                launchWhatsapp(
-                                                    phoneNumber:
-                                                        "+${item.countryPhonecode}${item.whatsappNumber}");
-                                              },
-                                              child: Icon(Icons.messenger_outline_sharp),
-                                            ),
                                     ],
-                                  )),
-                            )*/
-                            ,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Container(
+                                          // color: Colors.yellow,
+                                          width: SizeConfig.width(context, 0.12),
+                                          //     height: 300,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children: [
+                                              (item.mobile == null)
+                                                  ? Container()
+                                                  : InkWell(
+                                                      onTap: () {
+                                                        makePhoneCall(
+                                                            phoneNumber:
+                                                                "+${item.countryPhonecode}${item.whatsappNumber}");
+                                                      },
+                                                      child: Icon(
+                                                        Icons.call_outlined,
+                                                        color: Colors.grey,
+                                                        size: SizeConfig.width(context, 0.07),
+                                                      ),
+                                                    ),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              (item.whatsappNumber == null)
+                                                  ? Container()
+                                                  : InkWell(
+                                                      onTap: () {
+                                                        print("whatsapp number ${item.whatsappNumber}");
+                                                        launchWhatsapp(
+                                                            phoneNumber:
+                                                                "+${item.countryPhonecode}${item.whatsappNumber}");
+                                                      },
+                                                      child: Icon(
+                                                        Icons.messenger_outline_sharp,
+                                                        color: Colors.grey,
+                                                        size: SizeConfig.width(context, 0.07),
+                                                      ),
+                                                    ),
+                                            ],
+                                          ))
+                                    ],
+                                  )
+                                ],
+                              )
+                              /*ListTile(
+                                contentPadding: EdgeInsets.zero,
+                                leading: CircleAvatar(
+                                  backgroundColor: Colors.yellow,
+                                  backgroundImage:
+                                      NetworkImage(item.imageUrl ?? ""),
+                                  radius: SizeConfig.width(context, 0.08),
+                                ),
+                                title: Text(
+                                  item.name ?? "",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: SizeConfig.width(context, 0.032),
+                                  ),
+                                ),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      item.email ?? "",
+                                      style: TextStyle(
+                                        color: GlobalColors.textFieldHintColor,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize:
+                                            SizeConfig.width(context, 0.032),
+                                      ),
+                                    ),
+                                    Text(
+                                      "${"Job".tr()} : ${item.jobName}" ?? "",
+                                      style: TextStyle(
+                                        color: GlobalColors.textFieldHintColor,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize:
+                                            SizeConfig.width(context, 0.032),
+                                      ),
+                                    ),
+                                    Text(
+                                      "${"Check In".tr()} : ${item.checkIn == null ? "No".tr() : "Yes".tr()}",
+                                      style: TextStyle(
+                                        color: GlobalColors.textFieldHintColor,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize:
+                                            SizeConfig.width(context, 0.032),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                trailing: Container(
+                                    //color: Colors.yellow,
+                                    width: SizeConfig.width(context, 0.1),
+                                    //     height: 300,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        (item.mobile == null)
+                                            ? Container()
+                                            : InkWell(
+                                                onTap: () {
+                                                  makePhoneCall(
+                                                      phoneNumber:
+                                                          "+${item.countryPhonecode}${item.whatsappNumber}");
+                                                },
+                                                child: Icon(
+                                                  Icons.call_outlined,
+                                                  color: Colors.grey,
+                                                  size: SizeConfig.width(
+                                                      context, 0.07),
+                                                ),
+                                              ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        (item.whatsappNumber == null)
+                                            ? Container()
+                                            : InkWell(
+                                                onTap: () {
+                                                  print(
+                                                      "whatsapp number ${item.whatsappNumber}");
+                                                  launchWhatsapp(
+                                                      phoneNumber:
+                                                          "+${item.countryPhonecode}${item.whatsappNumber}");
+                                                },
+                                                child: Icon(Icons.messenger_outline_sharp),
+                                              ),
+                                      ],
+                                    )),
+                              )*/
+                              ,
+                            ),
                           );
                         } else {
                           return Column(
@@ -683,9 +656,7 @@ class _UsherListScreenState extends State<UsherListScreen> {
                           );
                         }
                       },
-                      itemCount: (isLoadingMore)
-                          ? foundUshersList.length
-                          : foundUshersList.length,
+                      itemCount: (isLoadingMore) ? foundUshersList.length : foundUshersList.length,
                     ))
         ],
       ),

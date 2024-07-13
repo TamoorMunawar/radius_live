@@ -23,6 +23,7 @@ import 'package:radar/domain/entities/outside_event_usher/outside_event_usher.da
 import 'package:radar/domain/entities/profile/profile_model.dart';
 import 'package:radar/domain/entities/register/Register.dart';
 import 'package:radar/domain/entities/register_payload/Register_payload.dart';
+import 'package:radar/domain/entities/review_payload/review_playload.dart';
 import 'package:radar/domain/entities/scan_qr_code/Scan_qr_code_payload.dart';
 import 'package:radar/domain/entities/supervisior/Supervisior.dart';
 import 'package:radar/domain/entities/user_detail/User_detail.dart';
@@ -1647,5 +1648,40 @@ class RadarMobileRepositoryImpl implements RadarMobileRepository {
     prefs.setString("user_phonenumber", register?.mobile ?? "");
     prefs.setInt("user_id", register.id ?? 0);
     print("user role ${register?.role?.displayName}");
+  }
+
+  @override
+  Future<bool> addReview(ReviewPayload reviewPayload) async {
+    try {
+      var url = Uri.parse('${NetworkUtils.baseUrl}/add-review');
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String jsonBody = jsonEncode(<String, dynamic>{
+        "review": reviewPayload.review,
+        "review_no": reviewPayload.rating,
+        "review_to": reviewPayload.usherId,
+        "is_banned": reviewPayload.isBanned,
+        "team_id": reviewPayload.teamId,
+      });
+      log("repository::addReview::jsonBody: $jsonBody\n");
+
+      http.Response response = await http.post(url, headers: authorizationHeaders(prefs), body: jsonBody);
+
+      log("repository::addReview::responseBody: ${response.body}\n");
+
+      var responseBody = jsonDecode(response.body);
+
+      if (responseBody["success"]) {
+        return true;
+      } else {
+        throw Exception(responseBody["message"]);
+      }
+    } on TimeoutException catch (e) {
+      throw Exception(noTimeOutMsg);
+    } on SocketException catch (e) {
+      throw Exception(noInternetConnectivityMsg);
+    } on Exception catch (e) {
+      print('repository::addReview::exception = ${e.toString()}');
+      throw Exception(e.toString().substring(11));
+    }
   }
 }

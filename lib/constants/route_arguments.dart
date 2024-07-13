@@ -1,6 +1,6 @@
 import 'package:radar/domain/entities/events/event_detail/Event_zone_all.dart';
 
-import '../domain/entities/events/event_detail/Job.dart';
+import '../domain/entities/ushers/Department.dart';
 
 class OtpScreenRoute {
   final String email;
@@ -116,5 +116,15 @@ class CreateZoneScreenArgs {
   CreateZoneScreenArgs({
     //required this.jobId,
     required this.eventId,
+  });
+}
+
+class ReviewScreenArgs {
+  final int usherId;
+  final Department? department;
+
+  ReviewScreenArgs({
+    required this.usherId,
+    required this.department,
   });
 }
