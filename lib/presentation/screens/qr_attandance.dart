@@ -1,9 +1,13 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
+import 'dart:math' as m;
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:radar/constants/app_utils.dart';
 import 'package:radar/constants/colors.dart';
 import 'package:radar/constants/router.dart';
@@ -32,9 +36,10 @@ class QrAttandanceScreen extends StatefulWidget {
 }
 
 class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
+  final Completer<GoogleMapController> _controller = Completer<GoogleMapController>();
+
   String removeHtmlTags(String htmlString) {
-    final RegExp regExp =
-    RegExp(r'<[^>]*>', multiLine: true, caseSensitive: false);
+    final RegExp regExp = RegExp(r'<[^>]*>', multiLine: true, caseSensitive: false);
 
     return htmlString.replaceAll(regExp, '');
   }
@@ -65,12 +70,12 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
   int? checkOutEventModelId = 0;
 
   bool isCheckInValue = false;
+  InitialEvent? _initialEvent;
 
   Future _checkInScrollListener() async {
     if (isLoadingMoreCheckIn) return;
-    if (checkInScrollController.position.pixels ==
-        checkInScrollController.position.maxScrollExtent) {
-      print("if scroll listener called");
+    if (checkInScrollController.position.pixels == checkInScrollController.position.maxScrollExtent) {
+      log("if scroll listener called");
       setState(() {
         isLoadingMoreCheckIn = true;
       });
@@ -85,15 +90,13 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
 
   Future _finalScrollListener() async {
     if (isLoadingMoreCheckout) return;
-    if (checkOutScrollController.position.pixels ==
-        checkOutScrollController.position.maxScrollExtent) {
-      print("if scroll listener called");
+    if (checkOutScrollController.position.pixels == checkOutScrollController.position.maxScrollExtent) {
+      log("if scroll listener called");
       setState(() {
         isLoadingMoreCheckout = true;
       });
       finalCount = finalCount + 1;
-      finalEventList
-          .addAll(await initialEventCubit.getFinalEventTest(page: finalCount));
+      finalEventList.addAll(await initialEventCubit.getFinalEventTest(page: finalCount));
       //  initialEventCubit.getFinalEvent(page: finalCount);
     }
     setState(() {
@@ -105,9 +108,8 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
     setState(() {
       isLoadingMoreCheckout = true;
     });
-    finalEventList =
-    await initialEventCubit.getFinalEventTest(page: finalCount);
-    print("finalEventList ${finalEventList.length}");
+    finalEventList = await initialEventCubit.getFinalEventTest(page: finalCount);
+    log("finalEventList ${finalEventList.length}");
     setState(() {
       isLoadingMoreCheckout = false;
     });
@@ -117,10 +119,10 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     eventImagePath = prefs.getString("event_image_path") ?? "";
     roleName = prefs.getString(
-      "role_name",
-    ) ??
+          "role_name",
+        ) ??
         "";
-    print("role name $roleName");
+    log("role name $roleName");
     setState(() {});
   }
 
@@ -155,19 +157,19 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
 
     if (permission == LocationPermission.deniedForever) {
       // Permissions are denied forever, handle appropriately.
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
+      return Future.error('Location permissions are permanently denied, we cannot request permissions.');
     }
 
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
     Position position = await Geolocator.getCurrentPosition();
-    print("position.latitude ${position.latitude}");
-    print("position.longitude ${position.longitude}");
+    log("position.latitude ${position.latitude}");
+    log("position.longitude ${position.longitude}");
     latitude = position.latitude;
     longitude = position.longitude;
-    if(mounted){
-      setState(() {});}
+    if (mounted) {
+      setState(() {});
+    }
     //return await Geolocator.getCurrentPosition();
   }
 
@@ -183,12 +185,11 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
     scanQrCodeCubit = BlocProvider.of<ScanQrCodeCubit>(context);
     zoneCubit = BlocProvider.of<ZoneCubit>(context);
     initialEventCubit = BlocProvider.of<InitialEventCubit>(context);
-   // zoneSeatsCubit = BlocProvider.of<ZoneSeatsCubit>(context);
+    // zoneSeatsCubit = BlocProvider.of<ZoneSeatsCubit>(context);
     checkInScrollController.addListener(_checkInScrollListener);
     checkOutScrollController.addListener(_finalScrollListener);
     determinePosition();
     getUserDetailsFromLocal();
-
 
     getFinalEventData();
     //  initialEventCubit.getFinalEvent(page: finalCount);
@@ -196,12 +197,37 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
     // TODO: implement initState
     super.initState();
   }
+
   @override
-  void dispose(){
+  void dispose() {
     super.dispose();
-   // scanQrCodeCubit.close();
-   // zoneCubit.close();
+    // scanQrCodeCubit.close();
+    // zoneCubit.close();
   }
+
+  bool _checkIfWithinRadius({String? zoneLat, String? zoneLong, String? zonRadius}) {
+    if (latitude == 0.0 && longitude == 0.0) return false;
+
+    final distance = _calculateDistance(
+      double.parse(zoneLat ?? "0.0"),
+      double.parse(zoneLong ?? "0.0"),
+      latitude,
+      longitude,
+    );
+
+    if (distance <= double.parse(zonRadius ?? "0.0")) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  double _calculateDistance(lat1, lon1, lat2, lon2) {
+    var p = 0.017453292519943295;
+    var a = 0.5 - m.cos((lat2 - lat1) * p) / 2 + m.cos(lat1 * p) * m.cos(lat2 * p) * (1 - m.cos((lon2 - lon1) * p)) / 2;
+    return 12742 * m.asin(m.sqrt(a)) * 1000; // Distance in meters
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -237,16 +263,17 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
                   children: List.generate(2, (index) {
                     return GestureDetector(
                       onTap: () async {
-                        tabList.forEach((element) {
-                          element?.isSelected = false;
-                        });
+                        for (var element in tabList) {
+                          element.isSelected = false;
+                        }
                         setState(() {
-                          tabList[index]?.isSelected = true;
+                          tabList[index].isSelected = true;
                           showAlert = false;
                           finalCount = 1;
                           count = 1;
                           finalEventList.clear();
-                          finalEventList = [];zoneValue = null;
+                          finalEventList = [];
+                          zoneValue = null;
                           //   isLoadingMoreCheckout=true;
                         });
                         getFinalEventData();
@@ -256,7 +283,7 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
                         width: SizeConfig.width(context, 0.45),
                         decoration: BoxDecoration(
                           color: tabList[index].isSelected ?? false
-                              ? Color(0xFFEF4A4A)
+                              ? const Color(0xFFEF4A4A)
                               : GlobalColors.submitButtonTextColor,
                           borderRadius: BorderRadius.circular(
                             SizeConfig.width(context, 0.02),
@@ -264,16 +291,16 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
                         ),
                         child: Center(
                             child: Text(
-                              tabList[index].title ?? "",
-                              style: TextStyle(
-                                  color: tabList[index].isSelected ?? false
-                                      ? Color(
-                                    0xFF0D0D0D,
-                                  )
-                                      : GlobalColors.submitButtonColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: SizeConfig.width(context, 0.03)),
-                            )),
+                          tabList[index].title ?? "",
+                          style: TextStyle(
+                              color: tabList[index].isSelected ?? false
+                                  ? const Color(
+                                      0xFF0D0D0D,
+                                    )
+                                  : GlobalColors.submitButtonColor,
+                              fontWeight: FontWeight.w500,
+                              fontSize: SizeConfig.width(context, 0.03)),
+                        )),
                       ),
                     );
                   }),
@@ -282,127 +309,118 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
               (isLoadingMoreCheckout)
                   ? const LoadingWidget()
                   : (finalEventList.isEmpty)
-                  ? Center(
-                child: Padding(
-                  padding: EdgeInsets.only(
-                      top: SizeConfig.height(context, 0.2)),
-                  child: Text(
-                    "No Data Found".tr(),
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: SizeConfig.width(context, 0.06)),
-                  ),
-                ),
-              )
-                  : (tabList.first.isSelected ?? false)
-                  ? Expanded(
-                child: ListView.separated(
-                  //   primary: true,
-                  // shrinkWrap: true,
-                  padding: EdgeInsets.only(
-                      bottom: SizeConfig.height(context, 0.1)),
-                  controller: checkOutScrollController,
-                  itemBuilder: (context, index) {
-                    var item = finalEventList.elementAt(index);
-                    if (index < finalEventList.length) {
-                      return EventsTab(
-                        onTap: () async {
-                          setState(() {
-                            showAlert = true;
-                            checkInEventModelId = item?.id;
-                            isCheckInValue = true;
-                          });
-                          zoneCubit.getZone(eventId: item?.id);
-                        },
-                        title: "${item?.eventName}",
-                        subtitle:
-                        "${removeHtmlTags(item?.projectSummary ?? "")} \n ${item?.startDate} to ${item?.endDate}",
-                        imagePath: "$eventImagePath${item?.logo}",
-                      );
-                    } else {
-                      return Column(
-                        mainAxisAlignment:
-                        MainAxisAlignment.center,
-                        crossAxisAlignment:
-                        CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            height:
-                            SizeConfig.height(context, 0.2),
+                      ? Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(top: SizeConfig.height(context, 0.2)),
+                            child: Text(
+                              "No Data Found".tr(),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: SizeConfig.width(context, 0.06)),
+                            ),
                           ),
-                          LoadingWidget(),
-                        ],
-                      );
-                    }
-                  },
-                  separatorBuilder: (context, index) {
-                    return SizedBox();
-                  },
-                  itemCount: (isLoadingMoreCheckout)
-                      ? finalEventList.length ?? 0 + 1
-                      : finalEventList?.length ?? 0,
-                ),
-              )
-                  : Expanded(
-                child: ListView.separated(
-                  //   primary: true,
-                  // shrinkWrap: true,
-                  padding: EdgeInsets.only(
-                      bottom: SizeConfig.height(context, 0.1)),
+                        )
+                      : (tabList.first.isSelected ?? false)
+                          ? Expanded(
+                              child: ListView.separated(
+                                //   primary: true,
+                                // shrinkWrap: true,
+                                padding: EdgeInsets.only(bottom: SizeConfig.height(context, 0.1)),
+                                controller: checkOutScrollController,
+                                itemBuilder: (context, index) {
+                                  var item = finalEventList.elementAt(index);
+                                  if (index < finalEventList.length) {
+                                    return EventsTab(
+                                      onTap: () async {
+                                        setState(() {
+                                          showAlert = true;
+                                          checkInEventModelId = item.id;
+                                          isCheckInValue = true;
+                                          _initialEvent = item;
+                                        });
+                                        zoneCubit.getZone(eventId: item.id);
+                                      },
+                                      title: "${item.eventName}",
+                                      subtitle:
+                                          "${removeHtmlTags(item.projectSummary ?? "")} \n ${item.startDate} to ${item.endDate}",
+                                      imagePath: "$eventImagePath${item.logo}",
+                                    );
+                                  } else {
+                                    return Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          height: SizeConfig.height(context, 0.2),
+                                        ),
+                                        const LoadingWidget(),
+                                      ],
+                                    );
+                                  }
+                                },
+                                separatorBuilder: (context, index) {
+                                  return const SizedBox();
+                                },
+                                itemCount: (isLoadingMoreCheckout)
+                                    ? finalEventList.length ?? 0 + 1
+                                    : finalEventList.length ?? 0,
+                              ),
+                            )
+                          : Expanded(
+                              child: ListView.separated(
+                                //   primary: true,
+                                // shrinkWrap: true,
+                                padding: EdgeInsets.only(bottom: SizeConfig.height(context, 0.1)),
 
-                  controller: checkOutScrollController,
-                  itemBuilder: (context, index) {
-                    var item = finalEventList.elementAt(index);
-                    if (index < finalEventList.length) {
-                      return EventsTab(
-                        onTap: () {
-                          setState(() {
-                            showAlert = true;
-                            checkOutEventModelId = item?.id;
-                            isCheckInValue = false;
-                          });
-                          zoneCubit.getZone(eventId: item?.id);
-                        },
-                        title: "${item?.eventName}",
-                        subtitle:
-                        "${removeHtmlTags(item?.projectSummary ?? "")} \n ${item?.startDate} to ${item?.endDate}",
-                        imagePath: "$eventImagePath${item?.logo}",
-                      );
-                    } else {
-                      return Column(
-                        mainAxisAlignment:
-                        MainAxisAlignment.center,
-                        crossAxisAlignment:
-                        CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            height:
-                            SizeConfig.height(context, 0.2),
-                          ),
-                          LoadingWidget(),
-                        ],
-                      );
-                    }
-                  },
-                  separatorBuilder: (context, index) {
-                    return SizedBox();
-                  },
-                  itemCount: (isLoadingMoreCheckout)
-                      ? finalEventList?.length ?? 0 + 1
-                      : finalEventList?.length ?? 0,
-                ),
-              )
+                                controller: checkOutScrollController,
+                                itemBuilder: (context, index) {
+                                  var item = finalEventList.elementAt(index);
+                                  if (index < finalEventList.length) {
+                                    return EventsTab(
+                                      onTap: () {
+                                        setState(() {
+                                          showAlert = true;
+                                          checkOutEventModelId = item.id;
+                                          isCheckInValue = false;
+                                        });
+                                        zoneCubit.getZone(eventId: item.id);
+                                      },
+                                      title: "${item.eventName}",
+                                      subtitle:
+                                          "${removeHtmlTags(item.projectSummary ?? "")} \n ${item.startDate} to ${item.endDate}",
+                                      imagePath: "$eventImagePath${item.logo}",
+                                    );
+                                  } else {
+                                    return Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          height: SizeConfig.height(context, 0.2),
+                                        ),
+                                        const LoadingWidget(),
+                                      ],
+                                    );
+                                  }
+                                },
+                                separatorBuilder: (context, index) {
+                                  return const SizedBox();
+                                },
+                                itemCount: (isLoadingMoreCheckout)
+                                    ? finalEventList?.length ?? 0 + 1
+                                    : finalEventList?.length ?? 0,
+                              ),
+                            )
             ],
           ),
           (showAlert)
-              ? buildAlertWidget(context: context, isCheckIn: isCheckInValue)
+              ? buildAlertWidget(context: context, isCheckIn: isCheckInValue, event: _initialEvent)
               : Container(),
           BlocListener<ScanQrCodeCubit, ScanQrCodeState>(
             listener: (context, state) {
               if (state is ScanQrcodeSuccess) {
-                AppUtils.showFlushBar(
-                    "Attandance Marked Successfully".tr(), context);
+                AppUtils.showFlushBar("Attandance Marked Successfully".tr(), context);
               }
               if (state is ScanQrcodeFailure) {
                 AppUtils.showFlushBar(state.errorMessage, context);
@@ -415,16 +433,13 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
     );
   }
 
-  Align buildAlertWidget(
-      {required BuildContext context, required bool isCheckIn}) {
+  Align buildAlertWidget({required BuildContext context, required bool isCheckIn, required InitialEvent? event}) {
     return Align(
       alignment: Alignment.center,
       child: Container(
         decoration: BoxDecoration(
-            color: GlobalColors.backgroundColor,
-            borderRadius:
-            BorderRadius.circular(SizeConfig.width(context, 0.02))),
-        height: SizeConfig.height(context, 0.3),
+            color: GlobalColors.backgroundColor, borderRadius: BorderRadius.circular(SizeConfig.width(context, 0.02))),
+        height: SizeConfig.height(context, 0.5),
         width: SizeConfig.width(context, 0.9),
         padding: EdgeInsets.only(
           left: SizeConfig.width(context, 0.04),
@@ -432,245 +447,258 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
           top: SizeConfig.height(context, 0.015),
           bottom: SizeConfig.height(context, 0.015),
         ),
-        child: SingleChildScrollView(
-          child: Form(
-            key: alertFormKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      showAlert = false;
+        child: Form(
+          key: alertFormKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    showAlert = false;
 
-                      zoneValue = null;
-                    });
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Image.asset(
-                        "assets/icons/cancel_icon.png",
-                        width: SizeConfig.width(context, 0.035),
-                      )
-                    ],
-                  ),
+                    zoneValue = null;
+                  });
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Image.asset(
+                      "assets/icons/cancel_icon.png",
+                      width: SizeConfig.width(context, 0.035),
+                    )
+                  ],
                 ),
-                Text(
-                  "Zone".tr(),
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    fontSize: SizeConfig.width(context, 0.04),
-                  ),
+              ),
+              Text(
+                "Zone".tr(),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: SizeConfig.width(context, 0.04),
                 ),
-                SizedBox(
-                  height: SizeConfig.height(context, 0.02),
-                ),
-                Material(
-                  color: Colors.transparent,
-                  shadowColor: const Color(0xff006DFC).withOpacity(0.16),
-                  child: BlocConsumer<ZoneCubit, ZoneState>(
-                    builder: (context, state) {
-                      if (state is ZoneLoading) {
-                        return LoadingWidget();
-                      }
-                      if (state is ZoneSuccess) {
-                        return DropdownButtonFormField<Zone>(
-                          isExpanded: true,
-                          dropdownColor: GlobalColors.backgroundColor,
-                          padding: EdgeInsets.only(),
-                          items: state.result.map((Zone item) {
-                            return DropdownMenuItem<Zone>(
-                              value: item,
-                              child: Text(
-                                item.categoryName ?? "",
-                                style: TextStyle(
-                                    color: GlobalColors.textFieldHintColor),
-                              ),
-                            );
-                          }).toList(),
-                          value: zoneValue,
-                          onChanged: (value) {
-                            setState(() {
-                              zoneValue = value;
-                              print("zone id ${zoneValue?.id} ");
-                            });
-                          },
-                          decoration: InputDecoration(
-                            filled: false,
-                            hintText: 'Select Zone'.tr(),
-                            hintStyle: TextStyle(
-                              color: GlobalColors.textFieldHintColor,
+              ),
+              SizedBox(
+                height: SizeConfig.height(context, 0.02),
+              ),
+              Material(
+                color: Colors.transparent,
+                shadowColor: const Color(0xff006DFC).withOpacity(0.16),
+                child: BlocConsumer<ZoneCubit, ZoneState>(
+                  builder: (context, state) {
+                    if (state is ZoneLoading) {
+                      return const LoadingWidget();
+                    }
+                    if (state is ZoneSuccess) {
+                      return DropdownButtonFormField<Zone>(
+                        isExpanded: true,
+                        dropdownColor: GlobalColors.backgroundColor,
+                        padding: const EdgeInsets.only(),
+                        items: state.result.map((Zone item) {
+                          return DropdownMenuItem<Zone>(
+                            value: item,
+                            child: Text(
+                              item.categoryName ?? "",
+                              style: TextStyle(color: GlobalColors.textFieldHintColor),
                             ),
-                            border: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.yellow
+                          );
+                        }).toList(),
+                        value: zoneValue,
+                        onChanged: (value) {
+                          setState(() {
+                            zoneValue = value;
+                            print("zone id ${zoneValue?.id} ");
+                          });
+                        },
+                        decoration: InputDecoration(
+                          filled: false,
+                          hintText: 'Select Zone'.tr(),
+                          hintStyle: TextStyle(
+                            color: GlobalColors.textFieldHintColor,
+                          ),
+                          border: OutlineInputBorder(
+                            borderSide: const BorderSide(color: Colors.yellow
                                 //    color: GlobalColors.ftsTextColor,
-                              ),
-                              borderRadius: BorderRadius.circular(
-                                SizeConfig.width(context, 0.03),
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: GlobalColors.hintTextColor,
-                                //    color: GlobalColors.ftsTextColor,
-                              ),
-                              borderRadius: BorderRadius.circular(
-                                SizeConfig.width(context, 0.03),
-                              ),
+                                ),
+                            borderRadius: BorderRadius.circular(
+                              SizeConfig.width(context, 0.03),
                             ),
                           ),
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (value) {
-                            if (value == null) {
-                              return 'Please select a Zone';
-                            }
-                            return null;
-                          },
-                        );
-                      }
-                      return Container();
-                    },
-                    listener: (context, state) {
-                      if (state is ZoneFailure) {
-                        AppUtils.showFlushBar(state.errorMessage, context);
-                      }
-                    },
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: GlobalColors.hintTextColor,
+                              //    color: GlobalColors.ftsTextColor,
+                            ),
+                            borderRadius: BorderRadius.circular(
+                              SizeConfig.width(context, 0.03),
+                            ),
+                          ),
+                        ),
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (value) {
+                          if (value == null) {
+                            return 'Please select a Zone';
+                          }
+                          return null;
+                        },
+                      );
+                    }
+                    return Container();
+                  },
+                  listener: (context, state) {
+                    if (state is ZoneFailure) {
+                      AppUtils.showFlushBar(state.errorMessage, context);
+                    }
+                  },
+                ),
+              ),
+              SizedBox(
+                height: SizeConfig.height(context, 0.02),
+              ),
+              Expanded(
+                child: GoogleMap(
+                  onMapCreated: (GoogleMapController controller) {
+                    if (!_controller.isCompleted) {
+                      _controller.complete(controller);
+                    }
+                  },
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(
+                      latitude,
+                      longitude,
+                    ),
+                    zoom: 11.0,
                   ),
-                ),
-                SizedBox(
-                  height: SizeConfig.height(context, 0.03),
-                ),
-                (isCheckInValue)   ? SubmitButton(
-                    gradientFirstColor: const Color(0xFFC1954A),
-                    width: SizeConfig.width(context, 0.85),
-                    onPressed: () async {
-                      if(zoneValue==null){
-                        AppUtils.showFlushBar(
-                            "Please select a Zone".tr(),
-                            context);
-                        return ;
-                      }
-                      if (roleName == "Usher"||roleName=="Client") {
-                        AppUtils.showFlushBar(
-                            "You don't have permission to marked the Attandance".tr(),
-                            context);
-                        return;
-                      }
-                      var res = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                            const SimpleBarcodeScannerPage(),
-                          ));
-                      print("resssssv $res");
-                      var response = jsonDecode(res);
-                      ScanQrCodePayload qrcodeResult =
-                      ScanQrCodePayload.fromJson(response);
-                      print("resssssvisCheckInValue ${isCheckInValue}");
-                      qrcodeResult.type =
-                      (isCheckInValue) ? "checkIn" : "CheckOut";
-                      print("ScanQrCodePayload ${qrcodeResult.name}");
-                      print("ScanQrCodePayload ${qrcodeResult.id}");
-                      print("ScanQrCodePayload ${qrcodeResult.id}");
-                      if (qrcodeResult?.name?.isNotEmpty ?? false) {
-                        scanQrCodeCubit.scanQrCodeByEventId(
-                          isCheckout: (isCheckInValue) ? false : true,
-                          eventModelId: (isCheckInValue)
-                              ? checkInEventModelId
-                              : checkOutEventModelId,
-                          zoneId: zoneValue?.id,
-                          latitude: latitude,
-                          longitude: longitude,
-                          scanQrCodePayload: qrcodeResult,
-                          userId: qrcodeResult.id,
-                        );
-                      }
-                      setState(() {
-                        showAlert = false;
-                        zoneValue = null;
-                      });
-                      //  Navigator.pushNamed(context, AppRoutes.resetScreenRoute);
-                    },
-                    child:
-                    Text(
-                      (isCheckInValue) ? 'Check In'.tr() : 'Check out'.tr(),
-                      style: TextStyle(
-                        color: GlobalColors.submitButtonTextColor,
-                        fontSize: SizeConfig.width(context, 0.04),
-                        fontWeight: FontWeight.w500,
+                  circles: {
+                    Circle(
+                      circleId: const CircleId('center_circle'),
+                      center: LatLng(
+                        double.parse(event!.latitude!),
+                        double.parse(event.longitude!),
                       ),
-                    )
-
-
-                ): SubmitButton(
-                    gradientFirstColor: const Color(0xFFC1954A),
-                    width: SizeConfig.width(context, 0.85),
-                    onPressed: () async {
-                      print("ssss");
-                      if(zoneValue==null){
-                        AppUtils.showFlushBar(
-                            "Please select a Zone".tr(),
-                            context);
-                        return ;
-                      }
-                      if (roleName == "Usher"||roleName=="Client") {
-                        AppUtils.showFlushBar(
-                            "You don't have permission to marked the Attandance".tr(),
-                            context);
-                        return;
-                      }
-                      var res = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                            const SimpleBarcodeScannerPage(),
-                          ));
-                      print("resssssv $res");
-                      var response = jsonDecode(res);
-                      ScanQrCodePayload qrcodeResult =
-                      ScanQrCodePayload.fromJson(response);
-                      print("resssssvisCheckInValue ${isCheckInValue}");
-                      qrcodeResult.type =
-                      (isCheckInValue) ? "checkIn" : "CheckOut";
-                      print("ScanQrCodePayload ${qrcodeResult.name}");
-                      print("ScanQrCodePayload ${qrcodeResult.id}");
-                      print("ScanQrCodePayload ${qrcodeResult.id}");
-                      if (qrcodeResult?.name?.isNotEmpty ?? false) {
-                        scanQrCodeCubit.scanQrCodeByEventId(
-                          isCheckout: (isCheckInValue) ? false : true,
-                          eventModelId: (isCheckInValue)
-                              ? checkInEventModelId
-                              : checkOutEventModelId,
-                          zoneId: zoneValue?.id,
-                          latitude: latitude,
-                          longitude: longitude,
-                          scanQrCodePayload: qrcodeResult,
-                          userId: qrcodeResult.id,
-                        );
-                      }
-                      setState(() {
-                        showAlert = false;
-                        zoneValue = null;
-                      });
-                      //  Navigator.pushNamed(context, AppRoutes.resetScreenRoute);
-                    },
-                    child:
-                    Text(
-                      (isCheckInValue) ? 'Check In'.tr() : 'Check out'.tr(),
-                      style: TextStyle(
-                        color: GlobalColors.submitButtonTextColor,
-                        fontSize: SizeConfig.width(context, 0.04),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    )
-
-
+                      radius: double.parse(event.radius!),
+                      fillColor: Colors.blue.withOpacity(0.5),
+                      strokeColor: Colors.blue,
+                      strokeWidth: 1,
+                    ),
+                  },
+                  zoomControlsEnabled: false,
+                  myLocationEnabled: true,
                 ),
+              ),
+              SizedBox(
+                height: SizeConfig.height(context, 0.03),
+              ),
+              (isCheckInValue)
+                  ? SubmitButton(
+                      gradientFirstColor: const Color(0xFFC1954A),
+                      width: SizeConfig.width(context, 0.85),
+                      onPressed: () async {
+                        bool isWithinRadius = _checkIfWithinRadius(
+                            zoneLat: event.latitude, zoneLong: event.longitude, zonRadius: event.radius);
+                        if (zoneValue == null) {
+                          AppUtils.showFlushBar("Please select a Zone".tr(), context);
+                          return;
+                        }
+                        if (!isWithinRadius) {
+                          AppUtils.showFlushBar("You are not in the Zone", context);
 
-              ],
-            ),
+                          return;
+                        }
+                        if (roleName == "Usher" || roleName == "Client") {
+                          AppUtils.showFlushBar("You don't have permission to marked the Attandance".tr(), context);
+                          return;
+                        }
+                        var res = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SimpleBarcodeScannerPage(),
+                            ));
+                        print("resssssv $res");
+                        var response = jsonDecode(res);
+                        ScanQrCodePayload qrcodeResult = ScanQrCodePayload.fromJson(response);
+                        print("resssssvisCheckInValue ${isCheckInValue}");
+                        qrcodeResult.type = (isCheckInValue) ? "checkIn" : "CheckOut";
+                        print("ScanQrCodePayload ${qrcodeResult.name}");
+                        print("ScanQrCodePayload ${qrcodeResult.id}");
+                        print("ScanQrCodePayload ${qrcodeResult.id}");
+                        if (qrcodeResult?.name?.isNotEmpty ?? false) {
+                          scanQrCodeCubit.scanQrCodeByEventId(
+                            isCheckout: (isCheckInValue) ? false : true,
+                            eventModelId: (isCheckInValue) ? checkInEventModelId : checkOutEventModelId,
+                            zoneId: zoneValue?.id,
+                            latitude: latitude,
+                            longitude: longitude,
+                            scanQrCodePayload: qrcodeResult,
+                            userId: qrcodeResult.id,
+                          );
+                        }
+                        setState(() {
+                          showAlert = false;
+                          zoneValue = null;
+                        });
+                        //  Navigator.pushNamed(context, AppRoutes.resetScreenRoute);
+                      },
+                      child: Text(
+                        (isCheckInValue) ? 'Check In'.tr() : 'Check out'.tr(),
+                        style: TextStyle(
+                          color: GlobalColors.submitButtonTextColor,
+                          fontSize: SizeConfig.width(context, 0.04),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ))
+                  : SubmitButton(
+                      gradientFirstColor: const Color(0xFFC1954A),
+                      width: SizeConfig.width(context, 0.85),
+                      onPressed: () async {
+                        print("ssss");
+                        if (zoneValue == null) {
+                          AppUtils.showFlushBar("Please select a Zone".tr(), context);
+                          return;
+                        }
+                        if (roleName == "Usher" || roleName == "Client") {
+                          AppUtils.showFlushBar("You don't have permission to marked the Attandance".tr(), context);
+                          return;
+                        }
+                        var res = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SimpleBarcodeScannerPage(),
+                            ));
+                        print("resssssv $res");
+                        var response = jsonDecode(res);
+                        ScanQrCodePayload qrcodeResult = ScanQrCodePayload.fromJson(response);
+                        print("resssssvisCheckInValue ${isCheckInValue}");
+                        qrcodeResult.type = (isCheckInValue) ? "checkIn" : "CheckOut";
+                        print("ScanQrCodePayload ${qrcodeResult.name}");
+                        print("ScanQrCodePayload ${qrcodeResult.id}");
+                        print("ScanQrCodePayload ${qrcodeResult.id}");
+                        if (qrcodeResult?.name?.isNotEmpty ?? false) {
+                          scanQrCodeCubit.scanQrCodeByEventId(
+                            isCheckout: (isCheckInValue) ? false : true,
+                            eventModelId: (isCheckInValue) ? checkInEventModelId : checkOutEventModelId,
+                            zoneId: zoneValue?.id,
+                            latitude: latitude,
+                            longitude: longitude,
+                            scanQrCodePayload: qrcodeResult,
+                            userId: qrcodeResult.id,
+                          );
+                        }
+                        setState(() {
+                          showAlert = false;
+                          zoneValue = null;
+                        });
+                        //  Navigator.pushNamed(context, AppRoutes.resetScreenRoute);
+                      },
+                      child: Text(
+                        (isCheckInValue) ? 'Check In'.tr() : 'Check out'.tr(),
+                        style: TextStyle(
+                          color: GlobalColors.submitButtonTextColor,
+                          fontSize: SizeConfig.width(context, 0.04),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      )),
+            ],
           ),
         ),
       ),

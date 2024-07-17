@@ -1,13 +1,14 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart';
 import 'package:radar/constants/app_utils.dart';
 import 'package:radar/constants/colors.dart';
-import 'package:radar/constants/device_utils.dart';
 import 'package:radar/constants/route_arguments.dart';
 import 'package:radar/constants/router.dart';
 import 'package:radar/constants/size_config.dart';
@@ -16,7 +17,6 @@ import 'package:radar/presentation/cubits/login/login_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:permission_handler/permission_handler.dart' as ph;
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key, required this.isProfile});
@@ -43,7 +43,7 @@ class _SplashScreenState extends State<SplashScreen> {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     currentVersion = packageInfo.version;
 
-    print("Current app version is: $currentVersion");
+    log("Current app version is: $currentVersion");
     loginCubit.appUpdate(appVersion: currentVersion);
     // Here you can add logic to compare this version with the one fetched from the Play Store
   }
@@ -56,8 +56,8 @@ class _SplashScreenState extends State<SplashScreen> {
   void checkLocationServiceStatus() async {
     var location = Location();
     bool serviceEnabled = await location.serviceEnabled();
-    print("Location status splash screen $serviceEnabled");
-    print("Location status splash screen ${location.hasPermission}");
+    log("Location status splash screen $serviceEnabled");
+    log("Location status splash screen ${location.hasPermission}");
     if (!serviceEnabled) {
       serviceEnabled = await location.requestService();
       if (!serviceEnabled) {
@@ -70,13 +70,11 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     checkAppVersion();
     loginCubit = BlocProvider.of<LoginCubit>(context);
-    //checkAppVersion();
     notificationServices.requestNotificationPermission();
     notificationServices.firebaseInit();
-
     notificationServices.foregroundMessage();
     notificationServices.getToken().then((value) {
-      print("device token $value");
+      log("device token $value");
     });
 
     super.initState();
@@ -92,22 +90,23 @@ class _SplashScreenState extends State<SplashScreen> {
     isVerified = prefs.getBool("isVerified") ?? false;
 
     PermissionStatus permissionStatus = await location.hasPermission();
-    print("permission status ${permissionStatus.name}");
-    print("token aaa $token");
-    print("isEnglish aaa $isEnglish");
-    var status = await ph.Permission.location.status;
-    print("splash location status $status");
+    log("permission status ${permissionStatus.name}");
+    log("token aaa $token");
+    log("isEnglish aaa $isEnglish");
+    // var status = await ph.Permission.location.status;
+    // log("splash location status $status");
     setState(() {});
     await Future.delayed(
       const Duration(seconds: 3),
     );
-    print("user token $token");
+    log("user token $token");
     // print("isProfileUpdated $isProfileUpdated");
-    print("appUpdate $appUpdate");
+    log("appUpdate $appUpdate");
+
+    log(permissionStatus.toString(), name: "Permission Status");
 
     if (appUpdate) {
-      if (permissionStatus.name != "granted") {
-        print("indie 11");
+      if (permissionStatus != PermissionStatus.granted) {
         prefs.clear();
         Navigator.pushNamedAndRemoveUntil(
           context,
@@ -186,7 +185,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   actions: [
                     TextButton(
                       onPressed: () {
-                        print(appUpdateUrl);
+                        log(appUpdateUrl);
                         appUpdateLauncher(appUpdateUrl);
                       },
                       child: Text(
@@ -199,7 +198,7 @@ class _SplashScreenState extends State<SplashScreen> {
               }
               return Container();
             }, listener: (context, state) {
-              print("appUpdate $appUpdate");
+              log("appUpdate $appUpdate");
               if (state is AppUpdateSuccess) {
                 setState(() {
                   appUpdate = true;

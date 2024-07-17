@@ -50,15 +50,14 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
   String address = "";
   String? roleName;
   String? eventImagePath;
-  final Completer<GoogleMapController> _controller =
-      Completer<GoogleMapController>();
+  final Completer<GoogleMapController> _controller = Completer<GoogleMapController>();
 
   String removeHtmlTags(String htmlString) {
-    final RegExp regExp =
-        RegExp(r'<[^>]*>', multiLine: true, caseSensitive: false);
+    final RegExp regExp = RegExp(r'<[^>]*>', multiLine: true, caseSensitive: false);
 
     return htmlString.replaceAll(regExp, '');
   }
+
   final alertFormKey = GlobalKey<FormState>();
   Zone? zoneValue;
   Future getUserDetailsFromLocal() async {
@@ -74,7 +73,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
 
   static final CameraPosition _kGooglePlex = const CameraPosition(
     target: LatLng(24.8607, 67.0011),
-    zoom:12,
+    zoom: 12,
   );
   bool showAlert = false;
 
@@ -111,7 +110,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
             Navigator.pop(context);
           },
           icon: Padding(
-            padding: EdgeInsets.only(left: SizeConfig.width(context, 0.05),right:  SizeConfig.width(context, 0.05)),
+            padding: EdgeInsets.only(left: SizeConfig.width(context, 0.05), right: SizeConfig.width(context, 0.05)),
             child: Icon(
               Icons.arrow_back_ios,
               size: SizeConfig.width(context, 0.05),
@@ -162,12 +161,11 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                     "latitude from APi ${eventDetail?.latitude} ${double.parse(eventDetail?.latitude.toString() ?? "24.8607")}");
                 print(
                     "longitude from APi ${eventDetail?.longitude} ${double.parse(eventDetail?.longitude.toString() ?? "67.0011")}");
-                longitude=double.parse(eventDetail?.longitude ?? "67.0011");
-                latitude=double.parse(eventDetail?.latitude ?? "24.8607");
+                longitude = double.parse(eventDetail?.longitude ?? "67.0011");
+                latitude = double.parse(eventDetail?.latitude ?? "24.8607");
 
                 setState(() {});
               }
-
             }
           },
           builder: (context, state) {
@@ -190,14 +188,10 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                           children: [
                             (eventDetail?.eventName == null)
                                 ? Container()
-                                : TitleAndNameWidget(
-                                    title: "English Name",
-                                    subtitle: "${eventDetail?.eventName}"),
+                                : TitleAndNameWidget(title: "English Name", subtitle: "${eventDetail?.eventName}"),
                             (eventDetail?.eventName == null)
                                 ? Container()
-                                : TitleAndNameWidget(
-                                    title: "Arabic Name",
-                                    subtitle: "${eventDetail?.eventName}"),
+                                : TitleAndNameWidget(title: "Arabic Name", subtitle: "${eventDetail?.eventName}"),
                           ],
                         ),
                         Row(
@@ -205,13 +199,8 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                           children: [
                             (eventDetail?.country?.name == null)
                                 ? Container()
-                                : TitleAndNameWidget(
-                                    title: "Country",
-                                    subtitle: "${eventDetail?.country?.name}"),
-                             TitleAndNameWidget(
-                                title: "City",
-                                subtitle:
-                                    "${eventDetail?.cityId}"),
+                                : TitleAndNameWidget(title: "Country", subtitle: "${eventDetail?.country?.name}"),
+                            TitleAndNameWidget(title: "City", subtitle: "${eventDetail?.cityId}"),
                           ],
                         ),
                         Row(
@@ -219,9 +208,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                           children: [
                             (eventDetail?.district == null)
                                 ? Container()
-                                : TitleAndNameWidget(
-                                    title: "District",
-                                    subtitle: "${eventDetail?.district}"),
+                                : TitleAndNameWidget(title: "District", subtitle: "${eventDetail?.district}"),
                           ],
                         ),
                         Container(
@@ -231,20 +218,17 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                           child: Center(
                             child: GoogleMap(
                               mapType: MapType.normal,
-                              initialCameraPosition: CameraPosition(
-                                  target: LatLng(latitude, longitude), zoom: 14),
+                              initialCameraPosition: CameraPosition(target: LatLng(latitude, longitude), zoom: 14),
                               markers: {
                                 Marker(
                                   markerId: const MarkerId("home123123123"),
-                                  position: LatLng(latitude,longitude),
+                                  position: LatLng(latitude, longitude),
                                   infoWindow: InfoWindow(title: 'Event  Location'),
-                                  icon:
-                                  BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+                                  icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
                                 ),
-
                               },
                               onMapCreated: (GoogleMapController controller) {
-                            //   _controller.complete(controller);
+                                //   _controller.complete(controller);
                               },
                             ),
                           ),
@@ -255,15 +239,11 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                             (eventDetail?.formatStartDate == null)
                                 ? Container()
                                 : TitleAndNameWidget(
-                                    title: "Date From",
-                                    maxLine: 2,
-                                    subtitle: "${eventDetail?.formatStartDate}"),
+                                    title: "Date From", maxLine: 2, subtitle: "${eventDetail?.formatStartDate}"),
                             (eventDetail?.formatEndDate == null)
                                 ? Container()
                                 : TitleAndNameWidget(
-                                    maxLine: 2,
-                                    title: "Date To",
-                                    subtitle: "${eventDetail?.formatEndDate}"),
+                                    maxLine: 2, title: "Date To", subtitle: "${eventDetail?.formatEndDate}"),
                           ],
                         ),
                         SizedBox(
@@ -274,14 +254,10 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                           children: [
                             (eventDetail?.startTime == null)
                                 ? Container()
-                                : TitleAndNameWidget(
-                                    title: "Start in",
-                                    subtitle: "${eventDetail?.startTime}"),
+                                : TitleAndNameWidget(title: "Start in", subtitle: "${eventDetail?.startTime}"),
                             (eventDetail?.endTime == null)
                                 ? Container()
-                                : TitleAndNameWidget(
-                                    title: "End in",
-                                    subtitle: "${eventDetail?.endTime}"),
+                                : TitleAndNameWidget(title: "End in", subtitle: "${eventDetail?.endTime}"),
                           ],
                         ),
                         Row(
@@ -289,14 +265,10 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                           children: [
                             (eventDetail?.manager?.name == null)
                                 ? Container()
-                                : TitleAndNameWidget(
-                                    title: "Event Manager",
-                                    subtitle: "${eventDetail?.manager?.name}"),
+                                : TitleAndNameWidget(title: "Event Manager", subtitle: "${eventDetail?.manager?.name}"),
                             (eventDetail?.leadTimeUnit == null)
                                 ? Container()
-                                : TitleAndNameWidget(
-                                    title: "Lead Time Unit",
-                                    subtitle: "${eventDetail?.leadTimeUnit}"),
+                                : TitleAndNameWidget(title: "Lead Time Unit", subtitle: "${eventDetail?.leadTimeUnit}"),
                           ],
                         ),
                         Row(
@@ -307,8 +279,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                                 : TitleAndNameWidget(
                                     titleMaxLine: 2,
                                     title: "Warehouse Manager",
-                                    subtitle:
-                                        "${eventDetail?.wareHouseManager?.name}"),
+                                    subtitle: "${eventDetail?.wareHouseManager?.name}"),
                             /*   TitleAndNameWidget(
                                 title: "Payment Interval", subtitle: "Naperville"),*/
                           ],
@@ -321,14 +292,10 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                           children: [
                             (eventDetail?.leadTime == null)
                                 ? Container()
-                                : TitleAndNameWidget(
-                                    title: "Lead Time",
-                                    subtitle: "${eventDetail?.leadTime}"),
+                                : TitleAndNameWidget(title: "Lead Time", subtitle: "${eventDetail?.leadTime}"),
                             (eventDetail?.location == null)
                                 ? Container()
-                                : TitleAndNameWidget(
-                                    title: "Location Radius",
-                                    subtitle: "${eventDetail?.location}"),
+                                : TitleAndNameWidget(title: "Location Radius", subtitle: "${eventDetail?.location}"),
                           ],
                         ),
                         Row(
@@ -336,26 +303,18 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                           children: [
                             (eventDetail?.latitude == null)
                                 ? Container()
-                                : TitleAndNameWidget(
-                                    title: "Latitude",
-                                    subtitle: "${eventDetail?.latitude}"),
+                                : TitleAndNameWidget(title: "Latitude", subtitle: "${eventDetail?.latitude}"),
                             (eventDetail?.longitude == null)
                                 ? Container()
-                                : TitleAndNameWidget(
-                                    title: "Longitude",
-                                    subtitle: "${eventDetail?.longitude}"),
+                                : TitleAndNameWidget(title: "Longitude", subtitle: "${eventDetail?.longitude}"),
                           ],
                         ),
-                        (eventDetail?.dayoff.toString() == "null" ||
-                                eventDetail?.dayoff == null)
+                        (eventDetail?.dayoff.toString() == "null" || eventDetail?.dayoff == null)
                             ? Container()
                             : Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  TitleAndNameWidget(
-                                      width: 0.7,
-                                      title: "Day Off",
-                                      subtitle: "${eventDetail?.dayoff}"),
+                                  TitleAndNameWidget(width: 0.7, title: "Day Off", subtitle: "${eventDetail?.dayoff}"),
                                 ],
                               ),
                         /*   Row(
@@ -406,10 +365,8 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                                 ? Container()
                                 : IconButton(
                                     onPressed: () {
-                                      Navigator.pushNamed(
-                                          context, AppRoutes.createJobScreenRoute,
-                                          arguments: CreateJobScreenArgs(
-                                              id: eventDetail?.id ?? 0));
+                                      Navigator.pushNamed(context, AppRoutes.createJobScreenRoute,
+                                          arguments: CreateJobScreenArgs(id: eventDetail?.id ?? 0));
                                     },
                                     icon: Icon(
                                       Icons.add_circle_outline_sharp,
@@ -429,8 +386,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                                 (index) => JobWidget(
                                   eventDetail: eventDetail ?? EventDetail(id: 0),
                                   eventId: widget.args.eventId,
-                                  job: eventDetail?.eventZonesAll?[index].job ??
-                                      Job(),
+                                  job: eventDetail?.eventZonesAll?[index].job ?? Job(),
                                 ),
                               )),
                         ),
@@ -455,7 +411,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                                 : IconButton(
                                     onPressed: () {
                                       print("sdfsmdnfsdfnsndf,mnsmdnf");
-                                       Navigator.pushNamed(
+                                      Navigator.pushNamed(
                                         context,
                                         AppRoutes.createZoneScreenRoute,
                                         arguments: CreateZoneScreenArgs(
@@ -484,9 +440,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                                 (index) => ZonesWidget(
                                   eventDetail: eventDetail ?? EventDetail(id: 0),
                                   eventId: widget.args.eventId,
-                                  getZone:
-                                      eventDetail?.eventZonesAll?[index].getZone ??
-                                          GetZone(id: 0),
+                                  getZone: eventDetail?.eventZonesAll?[index].getZone ?? GetZone(id: 0),
                                 ),
                               )),
                         ),
@@ -542,43 +496,42 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                         SizedBox(
                           height: SizeConfig.height(context, 0.02),
                         ),
-                        (widget.args.finalInvitation&&roleName != "Usher")
-                            ?SubmitButton(
-                          gradientFirstColor: const Color(0xFFC1954A),
-                          width: SizeConfig.width(context, 0.85),
-                          onPressed: () async {
-                            Navigator.pushNamed(
-                              context,
-                              AppRoutes.scanQrcodeForUsherInviteScreenRoute,
-                              arguments: UsherInviteScreenArgs(
-                                  eventId: widget.args.eventId,finalInvitation: false, eventZoneAll: eventDetail?.eventZonesAll??[],
-                              ),
-                            );
-                          },
-                          child: Text(
-                            'Invite Usher',
-                            style: TextStyle(
-                              color: GlobalColors.submitButtonTextColor,
-                              fontSize: SizeConfig.width(context, 0.04),
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ):Container(),
+                        (widget.args.finalInvitation && roleName != "Usher")
+                            ? SubmitButton(
+                                gradientFirstColor: const Color(0xFFC1954A),
+                                width: SizeConfig.width(context, 0.85),
+                                onPressed: () async {
+                                  Navigator.pushNamed(
+                                    context,
+                                    AppRoutes.scanQrcodeForUsherInviteScreenRoute,
+                                    arguments: UsherInviteScreenArgs(
+                                      eventId: widget.args.eventId,
+                                      finalInvitation: false,
+                                      eventZoneAll: eventDetail?.eventZonesAll ?? [],
+                                    ),
+                                  );
+                                },
+                                child: Text(
+                                  'Invite Usher',
+                                  style: TextStyle(
+                                    color: GlobalColors.submitButtonTextColor,
+                                    fontSize: SizeConfig.width(context, 0.04),
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              )
+                            : Container(),
                         (widget.args.finalInvitation)
-                            ?   Container()
+                            ? Container()
                             : SubmitButton(
-                                gradientFirstColor:
-                                    Color(0xFFEF4A4A).withOpacity(0.2),
+                                gradientFirstColor: Color(0xFFEF4A4A).withOpacity(0.2),
                                 width: SizeConfig.width(context, 0.9),
                                 onPressed: () async {
                                   int.parse(eventDetail?.leadTime ?? "0");
-                                  int time =
-                                      int.parse(eventDetail?.leadTime ?? "0") ?? 0;
-                                  print(
-                                      "sddddddddddddd ${int.parse(eventDetail?.leadTime ?? "0")}");
+                                  int time = int.parse(eventDetail?.leadTime ?? "0") ?? 0;
+                                  print("sddddddddddddd ${int.parse(eventDetail?.leadTime ?? "0")}");
                                   if (time > 0) {
-                                    acceptInvitationCubit.acceptInvitation(
-                                        status: 1, eventId: widget.args.eventId);
+                                    acceptInvitationCubit.acceptInvitation(status: 1, eventId: widget.args.eventId);
                                   } else {
                                     AppUtils.showFlushBar(
                                       "Event is Expired".tr(),
@@ -586,22 +539,17 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                                     );
                                   }
                                 },
-                                child: BlocConsumer<AcceptInvitationCubit,
-                                    AcceptInvitationState>(
+                                child: BlocConsumer<AcceptInvitationCubit, AcceptInvitationState>(
                                   listener: (context, state) {
                                     print("state AcceptInvitation state $state");
                                     if (state is AcceptInvitationFailed) {
-                                      AppUtils.showFlushBar(
-                                          state.errorMessage, context);
+                                      AppUtils.showFlushBar(state.errorMessage, context);
                                     }
                                     if (state is AcceptInvitationSuccess) {
                                       Navigator.pushNamedAndRemoveUntil(
-                                          context,
-                                          AppRoutes.pagesScreenRoute,
-                                          (route) => false,
+                                          context, AppRoutes.pagesScreenRoute, (route) => false,
                                           arguments: 2);
-                                      AppUtils.showFlushBar(
-                                          "Job Accept Successfully".tr(), context);
+                                      AppUtils.showFlushBar("Job Accept Successfully".tr(), context);
                                       //    Navigator.pop(context);
 
                                       /*    Navigator.pushReplacementNamed(
@@ -630,29 +578,22 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                         (widget.args.finalInvitation)
                             ? Container()
                             : SubmitButton(
-                                gradientFirstColor:
-                                    const Color(0xFFEF4A4A).withOpacity(0.2),
+                                gradientFirstColor: const Color(0xFFEF4A4A).withOpacity(0.2),
                                 width: SizeConfig.width(context, 0.9),
                                 onPressed: () async {
-                                  acceptInvitationCubit.declineInvitation(
-                                      status: 0, eventId: widget.args.eventId);
+                                  acceptInvitationCubit.declineInvitation(status: 0, eventId: widget.args.eventId);
                                 },
-                                child: BlocConsumer<AcceptInvitationCubit,
-                                    AcceptInvitationState>(
+                                child: BlocConsumer<AcceptInvitationCubit, AcceptInvitationState>(
                                   listener: (context, state) {
                                     print("state AcceptInvitation state $state");
                                     if (state is DeclineInvitationFailed) {
-                                      AppUtils.showFlushBar(
-                                          state.errorMessage, context);
+                                      AppUtils.showFlushBar(state.errorMessage, context);
                                     }
                                     if (state is DeclineInvitationSuccess) {
                                       Navigator.pushNamedAndRemoveUntil(
-                                          context,
-                                          AppRoutes.pagesScreenRoute,
-                                          (route) => false,
+                                          context, AppRoutes.pagesScreenRoute, (route) => false,
                                           arguments: 2);
-                                      AppUtils.showFlushBar(
-                                          "Job Decline Successfully".tr(), context);
+                                      AppUtils.showFlushBar("Job Decline Successfully".tr(), context);
                                       //    Navigator.pop(context);
 
                                       /*    Navigator.pushReplacementNamed(
@@ -680,7 +621,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                         ),
                       ],
                     ),
-                   /* (showAlert)
+                    /* (showAlert)
                         ? buildAlertWidget(context: context, isCheckIn: isCheckInValue)
                         : Container(),
                     BlocListener<ScanQrcodeCubit, ScanQrcodeState>(
@@ -704,15 +645,13 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
       ),
     );
   }
-  Align buildAlertWidget(
-      {required BuildContext context, required bool isCheckIn}) {
+
+  Align buildAlertWidget({required BuildContext context, required bool isCheckIn}) {
     return Align(
       alignment: Alignment.center,
       child: Container(
         decoration: BoxDecoration(
-            color: GlobalColors.backgroundColor,
-            borderRadius:
-            BorderRadius.circular(SizeConfig.width(context, 0.02))),
+            color: GlobalColors.backgroundColor, borderRadius: BorderRadius.circular(SizeConfig.width(context, 0.02))),
         height: SizeConfig.height(context, 0.3),
         width: SizeConfig.width(context, 0.9),
         padding: EdgeInsets.only(
@@ -773,8 +712,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                               value: item,
                               child: Text(
                                 item.categoryName ?? "",
-                                style: TextStyle(
-                                    color: GlobalColors.textFieldHintColor),
+                                style: TextStyle(color: GlobalColors.textFieldHintColor),
                               ),
                             );
                           }).toList(),
@@ -790,8 +728,8 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                             ),
                             border: OutlineInputBorder(
                               borderSide: const BorderSide(color: Colors.yellow
-                                //    color: GlobalColors.ftsTextColor,
-                              ),
+                                  //    color: GlobalColors.ftsTextColor,
+                                  ),
                               borderRadius: BorderRadius.circular(
                                 SizeConfig.width(context, 0.03),
                               ),
@@ -831,35 +769,28 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                   gradientFirstColor: const Color(0xFFC1954A),
                   width: SizeConfig.width(context, 0.85),
                   onPressed: () async {
-                    if (roleName == "Usher"||roleName=="Client") {
-                      AppUtils.showFlushBar(
-                          "You don't have permission to marked the Attandance".tr(),
-                          context);
+                    if (roleName == "Usher" || roleName == "Client") {
+                      AppUtils.showFlushBar("You don't have permission to marked the Attandance".tr(), context);
                       return;
                     }
                     var result;
                     var res = await Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                          const SimpleBarcodeScannerPage(),
+                          builder: (context) => const SimpleBarcodeScannerPage(),
                         ));
                     print("resssssv $res");
                     var response = jsonDecode(res);
-                    ScanQrCodePayload qrcodeResult =
-                    ScanQrCodePayload.fromJson(response);
+                    ScanQrCodePayload qrcodeResult = ScanQrCodePayload.fromJson(response);
                     print("resssssvisCheckInValue ${isCheckInValue}");
-                    qrcodeResult.type =
-                    (isCheckInValue) ? "checkIn" : "CheckOut";
+                    qrcodeResult.type = (isCheckInValue) ? "checkIn" : "CheckOut";
                     print("ScanQrCodePayload ${qrcodeResult.name}");
                     print("ScanQrCodePayload ${qrcodeResult.id}");
                     print("ScanQrCodePayload ${qrcodeResult.id}");
                     if (qrcodeResult?.name?.isNotEmpty ?? false) {
                       scanQrCodeCubit.scanQrCodeByEventId(
                         isCheckout: (isCheckInValue) ? false : true,
-                        eventModelId: (isCheckInValue)
-                            ? checkInEventModelId
-                            : checkOutEventModelId,
+                        eventModelId: (isCheckInValue) ? checkInEventModelId : checkOutEventModelId,
                         zoneId: zoneValue?.id,
                         latitude: latitude,
                         longitude: longitude,
@@ -889,8 +820,8 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
       ),
     );
   }
-  Row buildEventLogo(
-      {required BuildContext context, String? leadTime, String? logo}) {
+
+  Row buildEventLogo({required BuildContext context, String? leadTime, String? logo}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -925,22 +856,16 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
               width: SizeConfig.width(context, 0.3),
               padding: EdgeInsets.only(left: SizeConfig.width(context, 0.03)),
               decoration: BoxDecoration(
-                  color: Color(0xFF57FF491A),
-                  borderRadius:
-                      BorderRadius.circular(SizeConfig.width(context, 0.02))),
+                  color: Color(0xFF57FF491A), borderRadius: BorderRadius.circular(SizeConfig.width(context, 0.02))),
               child: ListTile(
                 contentPadding: EdgeInsets.zero,
                 title: Text(
                   "Lead Time :",
-                  style: TextStyle(
-                      color: Color(0xFF57FF49),
-                      fontSize: SizeConfig.width(context, 0.03)),
+                  style: TextStyle(color: Color(0xFF57FF49), fontSize: SizeConfig.width(context, 0.03)),
                 ),
                 subtitle: Text(
                   "$leadTime ${eventDetail?.leadTimeUnit}",
-                  style: TextStyle(
-                      color: Color(0xFF57FF49),
-                      fontSize: SizeConfig.width(context, 0.03)),
+                  style: TextStyle(color: Color(0xFF57FF49), fontSize: SizeConfig.width(context, 0.03)),
                 ),
               ),
             )
@@ -1006,9 +931,7 @@ class JobWidget extends StatelessWidget {
               : Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    TitleAndNameWidget(
-                        title: "Total Male Salary",
-                        subtitle: "${job?.totalMaleSalary}"),
+                    TitleAndNameWidget(title: "Total Male Salary", subtitle: "${job?.totalMaleSalary}"),
                   ],
                 ),
           (job?.dailyMaleSalary == null)
@@ -1016,9 +939,7 @@ class JobWidget extends StatelessWidget {
               : Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    TitleAndNameWidget(
-                        title: "Daily Male Salary",
-                        subtitle: "${job?.dailyMaleSalary}"),
+                    TitleAndNameWidget(title: "Daily Male Salary", subtitle: "${job?.dailyMaleSalary}"),
                   ],
                 ),
           (job?.description == null)
@@ -1027,11 +948,7 @@ class JobWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     TitleAndNameWidget(
-                        width: 0.48,
-                        height: 0.12,
-                        maxLine: 5,
-                        title: "Description",
-                        subtitle: "${job?.description}"),
+                        width: 0.48, height: 0.12, maxLine: 5, title: "Description", subtitle: "${job?.description}"),
                   ],
                 ),
         ],
@@ -1095,9 +1012,7 @@ class ZonesWidget extends StatelessWidget {
               : Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    TitleAndNameWidget(
-                        title: "Supervisior",
-                        subtitle: "${eventDetail.manager?.name}"),
+                    TitleAndNameWidget(title: "Supervisior", subtitle: "${eventDetail.manager?.name}"),
                   ],
                 ),
           (getZone.location == null)
@@ -1105,8 +1020,7 @@ class ZonesWidget extends StatelessWidget {
               : Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    TitleAndNameWidget(
-                        title: "Location", subtitle: "${getZone.location}"),
+                    TitleAndNameWidget(title: "Location", subtitle: "${getZone.location}"),
                   ],
                 ),
           (getZone.description == null)

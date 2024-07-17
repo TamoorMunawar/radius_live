@@ -1661,6 +1661,7 @@ class RadarMobileRepositoryImpl implements RadarMobileRepository {
         "review_to": reviewPayload.usherId,
         "is_banned": reviewPayload.isBanned,
         "team_id": reviewPayload.teamId,
+        "event_id": reviewPayload.eventId,
       });
       log("repository::addReview::jsonBody: $jsonBody\n");
 

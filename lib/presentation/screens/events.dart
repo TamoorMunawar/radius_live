@@ -38,8 +38,7 @@ class _EventsScreenState extends State<EventsScreen> {
   bool isInitialList = false;
 
   String removeHtmlTags(String htmlString) {
-    final RegExp regExp =
-        RegExp(r'<[^>]*>', multiLine: true, caseSensitive: false);
+    final RegExp regExp = RegExp(r'<[^>]*>', multiLine: true, caseSensitive: false);
 
     return htmlString.replaceAll(regExp, '');
   }
@@ -53,16 +52,14 @@ class _EventsScreenState extends State<EventsScreen> {
 
   Future _initialScrollListener() async {
     if (isLoadingMore) return;
-    if (initialScrollController.position.pixels ==
-        initialScrollController.position.maxScrollExtent) {
+    if (initialScrollController.position.pixels == initialScrollController.position.maxScrollExtent) {
       print("if scroll listener called");
       setState(() {
         isLoadingMore = true;
       });
       count = count + 1;
 
-      initialEventList
-          .addAll(await initialEventCubit.getInitialEventTest(page: count));
+      initialEventList.addAll(await initialEventCubit.getInitialEventTest(page: count));
     }
     setState(() {
       isLoadingMore = false;
@@ -71,15 +68,13 @@ class _EventsScreenState extends State<EventsScreen> {
 
   Future _finalScrollListener() async {
     if (isLoadingMoreFinal) return;
-    if (finalScrollController.position.pixels ==
-        finalScrollController.position.maxScrollExtent) {
+    if (finalScrollController.position.pixels == finalScrollController.position.maxScrollExtent) {
       print("if scroll listener called");
       setState(() {
         isLoadingMoreFinal = true;
       });
       finalCount = finalCount + 1;
-      finalEventList
-          .addAll(await initialEventCubit.getFinalEventTest(page: finalCount));
+      finalEventList.addAll(await initialEventCubit.getFinalEventTest(page: finalCount));
       // getFinalEventData();
       // initialEventCubit.getFinalEvent(page: finalCount);
     }
@@ -110,8 +105,7 @@ class _EventsScreenState extends State<EventsScreen> {
     setState(() {
       isLoadingMoreFinal = true;
     });
-    finalEventList =
-        await initialEventCubit.getFinalEventTest(page: finalCount);
+    finalEventList = await initialEventCubit.getFinalEventTest(page: finalCount);
     print("finalEventList ${finalEventList.length}");
     setState(() {
       isLoadingMoreFinal = false;
@@ -158,7 +152,7 @@ class _EventsScreenState extends State<EventsScreen> {
 
   @override
   void dispose() {
-  //  initialEventCubit.close();
+    //  initialEventCubit.close();
     super.dispose();
   }
 
@@ -249,125 +243,103 @@ class _EventsScreenState extends State<EventsScreen> {
             (isLoadingMore)
                 ? const LoadingWidget()
                 : (initialEventList.isEmpty)
-                ? Center(
-              child: Padding(
-                padding: EdgeInsets.only(
-                    top: SizeConfig.height(context, 0.2)),
-                child: Text(
-                  "No Data Found".tr(),
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: SizeConfig.width(
-                          context, 0.06)),
-                ),
-              ),
-            )
-                : Expanded(
-              child: ListView.separated(
-                //   primary: true,
-                // shrinkWrap: true,
-                padding: EdgeInsets.only(
-                    bottom:
-                    SizeConfig.height(context, 0.1)),
-                controller: initialScrollController,
-                itemBuilder: (context, index) {
-                  var item =
-                  initialEventList.elementAt(index);
-
-                  if (index < initialEventList.length) {
-                    return EventsTab(
-                      onTap: () {
-                        Navigator.pushNamed(
-                            context,
-                            AppRoutes
-                                .eventDetailScreenRoute,
-                            arguments:
-                            EventDetailScreenArgs(
-                                eventId:
-                                item?.id ?? 0));
-                      },
-                      title: "${item?.eventName}",
-                      subtitle:
-                      "${removeHtmlTags(item?.projectSummary ?? "")} \n ${item?.startDate} to ${item?.endDate}",
-                      imagePath:
-                      "$eventImagePath${item?.logo}",
-                    );
-                  } else {
-                    return LoadingWidget();
-                  }
-                },
-                separatorBuilder: (context, index) {
-                  return SizedBox();
-                },
-                itemCount: (isLoadingMore)
-                    ? initialEventList.length ?? 0 + 1
-                    : initialEventList.length ?? 0,
-              ),
-            ),
-            if(tabList.last.isSelected ?? false)
-              (isLoadingMoreFinal)
-                  ? const LoadingWidget()
-                  : (finalEventList.isEmpty)
-                  ? Center(
-                child: Padding(
-                  padding: EdgeInsets.only(
-                      top: SizeConfig.height(context, 0.2)),
-                  child: Text(
-                    "No Data Found".tr(),
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: SizeConfig.width(context, 0.06)),
-                  ),
-                ),
-              ): Expanded(
-                child: ListView.separated(
-                  //   primary: true,
-                  // shrinkWrap: true,
-                  padding: EdgeInsets.only(
-                      bottom: SizeConfig.height(context, 0.1)),
-                  controller: finalScrollController,
-                  itemBuilder: (context, index) {
-                    var item = finalEventList.elementAt(index);
-
-                    if (index < finalEventList.length) {
-                      return EventsTab(
-                        onTap: () {
-                          Navigator.pushNamed(context,
-                              AppRoutes.eventDetailScreenRoute,
-                              arguments: EventDetailScreenArgs(
-                                  finalInvitation: true,
-                                  eventId: item?.id ?? 0));
-                        },
-                        title: "${item?.eventName}",
-                        subtitle:
-                        "${removeHtmlTags(item?.projectSummary ?? "")} \n ${item?.startDate} to ${item?.endDate}",
-                        imagePath: "$eventImagePath${item?.logo}",
-                      );
-                    } else {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment:
-                        CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            height: SizeConfig.height(context, 0.2),
+                    ? Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(top: SizeConfig.height(context, 0.2)),
+                          child: Text(
+                            "No Data Found".tr(),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: SizeConfig.width(context, 0.06)),
                           ),
-                          LoadingWidget(),
-                        ],
-                      );
-                    }
-                  },
-                  separatorBuilder: (context, index) {
-                    return SizedBox();
-                  },
-                  itemCount: (isLoadingMoreFinal)
-                      ? finalEventList.length ?? 0 + 1
-                      : finalEventList.length ?? 0,
-                ),
-              )
+                        ),
+                      )
+                    : Expanded(
+                        child: ListView.separated(
+                          //   primary: true,
+                          // shrinkWrap: true,
+                          padding: EdgeInsets.only(bottom: SizeConfig.height(context, 0.1)),
+                          controller: initialScrollController,
+                          itemBuilder: (context, index) {
+                            var item = initialEventList.elementAt(index);
 
+                            if (index < initialEventList.length) {
+                              return EventsTab(
+                                onTap: () {
+                                  Navigator.pushNamed(context, AppRoutes.eventDetailScreenRoute,
+                                      arguments: EventDetailScreenArgs(eventId: item?.id ?? 0));
+                                },
+                                title: "${item?.eventName}",
+                                subtitle:
+                                    "${removeHtmlTags(item?.projectSummary ?? "")} \n ${item?.startDate} to ${item?.endDate}",
+                                imagePath: "$eventImagePath${item?.logo}",
+                              );
+                            } else {
+                              return LoadingWidget();
+                            }
+                          },
+                          separatorBuilder: (context, index) {
+                            return SizedBox();
+                          },
+                          itemCount: (isLoadingMore) ? initialEventList.length ?? 0 + 1 : initialEventList.length ?? 0,
+                        ),
+                      ),
+          if (tabList.last.isSelected ?? false)
+            (isLoadingMoreFinal)
+                ? const LoadingWidget()
+                : (finalEventList.isEmpty)
+                    ? Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(top: SizeConfig.height(context, 0.2)),
+                          child: Text(
+                            "No Data Found".tr(),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: SizeConfig.width(context, 0.06)),
+                          ),
+                        ),
+                      )
+                    : Expanded(
+                        child: ListView.separated(
+                          //   primary: true,
+                          // shrinkWrap: true,
+                          padding: EdgeInsets.only(bottom: SizeConfig.height(context, 0.1)),
+                          controller: finalScrollController,
+                          itemBuilder: (context, index) {
+                            var item = finalEventList.elementAt(index);
+
+                            if (index < finalEventList.length) {
+                              return EventsTab(
+                                onTap: () {
+                                  Navigator.pushNamed(context, AppRoutes.eventDetailScreenRoute,
+                                      arguments: EventDetailScreenArgs(finalInvitation: true, eventId: item?.id ?? 0));
+                                },
+                                title: "${item?.eventName}",
+                                subtitle:
+                                    "${removeHtmlTags(item?.projectSummary ?? "")} \n ${item?.startDate} to ${item?.endDate}",
+                                imagePath: "$eventImagePath${item?.logo}",
+                              );
+                            } else {
+                              return Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    height: SizeConfig.height(context, 0.2),
+                                  ),
+                                  LoadingWidget(),
+                                ],
+                              );
+                            }
+                          },
+                          separatorBuilder: (context, index) {
+                            return SizedBox();
+                          },
+                          itemCount: (isLoadingMoreFinal) ? finalEventList.length ?? 0 + 1 : finalEventList.length ?? 0,
+                        ),
+                      )
         ],
       ),
     );

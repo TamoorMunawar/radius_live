@@ -1,6 +1,4 @@
 import 'dart:developer';
-
-import 'package:another_flushbar/flushbar.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,11 +17,14 @@ import '../../domain/entities/ushers/Department.dart';
 
 class ReviewScreen extends StatefulWidget {
   final int usherId;
+  final int eventId;
+
   final Department? department;
   const ReviewScreen({
     super.key,
     required this.usherId,
     required this.department,
+    required this.eventId,
   });
 
   @override
@@ -103,7 +104,8 @@ class _ReviewScreenState extends State<ReviewScreen> {
                     rating: _rating.toInt(),
                     usherId: widget.usherId,
                     teamId: widget.department?.id ?? 0,
-                    isBanned: _isBanned));
+                    isBanned: _isBanned,
+                    eventId: widget.eventId));
               },
               height: 0.06.sh,
               child: Text(

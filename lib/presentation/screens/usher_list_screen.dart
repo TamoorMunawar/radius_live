@@ -398,7 +398,8 @@ class _UsherListScreenState extends State<UsherListScreen> {
                             onTap: () {
                               final args = ReviewScreenArgs(
                                   usherId: foundUshersList[index].id!,
-                                  department: foundUshersList[index].employeeDetail!.department);
+                                  department: foundUshersList[index].employeeDetail!.department,
+                                  eventId: 1);
 
                               Navigator.pushNamed(context, AppRoutes.addReviewScreenRoute, arguments: args);
                             },

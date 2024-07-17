@@ -23,14 +23,14 @@ class AttandanceCubit extends Cubit<AttandanceState> {
           errorMessage: e.toString(),
         ),
       );
-    
     }
   }
+
   void latestEvent() async {
     try {
       emit(AttandanceLoading());
-      List<LatestEventModel> result = await usecase.latestEvents(  );
-      emit(DashboardDetailEventSuccess(attanfanceList:result ));
+      List<LatestEventModel> result = await usecase.latestEvents();
+      emit(DashboardDetailEventSuccess(attanfanceList: result));
       print("latestEvent");
     } on Exception catch (e) {
       print("latestEvent");
@@ -39,13 +39,13 @@ class AttandanceCubit extends Cubit<AttandanceState> {
           errorMessage: e.toString(),
         ),
       );
-
     }
   }
-  void getAttandanceData({int?userId}) async {
+
+  void getAttandanceData({int? userId}) async {
     try {
       emit(AttandanceLoading());
-      DashboardAttandanceData result = await usecase.getAttandaceData(userId:userId );
+      DashboardAttandanceData result = await usecase.getAttandaceData(userId: userId);
       emit(DashBoardAttandanceSuccess(attandanceData: result));
     } on Exception catch (e) {
       emit(
@@ -53,7 +53,6 @@ class AttandanceCubit extends Cubit<AttandanceState> {
           errorMessage: e.toString(),
         ),
       );
-
     }
   }
 }
