@@ -10,8 +10,7 @@ import 'package:radar/presentation/widgets/LoadingWidget.dart';
 import 'package:screenshot/screenshot.dart';
 
 class ZoneDashBoardScreen extends StatefulWidget {
-  const ZoneDashBoardScreen({Key? key, required this.eventId})
-      : super(key: key);
+  const ZoneDashBoardScreen({Key? key, required this.eventId}) : super(key: key);
   final int eventId;
 
   @override
@@ -32,20 +31,16 @@ class _ZoneDashBoardScreenState extends State<ZoneDashBoardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: GlobalColors.backgroundColor,
       appBar: AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
-        backgroundColor: GlobalColors.backgroundColor,
         centerTitle: true,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
           },
           icon: Padding(
-            padding: EdgeInsets.only(
-                left: SizeConfig.width(context, 0.05),
-                right: SizeConfig.width(context, 0.05)),
+            padding: EdgeInsets.only(left: SizeConfig.width(context, 0.05), right: SizeConfig.width(context, 0.05)),
             child: Icon(
               Icons.arrow_back_ios,
               size: SizeConfig.width(context, 0.05),
@@ -143,8 +138,7 @@ class _ZoneDashBoardScreenState extends State<ZoneDashBoardScreen> {
           ),
           buildDividerWidget(context: context),
           Expanded(
-            child: BlocConsumer<DashboardCubit, DashboardState>(
-                builder: (context, state) {
+            child: BlocConsumer<DashboardCubit, DashboardState>(builder: (context, state) {
               if (state is DashboardDetailLoading) {
                 return Flexible(flex: 8, child: const LoadingWidget());
               }
@@ -164,8 +158,7 @@ class _ZoneDashBoardScreenState extends State<ZoneDashBoardScreen> {
                           //    height: SizeConfig.height(context, 0.13),
                           width: SizeConfig.width(context, 0.9),
                           margin: EdgeInsets.only(
-                              left: SizeConfig.width(context, 0.05),
-                              right: SizeConfig.width(context, 0.05)),
+                              left: SizeConfig.width(context, 0.05), right: SizeConfig.width(context, 0.05)),
                           decoration: BoxDecoration(
                               color: GlobalColors.backgroundColor,
                               borderRadius: BorderRadius.circular(
@@ -177,10 +170,11 @@ class _ZoneDashBoardScreenState extends State<ZoneDashBoardScreen> {
                             // left: SizeConfig.width(context, 0.04),
                             // right: SizeConfig.width(context, 0.04),
                           ),
-                          child: Column(mainAxisAlignment: MainAxisAlignment.start,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                            /*  Padding(
+                              /*  Padding(
                                 padding: EdgeInsets.symmetric(
                                     horizontal:
                                         SizeConfig.width(context, 0.05)),
@@ -215,15 +209,15 @@ class _ZoneDashBoardScreenState extends State<ZoneDashBoardScreen> {
                                 children: [
                                   Flexible(
                                     flex: 2,
-                                    child: Column(crossAxisAlignment: CrossAxisAlignment.center,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         Text(
                                           "Supervisor".tr(),
                                           style: TextStyle(
                                               fontWeight: FontWeight.w700,
                                               color: GlobalColors.submitButtonColor,
-                                              fontSize:
-                                              SizeConfig.width(context, 0.035)),
+                                              fontSize: SizeConfig.width(context, 0.035)),
                                         ),
                                         Text(
                                           item.categoryName ?? "",
@@ -231,16 +225,13 @@ class _ZoneDashBoardScreenState extends State<ZoneDashBoardScreen> {
                                           //   donationHistoryItem.donationDate ?? '',
                                           // ),
                                           style: TextStyle(
-
                                               color: GlobalColors.whiteColor,
-                                              fontSize:
-                                              SizeConfig.width(context, 0.035)),
-
+                                              fontSize: SizeConfig.width(context, 0.035)),
                                         ),
                                       ],
                                     ),
                                   ),
-                                /*  Flexible(
+                                  /*  Flexible(
                                     flex: 2,
                                     child: Center(
                                       child: Text(
@@ -266,10 +257,7 @@ class _ZoneDashBoardScreenState extends State<ZoneDashBoardScreen> {
                                         //   donationHistoryItem.donationDate ?? '',
                                         // ),
                                         style: TextStyle(
-
-                                            color: GlobalColors.whiteColor,
-                                            fontSize:
-                                            SizeConfig.width(context, 0.035)),
+                                            color: GlobalColors.whiteColor, fontSize: SizeConfig.width(context, 0.035)),
                                         textAlign: TextAlign.center,
                                       ),
                                     ),
@@ -283,26 +271,23 @@ class _ZoneDashBoardScreenState extends State<ZoneDashBoardScreen> {
                                         //   donationHistoryItem.donationDate ?? '',
                                         // ),
                                         style: TextStyle(
-
-                                            color: GlobalColors.whiteColor,
-                                            fontSize:
-                                            SizeConfig.width(context, 0.035)),
+                                            color: GlobalColors.whiteColor, fontSize: SizeConfig.width(context, 0.035)),
                                         textAlign: TextAlign.center,
                                       ),
                                     ),
                                   ),
                                   Flexible(
                                     flex: 2,
-                                    child: Column(crossAxisAlignment: CrossAxisAlignment.center,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         Text(
-                                          "${state.dashboardDetail[index].suppervisor}"
-                                              .tr(),
+                                          "${state.dashboardDetail[index].suppervisor}".tr(),
                                           style: TextStyle(
-                                              fontWeight: FontWeight.w700,
-                                              color: GlobalColors.submitButtonColor,
-                                              fontSize:
-                                              SizeConfig.width(context, 0.035),),
+                                            fontWeight: FontWeight.w700,
+                                            color: GlobalColors.submitButtonColor,
+                                            fontSize: SizeConfig.width(context, 0.035),
+                                          ),
                                         ),
                                         Text(
                                           item.rate ?? "",
@@ -310,10 +295,8 @@ class _ZoneDashBoardScreenState extends State<ZoneDashBoardScreen> {
                                           //   donationHistoryItem.donationDate ?? '',
                                           // ),
                                           style: TextStyle(
-
                                               color: GlobalColors.whiteColor,
-                                              fontSize:
-                                              SizeConfig.width(context, 0.035)),
+                                              fontSize: SizeConfig.width(context, 0.035)),
                                           textAlign: TextAlign.center,
                                         ),
                                       ],

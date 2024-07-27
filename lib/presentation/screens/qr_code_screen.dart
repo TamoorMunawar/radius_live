@@ -50,13 +50,14 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
     //  await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
     //await ScreenProtector.preventScreenshotOff();
   }
-late ScanQrCodeCubit scanQrCodeCubit;
+
+  late ScanQrCodeCubit scanQrCodeCubit;
   @override
   void initState() {
     getUserDetailsFromLocal();
     _preventScreenShot();
-    scanQrCodeCubit=BlocProvider.of<ScanQrCodeCubit>(context);
-    scanQrCodeCubit.getQrCode(latitude:"$lat" ,longitude: "$lng");
+    scanQrCodeCubit = BlocProvider.of<ScanQrCodeCubit>(context);
+    scanQrCodeCubit.getQrCode(latitude: "$lat", longitude: "$lng");
     // TODO: implement initState
     super.initState();
   }
@@ -64,12 +65,9 @@ late ScanQrCodeCubit scanQrCodeCubit;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.black,
-        //GlobalColors.backgroundColor,
         centerTitle: true,
         title: Text(
           "QR Code".tr(),
@@ -84,7 +82,7 @@ late ScanQrCodeCubit scanQrCodeCubit;
             Navigator.pop(context);
           },
           icon: Padding(
-            padding: EdgeInsets.only(left: SizeConfig.width(context, 0.05),right:  SizeConfig.width(context, 0.05)),
+            padding: EdgeInsets.only(left: SizeConfig.width(context, 0.05), right: SizeConfig.width(context, 0.05)),
             child: Icon(
               Icons.arrow_back_ios,
               size: SizeConfig.width(context, 0.05),
@@ -93,8 +91,7 @@ late ScanQrCodeCubit scanQrCodeCubit;
           color: Colors.white,
         ),
       ),
-      body: BlocConsumer<ScanQrCodeCubit, ScanQrCodeState>(
-          listener: (context, state) {
+      body: BlocConsumer<ScanQrCodeCubit, ScanQrCodeState>(listener: (context, state) {
         if (state is ScanQrcodeFailure) {
           AppUtils.showFlushBar(state.errorMessage, context);
         }
@@ -117,9 +114,8 @@ late ScanQrCodeCubit scanQrCodeCubit;
                     state.qrCode ?? "",
 
                     //     semanticsLabel: 'A shark?!',
-                    placeholderBuilder: (BuildContext context) => Container(
-                        padding: const EdgeInsets.all(30.0),
-                        child: const CircularProgressIndicator()),
+                    placeholderBuilder: (BuildContext context) =>
+                        Container(padding: const EdgeInsets.all(30.0), child: const CircularProgressIndicator()),
                   ),
                 )
               ],

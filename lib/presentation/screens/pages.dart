@@ -3,18 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:radar/constants/colors.dart';
 import 'package:radar/constants/generate_route.dart';
 import 'package:radar/constants/size_config.dart';
-import 'package:radar/presentation/screens/Authentication/Login.dart';
-import 'package:radar/presentation/screens/Authentication/forgot_password.dart';
-import 'package:radar/presentation/screens/Authentication/profile_screen.dart';
-import 'package:radar/presentation/screens/attandance.dart';
-import 'package:radar/presentation/screens/chat_screen.dart';
-import 'package:radar/presentation/screens/dashboard_screen.dart';
-import 'package:radar/presentation/screens/events.dart';
-import 'package:radar/presentation/screens/job_screen.dart';
-import 'package:radar/presentation/screens/notification.dart';
-import 'package:radar/presentation/screens/qr_attandance.dart';
-import 'package:radar/presentation/screens/request_screen.dart';
-import 'package:radar/presentation/screens/usher_list_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RouteArgument {
@@ -30,6 +18,7 @@ class RouteArgument {
   }
 }
 
+// ignore: must_be_immutable
 class PagesWidget extends StatefulWidget {
   dynamic currentTab;
   //RouteArgument? routeArgument;
@@ -94,7 +83,7 @@ class _PagesWidgetState extends State<PagesWidget> {
         case 3:
           print("inside case 3");
           widget.currentPage =
-              (roleName == "Usher" || roleName == "Client") ? attandanceDetails(false) : qrAttandance();
+              (roleName == "Usher" || roleName == "Client") ? qrAttandance() : attandanceDetails(false);
           break;
         case 4:
           print("inside case 4");
@@ -116,7 +105,6 @@ class _PagesWidgetState extends State<PagesWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: GlobalColors.backgroundColor,
       bottomNavigationBar: CurvedNavigationBar(
         key: _bottomNavigationKey,
         index: widget.currentTab,
@@ -168,12 +156,12 @@ class _PagesWidgetState extends State<PagesWidget> {
                   width: SizeConfig.width(context, 0.06),
                 )
         ],
-        color: GlobalColors.backgroundColor,
+        color: GlobalColors.primaryColor,
 
-        buttonBackgroundColor: Color(0xFFC1954A),
+        buttonBackgroundColor: GlobalColors.primaryColor,
         backgroundColor: GlobalColors.backgroundColor,
         animationCurve: Curves.easeInOut,
-        animationDuration: Duration(milliseconds: 600),
+        animationDuration: const Duration(milliseconds: 600),
         onTap: (index) {
           _selectTab(index);
         },

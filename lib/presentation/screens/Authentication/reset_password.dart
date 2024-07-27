@@ -12,7 +12,8 @@ import 'package:radar/presentation/widgets/button_widget.dart';
 import 'package:radar/presentation/widgets/radius_text_field.dart';
 
 class ResetPassword extends StatefulWidget {
-  const ResetPassword({super.key, required this.email, required this.otp, required this.isLoginWithMobile, required this.countryCode});
+  const ResetPassword(
+      {super.key, required this.email, required this.otp, required this.isLoginWithMobile, required this.countryCode});
 
   final String email;
   final bool isLoginWithMobile;
@@ -34,18 +35,17 @@ class _ResetPasswordState extends State<ResetPassword> {
 
     super.initState();
   }
-final formkey=GlobalKey<FormState>();
+
+  final formkey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: GlobalColors.backgroundColor,
       bottomNavigationBar: BottomAppBar(
         padding: EdgeInsets.only(
           bottom: SizeConfig.height(context, 0.055),
           //  right: SizeConfig.width(context, 0.07),
         ),
         height: SizeConfig.height(context, 0.12),
-        color: GlobalColors.backgroundColor,
 
         // color: Colors.white,
         elevation: 0,
@@ -57,14 +57,16 @@ final formkey=GlobalKey<FormState>();
           child: SubmitButton(
               //    width: SizeConfig.width(context, 0.5),
               onPressed: () async {
-                if(formkey.currentState!.validate()){
-                forgotPasswordCubit.resetPassword(
-                  isLoginWithMobile: widget.isLoginWithMobile,countryCode: widget.countryCode,
-                  email: widget.email,
-                  otp: widget.otp,
-                  confirmPassword: _confirmPasswordController.text.trim(),
-                  password: _passwordController.text.trim(),
-                );}
+                if (formkey.currentState!.validate()) {
+                  forgotPasswordCubit.resetPassword(
+                    isLoginWithMobile: widget.isLoginWithMobile,
+                    countryCode: widget.countryCode,
+                    email: widget.email,
+                    otp: widget.otp,
+                    confirmPassword: _confirmPasswordController.text.trim(),
+                    password: _passwordController.text.trim(),
+                  );
+                }
               },
               child: BlocConsumer<ForgotPasswordCubit, ForgotPasswordState>(
                 builder: (context, state) {
@@ -85,8 +87,7 @@ final formkey=GlobalKey<FormState>();
                     AppUtils.showFlushBar(state.errorMessage, context);
                   }
                   if (state is ResetPasswordSuccess) {
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, AppRoutes.loginScreenRoute, (route) => false);
+                    Navigator.pushNamedAndRemoveUntil(context, AppRoutes.loginScreenRoute, (route) => false);
                   }
                 },
               )),
@@ -95,7 +96,6 @@ final formkey=GlobalKey<FormState>();
       appBar: AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
-        backgroundColor: GlobalColors.backgroundColor,
         centerTitle: true,
         leading: IconButton(
           onPressed: () {
@@ -103,7 +103,8 @@ final formkey=GlobalKey<FormState>();
           },
           icon: Padding(
             padding: EdgeInsets.only(
-              left: SizeConfig.width(context, 0.05),right:  SizeConfig.width(context, 0.05),
+              left: SizeConfig.width(context, 0.05),
+              right: SizeConfig.width(context, 0.05),
             ),
             child: Icon(
               Icons.arrow_back_ios,
@@ -122,7 +123,8 @@ final formkey=GlobalKey<FormState>();
         ),
       ),
       body: SingleChildScrollView(
-        child: Form(key: formkey,
+        child: Form(
+          key: formkey,
           child: Column(
             children: [
               SizedBox(
@@ -135,7 +137,8 @@ final formkey=GlobalKey<FormState>();
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
                     return "Password_Can't_be_Empty".tr();
-                  } if (value.length<8) {
+                  }
+                  if (value.length < 8) {
                     return "Password length should be more than 8".tr();
                   }
                   return null;
@@ -151,7 +154,8 @@ final formkey=GlobalKey<FormState>();
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
                     return "Password Can't be Empty".tr();
-                  } if (value !=_passwordController.text) {
+                  }
+                  if (value != _passwordController.text) {
                     return "Password should be same".tr();
                   }
                   return null;

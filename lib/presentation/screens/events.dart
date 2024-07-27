@@ -159,14 +159,10 @@ class _EventsScreenState extends State<EventsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.black,
-        //GlobalColors.backgroundColor,
         centerTitle: true,
-
         title: Text(
           "Events".tr(),
           style: TextStyle(
@@ -186,7 +182,7 @@ class _EventsScreenState extends State<EventsScreen> {
                       left: SizeConfig.width(context, 0.05),
                       right: SizeConfig.width(context, 0.05)),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: List.generate(2, (index) {
                       return GestureDetector(
                         onTap: () {
@@ -197,7 +193,7 @@ class _EventsScreenState extends State<EventsScreen> {
                           setState(() {
                             count = 1;
                             finalCount = 1;
-                            tabList[index]?.isSelected = true;
+                            tabList[index].isSelected = true;
                             initialEventList.clear();
                             finalEventList.clear();
                           });
@@ -212,11 +208,11 @@ class _EventsScreenState extends State<EventsScreen> {
                         },
                         child: Container(
                           height: SizeConfig.height(context, 0.05),
-                          width: SizeConfig.width(context, 0.45),
+                          width: SizeConfig.width(context, 0.44),
                           decoration: BoxDecoration(
                             color: tabList[index].isSelected ?? false
-                                ? Color(0xFFEF4A4A)
-                                : GlobalColors.submitButtonTextColor,
+                                ? GlobalColors.submitButtonColor
+                                : GlobalColors.whiteColor,
                             borderRadius: BorderRadius.circular(
                               SizeConfig.width(context, 0.02),
                             ),
@@ -226,9 +222,7 @@ class _EventsScreenState extends State<EventsScreen> {
                             tabList[index].title ?? "",
                             style: TextStyle(
                                 color: tabList[index].isSelected ?? false
-                                    ? Color(
-                                        0xFF0D0D0D,
-                                      )
+                                    ? GlobalColors.whiteColor
                                     : GlobalColors.submitButtonColor,
                                 fontWeight: FontWeight.w500,
                                 fontSize: SizeConfig.width(context, 0.03)),

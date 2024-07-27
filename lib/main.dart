@@ -1,33 +1,25 @@
 import 'dart:io';
-
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-//import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:location/location.dart';
-import 'package:radar/constants/app_utils.dart';
-import 'package:radar/constants/device_utils.dart';
+import 'package:radar/constants/colors.dart';
 import 'package:radar/constants/size_config.dart';
 import 'package:radar/observer.dart';
-import 'package:radar/presentation/screens/job_dashboard_screen.dart';
-import 'package:radar/presentation/screens/splash_screen.dart';
-import 'package:radar/presentation/screens/pages.dart';
+import 'package:radar/presentation/cubits/theme/theme_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:web_socket_client/web_socket_client.dart';
-
 import 'constants/generate_route.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:socket_io_client/socket_io_client.dart' as io;
 
 LocationData? _locationData;
 Location location = Location();
 double lat = 0.0;
 double lng = 0.0;
 
-late IO.Socket socket;
+late io.Socket socket;
 
 _connectSocket() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -35,8 +27,8 @@ _connectSocket() async {
     print("inside user id null condition _connectSocket");
     return;
   }
-  socket = IO.io('https://dashboard.radiusapp.online:6002/?user_id=${prefs.getInt("user_id")}',
-      IO.OptionBuilder().setTransports(['websocket']).setQuery({'username': "Your  is here"}).build());
+  socket = io.io('https://dashboard.radiusapp.online:6002/?user_id=${prefs.getInt("user_id")}',
+      io.OptionBuilder().setTransports(['websocket']).setQuery({'username': "Your  is here"}).build());
   print("_connectSocket user id ${prefs.getInt("user_id")}");
 
   socket.onConnect((data) {
@@ -141,30 +133,33 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
-    //  internetConnectivity();
-
+    super.initState();
     _connectSocket();
   }
 
-  static final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      supportedLocales: context.supportedLocales,
-      localizationsDelegates: context.localizationDelegates,
-      locale: context.locale,
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      navigatorKey: navKey,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-        fontFamily: 'Poppins',
+    return MultiBlocProvider(
+      providers: [BlocProvider(create: (_) => ThemeCubit())],
+      child: MaterialApp(
+        supportedLocales: context.supportedLocales,
+        localizationsDelegates: context.localizationDelegates,
+        locale: context.locale,
+        debugShowCheckedModeBanner: false,
+        title: 'Radius',
+        navigatorKey: navKey,
+
+        theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: GlobalColors.submitButtonTextColor),
+            scaffoldBackgroundColor: GlobalColors.backgroundColor,
+            fontFamily: 'Poppins',
+            bottomAppBarTheme: const BottomAppBarTheme(color: GlobalColors.backgroundColor),
+            appBarTheme: const AppBarTheme(backgroundColor: GlobalColors.backgroundColor)),
+
+        home: splashScreen(isProfile: widget.isProfile),
+        //  home:  JobDashBoardScreen(),
+        onGenerateRoute: onGenerateRoute,
       ),
-      home: splashScreen(isProfile: widget.isProfile),
-      //  home:  JobDashBoardScreen(),
-      onGenerateRoute: onGenerateRoute,
     );
   }
 }

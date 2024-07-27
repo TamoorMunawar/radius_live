@@ -148,16 +148,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: GlobalColors.backgroundColor,
       bottomNavigationBar: BottomAppBar(
+        color: GlobalColors.backgroundColor,
         padding: EdgeInsets.only(
           bottom: SizeConfig.height(context, 0.055),
-          //  right: SizeConfig.width(context, 0.07),
         ),
         height: SizeConfig.height(context, 0.12),
-        color: GlobalColors.backgroundColor,
-
-        // color: Colors.white,
         elevation: 0,
         child: Padding(
           padding: EdgeInsets.only(
@@ -263,7 +259,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       appBar: AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
-        backgroundColor: GlobalColors.backgroundColor,
         centerTitle: true,
         leading: !(widget.isFromLogin)
             ? IconButton(
@@ -509,7 +504,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   color: GlobalColors.textFieldHintColor,
                                 ),
                                 disabledBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(color: Colors.yellow
+                                  borderSide: const BorderSide(color: GlobalColors.submitButtonColor
                                       //    color: GlobalColors.ftsTextColor,
                                       ),
                                   borderRadius: BorderRadius.circular(
@@ -517,7 +512,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   ),
                                 ),
                                 border: OutlineInputBorder(
-                                  borderSide: const BorderSide(color: Colors.yellow
+                                  borderSide: const BorderSide(color: GlobalColors.submitButtonColor
                                       //    color: GlobalColors.ftsTextColor,
                                       ),
                                   borderRadius: BorderRadius.circular(
@@ -601,7 +596,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   color: GlobalColors.textFieldHintColor,
                                 ),
                                 border: OutlineInputBorder(
-                                  borderSide: const BorderSide(color: Colors.yellow
+                                  borderSide: const BorderSide(color: GlobalColors.submitButtonColor
                                       //    color: GlobalColors.ftsTextColor,
                                       ),
                                   borderRadius: BorderRadius.circular(

@@ -44,14 +44,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: GlobalColors.backgroundColor,
       bottomNavigationBar: BottomAppBar(
         padding: EdgeInsets.only(
           bottom: SizeConfig.height(context, 0.055),
           //  right: SizeConfig.width(context, 0.07),
         ),
         height: SizeConfig.height(context, 0.12),
-        color: GlobalColors.backgroundColor,
 
         // color: Colors.white,
         elevation: 0,
@@ -67,9 +65,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 forgotPasswordCubit.forgotPassword(
                   countryCode: loginCountryCode,
                   isLoginWithMobile: isLoginWithMobile,
-                  email: (isLoginWithMobile ?? false)
-                      ? _loginMobileController.text.trim()
-                      : _emailController.text.trim(),
+                  email:
+                      (isLoginWithMobile ?? false) ? _loginMobileController.text.trim() : _emailController.text.trim(),
                 );
               }
             },
@@ -98,9 +95,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         otp: state.otp,
                         isLoginWithMobile: isLoginWithMobile ?? false,
                         countryCode: loginCountryCode,
-                        email: (isLoginWithMobile)
-                            ? _loginMobileController.text.trim()
-                            : _emailController.text.trim(),
+                        email: (isLoginWithMobile) ? _loginMobileController.text.trim() : _emailController.text.trim(),
                       ));
                 }
               },
@@ -111,16 +106,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       appBar: AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
-        backgroundColor: GlobalColors.backgroundColor,
         centerTitle: true,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
           },
           icon: Padding(
-            padding: EdgeInsets.only(
-                left: SizeConfig.width(context, 0.05),
-                right: SizeConfig.width(context, 0.05)),
+            padding: EdgeInsets.only(left: SizeConfig.width(context, 0.05), right: SizeConfig.width(context, 0.05)),
             child: Icon(
               Icons.arrow_back_ios,
               size: SizeConfig.width(context, 0.05),
@@ -165,8 +157,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           ),
                           decoration: InputDecoration(
                             isDense: false,
-                            contentPadding:
-                                const EdgeInsets.symmetric(vertical: 20),
+                            contentPadding: const EdgeInsets.symmetric(vertical: 20),
                             counterText: "",
                             filled: false,
                             border: OutlineInputBorder(
@@ -250,9 +241,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       controller: _emailController,
                       hintText: 'Email_Address'.tr(),
                       validator: (String? value) {
-                        if (value == null ||
-                            value.isEmpty ||
-                            !EmailValidator.validate(value)) {
+                        if (value == null || value.isEmpty || !EmailValidator.validate(value)) {
                           return 'Please_Enter_Valid_Email_Address'.tr();
                         }
                         return null;
@@ -277,13 +266,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         //Navigator.pushNamed(context, AppRoutes.forgotScreenRoute);
                       },
                       child: Text(
-                        isLoginWithMobile
-                            ? "Forgot with email".tr()
-                            : "Forgot with mobile".tr(),
+                        isLoginWithMobile ? "Forgot with email".tr() : "Forgot with mobile".tr(),
                         textAlign: TextAlign.right,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            color: GlobalColors.forgetPasswordColor),
+                        style: TextStyle(fontWeight: FontWeight.w500, color: GlobalColors.forgetPasswordColor),
                       ),
                     ),
                   ],

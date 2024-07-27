@@ -31,6 +31,7 @@ import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import 'package:web_socket_client/web_socket_client.dart';
+
 class AdminDashBoardScreen extends StatefulWidget {
   const AdminDashBoardScreen({super.key});
 
@@ -38,7 +39,7 @@ class AdminDashBoardScreen extends StatefulWidget {
   State<AdminDashBoardScreen> createState() => _AdminDashBoardScreenState();
 }
 
-class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with WidgetsBindingObserver{
+class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with WidgetsBindingObserver {
   late DepartmentCubit departmentCubit;
   late CreateAlertCubit createAlertCubit;
   late DashboardCubit dashboardCubit;
@@ -57,9 +58,9 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
     _socket.emit('riderevent:4631', {"message": "message agaya234234234234"});
     _socket.on('rideTest_4631', (data) => print("recieved message $data"));
   }
+
   _connectSocket() {
     _socket.onConnect((data) {
-
       print("socket conected");
       _sendMessage();
     });
@@ -70,6 +71,7 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
       print("socket connection disconnected");
     });
   }
+
   double percent = 0.0;
   String? gender;
 
@@ -126,9 +128,7 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
         socket?.send("aaaaaaaaaaaaaaaaaaaaaaaa");
         AppUtils.showFlushBar("Connected send", context);
         socket?.messages.listen((message) {
-
           print('message:11111122222 "$message"');
-
         });
       }
       if (state.toString() == "Instance of 'Reconnected'") {
@@ -137,9 +137,7 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
         socket?.send("Re aaaaaaaaaaaaaaaaaaaaaaaa");
         AppUtils.showFlushBar("ReConnected send", context);
         socket?.messages.listen((message) {
-
           print('message:11111122222 "$message"');
-
         });
       }
       if (state.toString() == "Instance of 'Disconnected'") {
@@ -147,12 +145,12 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
       }
     });
   }
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     print('AppLifecycleState state = ${state.name}');
 
-    if (state == AppLifecycleState.inactive ||
-        state == AppLifecycleState.detached) return;
+    if (state == AppLifecycleState.inactive || state == AppLifecycleState.detached) return;
 
     isAppInBackground = state == AppLifecycleState.paused;
 
@@ -161,6 +159,7 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
     }
     super.didChangeAppLifecycleState(state);
   }
+
   Timer? _myTimer;
   Future determinePosition() async {
     bool serviceEnabled;
@@ -177,7 +176,6 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
-
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         // Permissions are denied, next time you could try
@@ -191,28 +189,25 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
 
     if (permission == LocationPermission.deniedForever) {
       // Permissions are denied forever, handle appropriately.
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
+      return Future.error('Location permissions are permanently denied, we cannot request permissions.');
     }
 
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
     Position position = await Geolocator.getCurrentPosition();
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-        position.latitude, position.longitude);
-    currentLocation =
-    '${placemarks[0].street}, ${placemarks[0].subLocality}, ${placemarks[0].locality}';
+    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+    currentLocation = '${placemarks[0].street}, ${placemarks[0].subLocality}, ${placemarks[0].locality}';
     print("if case ${position.latitude}");
     print("if case $currentLocation");
 
-    if(mounted){
-      setState(() {});}
+    if (mounted) {
+      setState(() {});
+    }
     //return await Geolocator.getCurrentPosition();
   }
+
   String? currentLocation;
   every2seconds() async {
-
-
     _myTimer = Timer.periodic(const Duration(seconds: 60), (Timer t) async {
       LocationPermission permission = await Geolocator.checkPermission();
       print("inside every2seconds $permission");
@@ -225,28 +220,23 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
       }
       print("inside every2seconds");
       Position position = await Geolocator.getCurrentPosition();
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-          position.latitude, position.longitude);
-      currentLocation =
-      '${placemarks[0].street}, ${placemarks[0].subLocality}, ${placemarks[0].locality}';
+      List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+      currentLocation = '${placemarks[0].street}, ${placemarks[0].subLocality}, ${placemarks[0].locality}';
       print("if case ${position.latitude}");
       print("if case $currentLocation");
-
-
-
     });
   }
+
   @override
   void initState() {
     determinePosition();
-  //  websocket();
+    //  websocket();
 
     LogManager.info("Admin dashboard_usecase.dart");
     departmentCubit = BlocProvider.of<DepartmentCubit>(context);
     attandanceCubit = BlocProvider.of<AttandanceCubit>(context);
     dashboardCubit = BlocProvider.of<DashboardCubit>(context);
     createAlertCubit = BlocProvider.of<CreateAlertCubit>(context);
-
 
     attandanceCubit.latestEvent();
     getUserDetailsFromLocal();
@@ -258,9 +248,9 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
   @override
   void dispose() {
     _timer?.cancel();
-  //  departmentCubit.close();
-   // attandanceCubit.close();
-   // createAlertCubit.close();
+    //  departmentCubit.close();
+    // attandanceCubit.close();
+    // createAlertCubit.close();
     // TODO: implement dispose
     super.dispose();
   }
@@ -271,102 +261,94 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
   Widget build(BuildContext context) {
     DateTime specificDate = DateTime(2023, 1, 10);
     String formattedDate = DateFormat('dd MMM, yyyy').format(DateTime.now());
-    TimeOfDay specificTime =
-        TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
+    TimeOfDay specificTime = TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
     // Format the time as "9:45 AM" or "09:45 AM"
     String formattedTime = specificTime.format(context);
     print("aaaaa $formattedTime $formattedDate");
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.black,
-        body: RefreshIndicator(    onRefresh: () async {
-
-          attandanceCubit.latestEvent();
-          getUserDetailsFromLocal();
-        },
+        body: RefreshIndicator(
+          onRefresh: () async {
+            attandanceCubit.latestEvent();
+            getUserDetailsFromLocal();
+          },
           child: ListView(
             children: [
-
               Container(
                 width: SizeConfig.width(context, 0.9),
                 margin: EdgeInsets.only(
-                  top: SizeConfig.height(context, 0.02),
-                      left: SizeConfig.width(context, 0.05),
-                       right: SizeConfig.width(context, 0.05)
-                ),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        // color: Colors.red,
-                        width: SizeConfig.width(context, 0.55),
-                        child: ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(
-                                  context, AppRoutes.profileScreenRoute);
-                            },
-                            child: (image.contains("http"))
-                                ? CircleAvatar(
-                              backgroundImage: NetworkImage(image),
-                              radius: SizeConfig.width(context, 0.065),
-                            )
-                                : CircleAvatar(
-                              backgroundImage:
-                              AssetImage("assets/icons/person.png"),
-                              radius: SizeConfig.width(context, 0.065),
-                            ),
-                          ),
-                          title: Text(
-                            "${"Welcome".tr()} 👋🏻",
-                            style: TextStyle(
-                              color: GlobalColors.goodMorningColor,
-                              fontWeight: FontWeight.w400,
-                              fontSize: SizeConfig.width(context, 0.030),
-                            ),
-                          ),
-                          subtitle: Text(
-                            name,
-                            maxLines: 1,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: SizeConfig.width(context, 0.038),
-                            ),
-                          ),
+                    top: SizeConfig.height(context, 0.02),
+                    left: SizeConfig.width(context, 0.05),
+                    right: SizeConfig.width(context, 0.05)),
+                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  SizedBox(
+                    // color: Colors.red,
+                    width: SizeConfig.width(context, 0.55),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, AppRoutes.profileScreenRoute);
+                        },
+                        child: (image.contains("http"))
+                            ? CircleAvatar(
+                                backgroundImage: NetworkImage(image),
+                                radius: SizeConfig.width(context, 0.065),
+                              )
+                            : CircleAvatar(
+                                backgroundImage: AssetImage("assets/icons/person.png"),
+                                radius: SizeConfig.width(context, 0.065),
+                              ),
+                      ),
+                      title: Text(
+                        "${"Welcome".tr()} 👋🏻",
+                        style: TextStyle(
+                          color: GlobalColors.goodMorningColor,
+                          fontWeight: FontWeight.w400,
+                          fontSize: SizeConfig.width(context, 0.030),
                         ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          (roleName=="Client")?Container(): InkWell(
-                            onTap: () {
-                              Navigator.pushNamed(context,
-                                  AppRoutes.attandanceDetailScreenRoute);
-                            },
-                            child: Image.asset(
-                              "assets/icons/message_icon.png",
-                              width: SizeConfig.width(context, 0.05),
+                      subtitle: Text(
+                        name,
+                        maxLines: 1,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: SizeConfig.width(context, 0.038),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      (roleName == "Client")
+                          ? Container()
+                          : InkWell(
+                              onTap: () {
+                                Navigator.pushNamed(context, AppRoutes.attandanceDetailScreenRoute);
+                              },
+                              child: Image.asset(
+                                "assets/icons/message_icon.png",
+                                width: SizeConfig.width(context, 0.05),
+                              ),
                             ),
-                          ),
-                          SizedBox(
-                            width: SizeConfig.width(context, 0.04),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              Navigator.pushNamed(
-                                  context, AppRoutes.announcementScreen);
-                            },
-                            child: Image.asset("assets/icons/notification.png",
-                                width: SizeConfig.width(context, 0.05)),
-                          ),
-                        ],
-                      )
-                    ]),
+                      SizedBox(
+                        width: SizeConfig.width(context, 0.04),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(context, AppRoutes.announcementScreen);
+                        },
+                        child: Image.asset("assets/icons/notification.png", width: SizeConfig.width(context, 0.05)),
+                      ),
+                    ],
+                  )
+                ]),
               ),
-
-              SizedBox(height: SizeConfig.height(context,0.01),),
+              SizedBox(
+                height: SizeConfig.height(context, 0.01),
+              ),
               Padding(
                 padding: EdgeInsets.only(
                   top: SizeConfig.height(context, 0.01),
@@ -378,20 +360,18 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
                   color: Colors.transparent,
                   shadowColor: const Color(0xff006DFC).withOpacity(0.16),
                   child: BlocConsumer<AttandanceCubit, AttandanceState>(
-                    listener: (context, state){
-                      if(state is DashboardDetailEventSuccess){
-                        if(state.attanfanceList.isNotEmpty){
-                          eventValue=state.attanfanceList.first;
+                    listener: (context, state) {
+                      if (state is DashboardDetailEventSuccess) {
+                        if (state.attanfanceList.isNotEmpty) {
+                          eventValue = state.attanfanceList.first;
                           print("aaaaaaaaaaaaaaaaa");
                           setState(() {
-                            eventId=eventValue?.id;
+                            eventId = eventValue?.id;
                           });
-                          dashboardCubit.dashboardDetail(eventId:eventId);
+                          dashboardCubit.dashboardDetail(eventId: eventId);
                         }
-
                       }
                     },
-
                     builder: (context, state) {
                       print("latest  event detail $state");
                       if (state is AttandanceLoading) {
@@ -403,14 +383,12 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
                           isExpanded: true,
                           dropdownColor: GlobalColors.backgroundColor,
                           padding: EdgeInsets.only(),
-                          items:
-                          state.attanfanceList.map((LatestEventModel item) {
+                          items: state.attanfanceList.map((LatestEventModel item) {
                             return DropdownMenuItem<LatestEventModel>(
                               value: item,
                               child: Text(
                                 item.eventName ?? "",
-                                style: TextStyle(
-                                    color: GlobalColors.textFieldHintColor),
+                                style: TextStyle(color: GlobalColors.textFieldHintColor),
                               ),
                             );
                           }).toList(),
@@ -418,7 +396,7 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
                           onChanged: (value) {
                             setState(() {
                               eventValue = value;
-                              eventId=eventValue?.id;
+                              eventId = eventValue?.id;
                             });
                             dashboardCubit.dashboardDetail(eventId: eventId);
                           },
@@ -429,9 +407,9 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
                               color: GlobalColors.textFieldHintColor,
                             ),
                             border: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.yellow
-                                //    color: GlobalColors.ftsTextColor,
-                              ),
+                              borderSide: const BorderSide(color: GlobalColors.submitButtonColor
+                                  //    color: GlobalColors.ftsTextColor,
+                                  ),
                               borderRadius: BorderRadius.circular(
                                 SizeConfig.width(context, 0.03),
                               ),
@@ -457,12 +435,10 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
                       }
                       return Container();
                     },
-
                   ),
                 ),
               ),
               buildDashboardWidget(context, formattedDate, formattedTime),
-
             ],
           ),
         ),
@@ -470,16 +446,12 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
     );
   }
 
-  Widget buildDashboardWidget(
-      BuildContext context, String formattedDate, String formattedTime) {
-    return BlocConsumer<DashboardCubit, DashboardState>(
-        builder: (context, state) {
+  Widget buildDashboardWidget(BuildContext context, String formattedDate, String formattedTime) {
+    return BlocConsumer<DashboardCubit, DashboardState>(builder: (context, state) {
       if (state is DashboardDetailSuccess) {
         return SingleChildScrollView(
           child: Column(
             children: [
-
-
               CircularPercentIndicator(
                 radius: 80.0,
                 lineWidth: 10.0,
@@ -493,9 +465,7 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
                     Text(
                       "${state.dashboardDetail.checkins}/${state.dashboardDetail.totalSeats}",
                       style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          color: Colors.white,
-                          fontSize: SizeConfig.width(context, 0.04)),
+                          fontWeight: FontWeight.w400, color: Colors.white, fontSize: SizeConfig.width(context, 0.04)),
                     ),
                     Text(
                       "Check In".tr(),
@@ -511,260 +481,250 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
                 circularStrokeCap: CircularStrokeCap.round,
                 progressColor: Color(0xFFC79E52),
               ),
-              (roleName=="Client") ?Container(
-                //  color: Colors.red,
-                height: SizeConfig.height(context, 0.1),
-                //   width: SizeConfig.width(context, 0.9),
+              (roleName == "Client")
+                  ? Container(
+                      //  color: Colors.red,
+                      height: SizeConfig.height(context, 0.1),
+                      //   width: SizeConfig.width(context, 0.9),
 
-                margin: EdgeInsets.only(
-                  top: SizeConfig.height(context, 0.03),
-                  bottom: SizeConfig.height(context, 0.01),
-                  left: SizeConfig.width(context, 0.1),
-                  right: SizeConfig.width(context, 0.1),
-                ),
-
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: List.generate(2, (index) {
-                    return Container(
-                      //   height: SizeConfig.height(context, 0.1),
-                      width: SizeConfig.width(context, 0.23),
-                      decoration: BoxDecoration(
-                        border:
-                        Border.all(color: GlobalColors.textFieldHintColor),
-                        borderRadius: BorderRadius.circular(
-                          SizeConfig.width(context, 0.03),
-                        ),
-                        color: GlobalColors.backgroundColor,
+                      margin: EdgeInsets.only(
+                        top: SizeConfig.height(context, 0.03),
+                        bottom: SizeConfig.height(context, 0.01),
+                        left: SizeConfig.width(context, 0.1),
+                        right: SizeConfig.width(context, 0.1),
                       ),
-                      //   padding: EdgeInsets.only(top: SizeConfig.height(context, 0.022),bottom: SizeConfig.height(context, 0.018)),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            index == 0
-                                ? "${state.dashboardDetail.totalZone}"
-                                : index == 1
-                                ? "${state.dashboardDetail.invitedUshers}"
-                                : index == 2
-                                ? "${state.dashboardDetail.confirmedBudget}"
-                                : "${state.dashboardDetail.confirmedUshers}",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: SizeConfig.width(context, 0.04)),
-                          ),
-                          Text(
-                            index == 0
-                                ? "Total Zones".tr()
-                                : index == 1
-                                ? "Invited Ushers".tr()
-                                : index == 2
-                                ? "Confirmed Budget".tr()
-                                : "On-spot Ushers".tr(),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: GlobalColors.goodMorningColor,
-                                fontWeight: FontWeight.w400,
-                                fontSize: SizeConfig.width(context, 0.03)),
-                          )
-                        ],
+
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: List.generate(2, (index) {
+                          return Container(
+                            //   height: SizeConfig.height(context, 0.1),
+                            width: SizeConfig.width(context, 0.23),
+                            decoration: BoxDecoration(
+                              // border: Border.all(color: GlobalColors.textFieldHintColor),
+                              borderRadius: BorderRadius.circular(
+                                SizeConfig.width(context, 0.03),
+                              ),
+                              color: GlobalColors.primaryColor,
+                            ),
+                            //   padding: EdgeInsets.only(top: SizeConfig.height(context, 0.022),bottom: SizeConfig.height(context, 0.018)),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  index == 0
+                                      ? "${state.dashboardDetail.totalZone}"
+                                      : index == 1
+                                          ? "${state.dashboardDetail.invitedUshers}"
+                                          : index == 2
+                                              ? "${state.dashboardDetail.confirmedBudget}"
+                                              : "${state.dashboardDetail.confirmedUshers}",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: SizeConfig.width(context, 0.04)),
+                                ),
+                                Text(
+                                  index == 0
+                                      ? "Total Zones".tr()
+                                      : index == 1
+                                          ? "Invited Ushers".tr()
+                                          : index == 2
+                                              ? "Confirmed Budget".tr()
+                                              : "On-spot Ushers".tr(),
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: GlobalColors.goodMorningColor,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: SizeConfig.width(context, 0.03)),
+                                )
+                              ],
+                            ),
+                          );
+                        }),
                       ),
-                    );
-                  }),
-                ),
-              ):
-              Container(
-                //  color: Colors.red,
-                height: SizeConfig.height(context, 0.1),
-             //   width: SizeConfig.width(context, 0.9),
+                    )
+                  : Container(
+                      //  color: Colors.red,
+                      height: SizeConfig.height(context, 0.1),
+                      //   width: SizeConfig.width(context, 0.9),
 
-                margin: EdgeInsets.only(
-                  top: SizeConfig.height(context, 0.03),
-                  bottom: SizeConfig.height(context, 0.01),
-                  left: SizeConfig.width(context, 0.1),
-                  right: SizeConfig.width(context, 0.1),
-                ),
-
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: List.generate(3, (index) {
-                    return Container(
-                      //   height: SizeConfig.height(context, 0.1),
-                      width: SizeConfig.width(context, 0.23),
-                      decoration: BoxDecoration(
-                        border:
-                            Border.all(color: GlobalColors.textFieldHintColor),
-                        borderRadius: BorderRadius.circular(
-                          SizeConfig.width(context, 0.03),
-                        ),
-                        color: GlobalColors.backgroundColor,
+                      margin: EdgeInsets.only(
+                        top: SizeConfig.height(context, 0.03),
+                        bottom: SizeConfig.height(context, 0.01),
+                        left: SizeConfig.width(context, 0.1),
+                        right: SizeConfig.width(context, 0.1),
                       ),
-                      //   padding: EdgeInsets.only(top: SizeConfig.height(context, 0.022),bottom: SizeConfig.height(context, 0.018)),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            index == 0
-                                ? "${state.dashboardDetail.plannedBudget}"
-                                : index == 1
-                                    ? "${state.dashboardDetail.invitedUshers}"
-                                    : index == 2
-                                        ? "${state.dashboardDetail.confirmedBudget}"
-                                        : "${state.dashboardDetail.confirmedUshers}",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: SizeConfig.width(context, 0.04)),
-                          ),
-                          Text(
-                            index == 0
-                                ? "Planned Budget".tr()
-                                : index == 1
-                                    ? "Invited Ushers".tr()
-                                    : index == 2
-                                        ? "Confirmed Budget".tr()
-                                        : "On-spot Ushers".tr(),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: GlobalColors.goodMorningColor,
-                                fontWeight: FontWeight.w400,
-                                fontSize: SizeConfig.width(context, 0.03)),
-                          )
-                        ],
+
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: List.generate(3, (index) {
+                          return Container(
+                            //   height: SizeConfig.height(context, 0.1),
+                            width: SizeConfig.width(context, 0.23),
+                            decoration: BoxDecoration(
+                              // border: Border.all(color: GlobalColors.textFieldHintColor),
+                              borderRadius: BorderRadius.circular(
+                                SizeConfig.width(context, 0.03),
+                              ),
+                              color: GlobalColors.primaryColor,
+                            ),
+                            //   padding: EdgeInsets.only(top: SizeConfig.height(context, 0.022),bottom: SizeConfig.height(context, 0.018)),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  index == 0
+                                      ? "${state.dashboardDetail.plannedBudget}"
+                                      : index == 1
+                                          ? "${state.dashboardDetail.invitedUshers}"
+                                          : index == 2
+                                              ? "${state.dashboardDetail.confirmedBudget}"
+                                              : "${state.dashboardDetail.confirmedUshers}",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: SizeConfig.width(context, 0.04)),
+                                ),
+                                Text(
+                                  index == 0
+                                      ? "Planned Budget".tr()
+                                      : index == 1
+                                          ? "Invited Ushers".tr()
+                                          : index == 2
+                                              ? "Confirmed Budget".tr()
+                                              : "On-spot Ushers".tr(),
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: GlobalColors.goodMorningColor,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: SizeConfig.width(context, 0.03)),
+                                )
+                              ],
+                            ),
+                          );
+                        }),
                       ),
-                    );
-                  }),
-                ),
-              ),
-              (roleName=="Client") ? Container(
-
-                height: SizeConfig.height(context, 0.1),
-
-
-                margin: EdgeInsets.only(
-                  top: SizeConfig.height(context, 0.01),
-                  left: SizeConfig.width(context, 0.1),
-                  right: SizeConfig.width(context, 0.1),
-                ),
-
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: List.generate(2, (index) {
-                    return Container(
-                      //   height: SizeConfig.height(context, 0.1),
-                      width: SizeConfig.width(context, 0.23),
-                      decoration: BoxDecoration(
-                        border:
-                        Border.all(color: GlobalColors.textFieldHintColor),
-                        borderRadius: BorderRadius.circular(
-                          SizeConfig.width(context, 0.03),
-                        ),
-                        color: GlobalColors.backgroundColor,
+                    ),
+              (roleName == "Client")
+                  ? Container(
+                      height: SizeConfig.height(context, 0.1),
+                      margin: EdgeInsets.only(
+                        top: SizeConfig.height(context, 0.01),
+                        left: SizeConfig.width(context, 0.1),
+                        right: SizeConfig.width(context, 0.1),
                       ),
-                      //   padding: EdgeInsets.only(top: SizeConfig.height(context, 0.022),bottom: SizeConfig.height(context, 0.018)),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            index == 0
-                                ? "${state.dashboardDetail.plannedUshers}"
-                                : index == 1
-                                ? "${state.dashboardDetail.confirmedUshers}"
-                                : index == 2
-                                ? "${state.dashboardDetail.totalZone}"
-                                : "${state.dashboardDetail.confirmedUshers}",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: SizeConfig.width(context, 0.04)),
-                          ),
-                          Text(
-                            index == 0
-                                ? "Planed Ushers".tr()
-                                : index == 1
-                                ? "On-spot Ushers".tr()
-                                : index == 2
-                                ? "Total Zones".tr()
-                                : "On-spot Ushers".tr(),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: GlobalColors.goodMorningColor,
-                                fontWeight: FontWeight.w400,
-                                fontSize: SizeConfig.width(context, 0.03)),
-                          )
-                        ],
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: List.generate(2, (index) {
+                          return Container(
+                            //   height: SizeConfig.height(context, 0.1),
+                            width: SizeConfig.width(context, 0.23),
+                            decoration: BoxDecoration(
+                              // border: Border.all(color: GlobalColors.textFieldHintColor),
+                              borderRadius: BorderRadius.circular(
+                                SizeConfig.width(context, 0.03),
+                              ),
+                              color: GlobalColors.primaryColor,
+                            ),
+                            //   padding: EdgeInsets.only(top: SizeConfig.height(context, 0.022),bottom: SizeConfig.height(context, 0.018)),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  index == 0
+                                      ? "${state.dashboardDetail.plannedUshers}"
+                                      : index == 1
+                                          ? "${state.dashboardDetail.confirmedUshers}"
+                                          : index == 2
+                                              ? "${state.dashboardDetail.totalZone}"
+                                              : "${state.dashboardDetail.confirmedUshers}",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: SizeConfig.width(context, 0.04)),
+                                ),
+                                Text(
+                                  index == 0
+                                      ? "Planed Ushers".tr()
+                                      : index == 1
+                                          ? "On-spot Ushers".tr()
+                                          : index == 2
+                                              ? "Total Zones".tr()
+                                              : "On-spot Ushers".tr(),
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: GlobalColors.goodMorningColor,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: SizeConfig.width(context, 0.03)),
+                                )
+                              ],
+                            ),
+                          );
+                        }),
                       ),
-                    );
-                  }),
-                ),
-              ):  Container(
-
-                height: SizeConfig.height(context, 0.1),
-
-
-                margin: EdgeInsets.only(
-                  top: SizeConfig.height(context, 0.01),
-                  left: SizeConfig.width(context, 0.1),
-                  right: SizeConfig.width(context, 0.1),
-                ),
-
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: List.generate(3, (index) {
-                    return Container(
-                      //   height: SizeConfig.height(context, 0.1),
-                      width: SizeConfig.width(context, 0.23),
-                      decoration: BoxDecoration(
-                        border:
-                            Border.all(color: GlobalColors.textFieldHintColor),
-                        borderRadius: BorderRadius.circular(
-                          SizeConfig.width(context, 0.03),
-                        ),
-                        color: GlobalColors.backgroundColor,
+                    )
+                  : Container(
+                      height: SizeConfig.height(context, 0.1),
+                      margin: EdgeInsets.only(
+                        top: SizeConfig.height(context, 0.01),
+                        left: SizeConfig.width(context, 0.1),
+                        right: SizeConfig.width(context, 0.1),
                       ),
-                      //   padding: EdgeInsets.only(top: SizeConfig.height(context, 0.022),bottom: SizeConfig.height(context, 0.018)),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            index == 0
-                                ? "${state.dashboardDetail.plannedUshers}"
-                                : index == 1
-                                    ? "${state.dashboardDetail.confirmedUshers}"
-                                    : index == 2
-                                        ? "${state.dashboardDetail.totalZone}"
-                                        : "${state.dashboardDetail.confirmedUshers}",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: SizeConfig.width(context, 0.04)),
-                          ),
-                          Text(
-                            index == 0
-                                ? "Planed Ushers".tr()
-                                : index == 1
-                                    ? "On-spot Ushers".tr()
-                                    : index == 2
-                                        ? "Total Zones".tr()
-                                        : "On-spot Ushers".tr(),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: GlobalColors.goodMorningColor,
-                                fontWeight: FontWeight.w400,
-                                fontSize: SizeConfig.width(context, 0.03)),
-                          )
-                        ],
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: List.generate(3, (index) {
+                          return Container(
+                            //   height: SizeConfig.height(context, 0.1),
+                            width: SizeConfig.width(context, 0.23),
+                            decoration: BoxDecoration(
+                              // border: Border.all(color: GlobalColors.textFieldHintColor),
+                              borderRadius: BorderRadius.circular(
+                                SizeConfig.width(context, 0.03),
+                              ),
+                              color: GlobalColors.primaryColor,
+                            ),
+                            //   padding: EdgeInsets.only(top: SizeConfig.height(context, 0.022),bottom: SizeConfig.height(context, 0.018)),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  index == 0
+                                      ? "${state.dashboardDetail.plannedUshers}"
+                                      : index == 1
+                                          ? "${state.dashboardDetail.confirmedUshers}"
+                                          : index == 2
+                                              ? "${state.dashboardDetail.totalZone}"
+                                              : "${state.dashboardDetail.confirmedUshers}",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: SizeConfig.width(context, 0.04)),
+                                ),
+                                Text(
+                                  index == 0
+                                      ? "Planed Ushers".tr()
+                                      : index == 1
+                                          ? "On-spot Ushers".tr()
+                                          : index == 2
+                                              ? "Total Zones".tr()
+                                              : "On-spot Ushers".tr(),
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: GlobalColors.goodMorningColor,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: SizeConfig.width(context, 0.03)),
+                                )
+                              ],
+                            ),
+                          );
+                        }),
                       ),
-                    );
-                  }),
-                ),
-              ),
-
+                    ),
               Padding(
                 padding: EdgeInsets.only(
                   top: SizeConfig.height(context, 0.03),
@@ -776,14 +736,12 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     SubmitButton(
-                      gradientFirstColor: const Color(0xFFC1954A),
+                      gradientFirstColor: GlobalColors.primaryColor,
                       width: SizeConfig.width(context, 0.4),
                       onPressed: () async {
                         print("event value zone ${state.dashboardDetail.eventId?.toInt()}");
                         Navigator.pushNamed(context, AppRoutes.dashboardZone,
-                            arguments: ZoneDashboardScreenRoute(
-                                eventId:
-                                eventId??0    ));
+                            arguments: ZoneDashboardScreenRoute(eventId: eventId ?? 0));
                       },
                       child: Text(
                         'Zones'.tr(),
@@ -798,14 +756,12 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
                       height: SizeConfig.height(context, 0.02),
                     ),
                     SubmitButton(
-                      gradientFirstColor: const Color(0xFFC1954A),
+                      gradientFirstColor: GlobalColors.primaryColor,
                       width: SizeConfig.width(context, 0.4),
                       onPressed: () async {
                         print("event id job ${state.dashboardDetail.eventId}");
                         Navigator.pushNamed(context, AppRoutes.dashboardJob,
-                            arguments: JobDashboardScreenRoute(
-                                eventId:
-                                    eventId??0));
+                            arguments: JobDashboardScreenRoute(eventId: eventId ?? 0));
                       },
                       child: Text(
                         'Jobs'.tr(),
@@ -821,18 +777,15 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
               ),
               SubmitButton(
                 gradientFirstColor: const Color(0xFFC1954A),
-
                 onPressed: () async {
                   if (kDebugMode) {
                     print("event value zone ${state.dashboardDetail.eventId?.toInt()}");
                   }
                   Navigator.pushNamed(context, AppRoutes.usherListByEventScreenRoute,
-                      arguments: UsherListByEventScreenRoute(
-                          eventId:
-                          eventId??0    ));
+                      arguments: UsherListByEventScreenRoute(eventId: eventId ?? 0));
                 },
                 child: Text(
-                  "${'Outside Usher'.tr()}   ${state.dashboardDetail.usherCountOutside??0}",
+                  "${'Outside Usher'.tr()}   ${state.dashboardDetail.usherCountOutside ?? 0}",
                   style: TextStyle(
                     color: GlobalColors.submitButtonTextColor,
                     fontSize: SizeConfig.width(context, 0.04),
@@ -849,238 +802,234 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
           SingleChildScrollView(
         child: Column(
           children: [
+            (roleName == "Client")
+                ? Container(
+                    //  color: Colors.red,
+                    height: SizeConfig.height(context, 0.1),
+                    width: SizeConfig.width(context, 0.9),
 
-
-            (roleName=="Client")?Container(
-              //  color: Colors.red,
-              height: SizeConfig.height(context, 0.1),
-              width: SizeConfig.width(context, 0.9),
-
-              margin: EdgeInsets.only(
-                top: SizeConfig.height(context, 0.03),
-                bottom: SizeConfig.height(context, 0.01),
-                left: SizeConfig.width(context, 0.1),
-                right: SizeConfig.width(context, 0.1),
-              ),
-
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List.generate(2, (index) {
-                  return Container(
-                    //   height: SizeConfig.height(context, 0.1),
-                    width: SizeConfig.width(context, 0.2),
-                    decoration: BoxDecoration(
-                      border:
-                      Border.all(color: GlobalColors.textFieldHintColor),
-                      borderRadius: BorderRadius.circular(
-                        SizeConfig.width(context, 0.03),
-                      ),
-                      color: GlobalColors.backgroundColor,
+                    margin: EdgeInsets.only(
+                      top: SizeConfig.height(context, 0.03),
+                      bottom: SizeConfig.height(context, 0.01),
+                      left: SizeConfig.width(context, 0.1),
+                      right: SizeConfig.width(context, 0.1),
                     ),
-                    //   padding: EdgeInsets.only(top: SizeConfig.height(context, 0.022),bottom: SizeConfig.height(context, 0.018)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "-",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: SizeConfig.width(context, 0.04)),
-                        ),
-                        Text(
-                          index == 0
-                              ? "Total Zones".tr()
-                              : index == 1
-                              ? "Invited Ushers".tr()
-                              : index == 2
-                              ? "Confirmed Budget".tr()
-                              : "On-spot Ushers".tr(),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: GlobalColors.goodMorningColor,
-                              fontWeight: FontWeight.w400,
-                              fontSize: SizeConfig.width(context, 0.03)),
-                        )
-                      ],
+
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: List.generate(2, (index) {
+                        return Container(
+                          //   height: SizeConfig.height(context, 0.1),
+                          width: SizeConfig.width(context, 0.2),
+                          decoration: BoxDecoration(
+                            // border: Border.all(color: GlobalColors.textFieldHintColor),
+                            borderRadius: BorderRadius.circular(
+                              SizeConfig.width(context, 0.03),
+                            ),
+                            color: GlobalColors.primaryColor,
+                          ),
+                          //   padding: EdgeInsets.only(top: SizeConfig.height(context, 0.022),bottom: SizeConfig.height(context, 0.018)),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "-",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: SizeConfig.width(context, 0.04)),
+                              ),
+                              Text(
+                                index == 0
+                                    ? "Total Zones".tr()
+                                    : index == 1
+                                        ? "Invited Ushers".tr()
+                                        : index == 2
+                                            ? "Confirmed Budget".tr()
+                                            : "On-spot Ushers".tr(),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: GlobalColors.goodMorningColor,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: SizeConfig.width(context, 0.03)),
+                              )
+                            ],
+                          ),
+                        );
+                      }),
                     ),
-                  );
-                }),
-              ),
-            ): Container(
-              //  color: Colors.red,
-              height: SizeConfig.height(context, 0.1),
-              width: SizeConfig.width(context, 0.9),
+                  )
+                : Container(
+                    //  color: Colors.red,
+                    height: SizeConfig.height(context, 0.1),
+                    width: SizeConfig.width(context, 0.9),
 
-              margin: EdgeInsets.only(
-                top: SizeConfig.height(context, 0.03),
-                bottom: SizeConfig.height(context, 0.01),
-                left: SizeConfig.width(context, 0.1),
-                right: SizeConfig.width(context, 0.1),
-              ),
-
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List.generate(3, (index) {
-                  return Container(
-                    //   height: SizeConfig.height(context, 0.1),
-                    width: SizeConfig.width(context, 0.2),
-                    decoration: BoxDecoration(
-                      border:
-                          Border.all(color: GlobalColors.textFieldHintColor),
-                      borderRadius: BorderRadius.circular(
-                        SizeConfig.width(context, 0.03),
-                      ),
-                      color: GlobalColors.backgroundColor,
+                    margin: EdgeInsets.only(
+                      top: SizeConfig.height(context, 0.03),
+                      bottom: SizeConfig.height(context, 0.01),
+                      left: SizeConfig.width(context, 0.1),
+                      right: SizeConfig.width(context, 0.1),
                     ),
-                    //   padding: EdgeInsets.only(top: SizeConfig.height(context, 0.022),bottom: SizeConfig.height(context, 0.018)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "-",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: SizeConfig.width(context, 0.04)),
-                        ),
-                        Text(
-                          index == 0
-                              ? "Planed Ushers".tr()
-                              : index == 1
-                                  ? "Invited Ushers".tr()
-                                  : index == 2
-                                      ? "Confirmed Budget".tr()
-                                      : "On-spot Ushers".tr(),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: GlobalColors.goodMorningColor,
-                              fontWeight: FontWeight.w400,
-                              fontSize: SizeConfig.width(context, 0.03)),
-                        )
-                      ],
+
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: List.generate(3, (index) {
+                        return Container(
+                          //   height: SizeConfig.height(context, 0.1),
+                          width: SizeConfig.width(context, 0.2),
+                          decoration: BoxDecoration(
+                            // border: Border.all(color: GlobalColors.textFieldHintColor),
+                            borderRadius: BorderRadius.circular(
+                              SizeConfig.width(context, 0.03),
+                            ),
+                            color: GlobalColors.primaryColor,
+                          ),
+                          //   padding: EdgeInsets.only(top: SizeConfig.height(context, 0.022),bottom: SizeConfig.height(context, 0.018)),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "-",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: SizeConfig.width(context, 0.04)),
+                              ),
+                              Text(
+                                index == 0
+                                    ? "Planed Ushers".tr()
+                                    : index == 1
+                                        ? "Invited Ushers".tr()
+                                        : index == 2
+                                            ? "Confirmed Budget".tr()
+                                            : "On-spot Ushers".tr(),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: GlobalColors.goodMorningColor,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: SizeConfig.width(context, 0.03)),
+                              )
+                            ],
+                          ),
+                        );
+                      }),
                     ),
-                  );
-                }),
-              ),
-            ),
-            (roleName=="Client")?Container(
-              //  color: Colors.red,
-              height: SizeConfig.height(context, 0.1),
-              width: SizeConfig.width(context, 0.9),
+                  ),
+            (roleName == "Client")
+                ? Container(
+                    //  color: Colors.red,
+                    height: SizeConfig.height(context, 0.1),
+                    width: SizeConfig.width(context, 0.9),
 
-              margin: EdgeInsets.only(
-                top: SizeConfig.height(context, 0.01),
-
-                left: SizeConfig.width(context, 0.1),
-                right: SizeConfig.width(context, 0.1),
-              ),
-
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List.generate(2, (index) {
-                  return Container(
-                    //   height: SizeConfig.height(context, 0.1),
-                    width: SizeConfig.width(context, 0.2),
-                    decoration: BoxDecoration(
-                      border:
-                      Border.all(color: GlobalColors.textFieldHintColor),
-                      borderRadius: BorderRadius.circular(
-                        SizeConfig.width(context, 0.03),
-                      ),
-                      color: GlobalColors.backgroundColor,
+                    margin: EdgeInsets.only(
+                      top: SizeConfig.height(context, 0.01),
+                      left: SizeConfig.width(context, 0.1),
+                      right: SizeConfig.width(context, 0.1),
                     ),
-                    //   padding: EdgeInsets.only(top: SizeConfig.height(context, 0.022),bottom: SizeConfig.height(context, 0.018)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "-",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: SizeConfig.width(context, 0.04)),
-                        ),
-                        Text(
-                          index == 0
-                              ? "Planed Ushers".tr()
-                              : index == 1
-                              ? "On-spot Ushers".tr()
-                              : index == 2
-                              ? "Confirmed Budget".tr()
-                              : "On-spot Ushers".tr(),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: GlobalColors.goodMorningColor,
-                              fontWeight: FontWeight.w400,
-                              fontSize: SizeConfig.width(context, 0.03)),
-                        )
-                      ],
-                    ),
-                  );
-                }),
-              ),
-            ):  Container(
-              //  color: Colors.red,
-              height: SizeConfig.height(context, 0.1),
-              width: SizeConfig.width(context, 0.9),
 
-              margin: EdgeInsets.only(
-                top: SizeConfig.height(context, 0.01),
-
-                left: SizeConfig.width(context, 0.1),
-                right: SizeConfig.width(context, 0.1),
-              ),
-
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List.generate(3, (index) {
-                  return Container(
-                    //   height: SizeConfig.height(context, 0.1),
-                    width: SizeConfig.width(context, 0.2),
-                    decoration: BoxDecoration(
-                      border:
-                          Border.all(color: GlobalColors.textFieldHintColor),
-                      borderRadius: BorderRadius.circular(
-                        SizeConfig.width(context, 0.03),
-                      ),
-                      color: GlobalColors.backgroundColor,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: List.generate(2, (index) {
+                        return Container(
+                          //   height: SizeConfig.height(context, 0.1),
+                          width: SizeConfig.width(context, 0.2),
+                          decoration: BoxDecoration(
+                            // border: Border.all(color: GlobalColors.textFieldHintColor),
+                            borderRadius: BorderRadius.circular(
+                              SizeConfig.width(context, 0.03),
+                            ),
+                            color: GlobalColors.primaryColor,
+                          ),
+                          //   padding: EdgeInsets.only(top: SizeConfig.height(context, 0.022),bottom: SizeConfig.height(context, 0.018)),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "-",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: SizeConfig.width(context, 0.04)),
+                              ),
+                              Text(
+                                index == 0
+                                    ? "Planed Ushers".tr()
+                                    : index == 1
+                                        ? "On-spot Ushers".tr()
+                                        : index == 2
+                                            ? "Confirmed Budget".tr()
+                                            : "On-spot Ushers".tr(),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: GlobalColors.goodMorningColor,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: SizeConfig.width(context, 0.03)),
+                              )
+                            ],
+                          ),
+                        );
+                      }),
                     ),
-                    //   padding: EdgeInsets.only(top: SizeConfig.height(context, 0.022),bottom: SizeConfig.height(context, 0.018)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "-",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: SizeConfig.width(context, 0.04)),
-                        ),
-                        Text(
-                          index == 0
-                              ? "Planed Ushers".tr()
-                              : index == 1
-                                  ? "Invited Ushers".tr()
-                                  : index == 2
-                                      ? "Confirmed Budget".tr()
-                                      : "On-spot Ushers".tr(),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: GlobalColors.goodMorningColor,
-                              fontWeight: FontWeight.w400,
-                              fontSize: SizeConfig.width(context, 0.03)),
-                        )
-                      ],
+                  )
+                : Container(
+                    //  color: Colors.red,
+                    height: SizeConfig.height(context, 0.1),
+                    width: SizeConfig.width(context, 0.9),
+
+                    margin: EdgeInsets.only(
+                      top: SizeConfig.height(context, 0.01),
+                      left: SizeConfig.width(context, 0.1),
+                      right: SizeConfig.width(context, 0.1),
                     ),
-                  );
-                }),
-              ),
-            ),
+
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: List.generate(3, (index) {
+                        return Container(
+                          //   height: SizeConfig.height(context, 0.1),
+                          width: SizeConfig.width(context, 0.2),
+                          decoration: BoxDecoration(
+                            // border: Border.all(color: GlobalColors.textFieldHintColor),
+                            borderRadius: BorderRadius.circular(
+                              SizeConfig.width(context, 0.03),
+                            ),
+                            color: GlobalColors.primaryColor,
+                          ),
+                          //   padding: EdgeInsets.only(top: SizeConfig.height(context, 0.022),bottom: SizeConfig.height(context, 0.018)),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "-",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: SizeConfig.width(context, 0.04)),
+                              ),
+                              Text(
+                                index == 0
+                                    ? "Planed Ushers".tr()
+                                    : index == 1
+                                        ? "Invited Ushers".tr()
+                                        : index == 2
+                                            ? "Confirmed Budget".tr()
+                                            : "On-spot Ushers".tr(),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: GlobalColors.goodMorningColor,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: SizeConfig.width(context, 0.03)),
+                              )
+                            ],
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
             Padding(
               padding: EdgeInsets.only(
                 top: SizeConfig.height(context, 0.03),
@@ -1092,8 +1041,8 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SubmitButton(
-                    gradientFirstColor: const Color(0xFFC1954A),
-                  width: SizeConfig.width(context, 0.4),
+                    gradientFirstColor: GlobalColors.primaryColor,
+                    width: SizeConfig.width(context, 0.4),
                     onPressed: () async {
                       //    Navigator.pushNamed(context, AppRoutes.qrCodeScreenRoute);
                     },
@@ -1110,10 +1059,10 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
                     height: SizeConfig.height(context, 0.02),
                   ),
                   SubmitButton(
-                    gradientFirstColor: const Color(0xFFC1954A),
+                    gradientFirstColor: GlobalColors.primaryColor,
                     width: SizeConfig.width(context, 0.4),
                     onPressed: () async {
-                  //    Navigator.pushNamed(context, AppRoutes.dashboardJob);
+                      //    Navigator.pushNamed(context, AppRoutes.dashboardJob);
                     },
                     child: Text(
                       'Jobs'.tr(),
@@ -1151,8 +1100,7 @@ class HourPercentIndicator extends StatelessWidget {
       percent: percentOfDay,
       backgroundColor: Colors.grey[300],
       progressColor: Colors.blue,
-      center: Text(
-          '${(percentOfDay * 100).toStringAsFixed(2)}% of the day has passed'),
+      center: Text('${(percentOfDay * 100).toStringAsFixed(2)}% of the day has passed'),
     );
   }
 }

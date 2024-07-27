@@ -50,11 +50,9 @@ class _AttandaceDetailScreenState extends State<AttandaceDetailScreen> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.black,
         //GlobalColors.backgroundColor,
         centerTitle: true,
 

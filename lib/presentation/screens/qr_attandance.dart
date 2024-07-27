@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 import 'dart:math' as m;
 
 import 'package:easy_localization/easy_localization.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:radar/constants/app_utils.dart';
 import 'package:radar/constants/colors.dart';
 import 'package:radar/constants/router.dart';
@@ -19,6 +21,7 @@ import 'package:radar/presentation/cubits/events/initial_events/initial_event_cu
 import 'package:radar/presentation/cubits/scan_qr_code/scan_qrcode_cubit.dart';
 import 'package:radar/presentation/cubits/zone/zone_cubit.dart';
 import 'package:radar/presentation/cubits/zone_seats/zone_seats_cubit.dart';
+import 'package:radar/presentation/screens/dashboard_screen.dart';
 
 import 'package:radar/presentation/screens/events.dart';
 import 'package:radar/presentation/widgets/LoadingWidget.dart';
@@ -205,6 +208,14 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
     // zoneCubit.close();
   }
 
+  Future<File?> _pickImageFromCamera() async {
+    final XFile? picker = await ImagePicker().pickImage(source: ImageSource.camera);
+    if (picker != null) {
+      return File(picker.path);
+    }
+    return null;
+  }
+
   bool _checkIfWithinRadius({String? zoneLat, String? zoneLong, String? zonRadius}) {
     if (latitude == 0.0 && longitude == 0.0) return false;
 
@@ -231,14 +242,10 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.black,
-        //GlobalColors.backgroundColor,
         centerTitle: true,
-
         title: Text(
           "Attendance".tr(),
           style: TextStyle(
@@ -259,7 +266,7 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
                     left: SizeConfig.width(context, 0.05),
                     right: SizeConfig.width(context, 0.05)),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: List.generate(2, (index) {
                     return GestureDetector(
                       onTap: () async {
@@ -280,10 +287,10 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
                       },
                       child: Container(
                         height: SizeConfig.height(context, 0.05),
-                        width: SizeConfig.width(context, 0.45),
+                        width: SizeConfig.width(context, 0.44),
                         decoration: BoxDecoration(
                           color: tabList[index].isSelected ?? false
-                              ? const Color(0xFFEF4A4A)
+                              ? GlobalColors.submitButtonColor
                               : GlobalColors.submitButtonTextColor,
                           borderRadius: BorderRadius.circular(
                             SizeConfig.width(context, 0.02),
@@ -294,9 +301,7 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
                           tabList[index].title ?? "",
                           style: TextStyle(
                               color: tabList[index].isSelected ?? false
-                                  ? const Color(
-                                      0xFF0D0D0D,
-                                    )
+                                  ? GlobalColors.whiteColor
                                   : GlobalColors.submitButtonColor,
                               fontWeight: FontWeight.w500,
                               fontSize: SizeConfig.width(context, 0.03)),
@@ -438,7 +443,7 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
       alignment: Alignment.center,
       child: Container(
         decoration: BoxDecoration(
-            color: GlobalColors.backgroundColor, borderRadius: BorderRadius.circular(SizeConfig.width(context, 0.02))),
+            color: GlobalColors.primaryColor, borderRadius: BorderRadius.circular(SizeConfig.width(context, 0.02))),
         height: SizeConfig.height(context, 0.5),
         width: SizeConfig.width(context, 0.9),
         padding: EdgeInsets.only(
@@ -517,7 +522,7 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
                             color: GlobalColors.textFieldHintColor,
                           ),
                           border: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.yellow
+                            borderSide: const BorderSide(color: GlobalColors.submitButtonColor
                                 //    color: GlobalColors.ftsTextColor,
                                 ),
                             borderRadius: BorderRadius.circular(
@@ -591,9 +596,16 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
               ),
               (isCheckInValue)
                   ? SubmitButton(
-                      gradientFirstColor: const Color(0xFFC1954A),
+                      gradientFirstColor: GlobalColors.submitButtonColor,
                       width: SizeConfig.width(context, 0.85),
                       onPressed: () async {
+                        File? image = await _pickImageFromCamera();
+
+                        if (image == null) {
+                          AppUtils.showFlushBar("Please capture your image!", context);
+                          return;
+                        }
+
                         bool isWithinRadius = _checkIfWithinRadius(
                             zoneLat: event.latitude, zoneLong: event.longitude, zonRadius: event.radius);
                         if (zoneValue == null) {
@@ -617,7 +629,7 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
                         print("resssssv $res");
                         var response = jsonDecode(res);
                         ScanQrCodePayload qrcodeResult = ScanQrCodePayload.fromJson(response);
-                        print("resssssvisCheckInValue ${isCheckInValue}");
+                        print("resssssvisCheckInValue $isCheckInValue");
                         qrcodeResult.type = (isCheckInValue) ? "checkIn" : "CheckOut";
                         print("ScanQrCodePayload ${qrcodeResult.name}");
                         print("ScanQrCodePayload ${qrcodeResult.id}");
@@ -636,6 +648,7 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
                         setState(() {
                           showAlert = false;
                           zoneValue = null;
+                          isJobAccepted = true;
                         });
                         //  Navigator.pushNamed(context, AppRoutes.resetScreenRoute);
                       },
@@ -656,7 +669,7 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
                           AppUtils.showFlushBar("Please select a Zone".tr(), context);
                           return;
                         }
-                        if (roleName == "Usher" || roleName == "Client") {
+                        if (roleName != "Usher" || roleName != "Client") {
                           AppUtils.showFlushBar("You don't have permission to marked the Attandance".tr(), context);
                           return;
                         }
@@ -687,6 +700,7 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
                         setState(() {
                           showAlert = false;
                           zoneValue = null;
+                          isJobAccepted = false;
                         });
                         //  Navigator.pushNamed(context, AppRoutes.resetScreenRoute);
                       },

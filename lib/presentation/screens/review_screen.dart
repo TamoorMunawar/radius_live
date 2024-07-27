@@ -51,11 +51,9 @@ class _ReviewScreenState extends State<ReviewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: GlobalColors.backgroundColor,
       appBar: AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
-        backgroundColor: GlobalColors.backgroundColor,
         centerTitle: true,
         leading: IconButton(
           onPressed: () {
@@ -149,7 +147,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                     borderRadius: BorderRadius.circular(0.02.sw),
                   ),
                   child: DropdownButton(
-                    dropdownColor: Colors.black,
+                    dropdownColor: GlobalColors.backgroundColor,
                     value: _isBanned,
                     isExpanded: true,
                     underline: Container(),

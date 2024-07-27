@@ -18,11 +18,9 @@ class _JobScreenState extends State<JobScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.black,
         //GlobalColors.backgroundColor,
         centerTitle: true,
         actions: [
@@ -30,8 +28,7 @@ class _JobScreenState extends State<JobScreen> {
             onPressed: () {
               //  Navigator.pop(context);
             },
-            icon: Image.asset("assets/icons/message_icon.png",
-                width: SizeConfig.width(context, 0.05)),
+            icon: Image.asset("assets/icons/message_icon.png", width: SizeConfig.width(context, 0.05)),
             color: Colors.white,
           ),
           IconButton(
@@ -40,13 +37,12 @@ class _JobScreenState extends State<JobScreen> {
             },
             icon: Padding(
               padding: EdgeInsets.only(right: SizeConfig.width(context, 0.05)),
-              child: Image.asset("assets/icons/notification.png",
-                  width: SizeConfig.width(context, 0.05)),
+              child: Image.asset("assets/icons/notification.png", width: SizeConfig.width(context, 0.05)),
             ),
             color: Colors.white,
           ),
         ],
-      /*  leading: IconButton(
+        /*  leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
           },
@@ -72,9 +68,10 @@ class _JobScreenState extends State<JobScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: List.generate(20, (index) {
-            return InkWell(onTap: (){
-             // Navigator.push(context, MaterialPageRoute(builder: (context)=>EventDetilsScreen()));
-            },
+            return InkWell(
+              onTap: () {
+                // Navigator.push(context, MaterialPageRoute(builder: (context)=>EventDetilsScreen()));
+              },
               child: Container(
                 //height: SizeConfig.height(context, 0.155),
                 width: SizeConfig.width(context, 0.9),
@@ -125,11 +122,12 @@ class _JobScreenState extends State<JobScreen> {
                           fontWeight: FontWeight.w400,
                           color: GlobalColors.textFieldHintColor),
                     ),
-                    Container(  width: SizeConfig.width(context, 0.5),//color: Colors.red,
+                    Container(
+                      width: SizeConfig.width(context, 0.5), //color: Colors.red,
                       child: Text(
                         "May 20, 2023 to May 21, 2023 10:00 AM to 10:00 PM",
-                        maxLines: 2,style: TextStyle(
-
+                        maxLines: 2,
+                        style: TextStyle(
                             fontSize: SizeConfig.width(context, 0.035),
                             fontWeight: FontWeight.w400,
                             color: Colors.white.withOpacity(0.45)),

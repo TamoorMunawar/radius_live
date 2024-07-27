@@ -116,12 +116,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.black,
-        //GlobalColors.backgroundColor,
         centerTitle: true,
         /*actions: [
           IconButton(
@@ -159,7 +156,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 color: Colors.white,
               )
             : Container(),
-
         title: Text(
           "Profile".tr(),
           style: TextStyle(
@@ -212,7 +208,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   });
             },
             style: IconButton.styleFrom(
-              backgroundColor: GlobalColors.submitButtonColor50,
+              backgroundColor: GlobalColors.primaryColor,
               maximumSize: Size(0.04.sh, 0.04.sh),
               minimumSize: Size(0.04.sh, 0.04.sh),
             ),
@@ -224,7 +220,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           IconButton.filled(
             style: IconButton.styleFrom(
-              backgroundColor: GlobalColors.submitButtonColor50,
+              backgroundColor: GlobalColors.primaryColor,
               maximumSize: Size(0.04.sh, 0.04.sh),
               minimumSize: Size(0.04.sh, 0.04.sh),
             ),
@@ -287,8 +283,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           SizedBox(height: 0.01.sh),
                           Container(
                             padding: EdgeInsets.symmetric(horizontal: 0.03.sw, vertical: 0.01.sw),
-                            decoration: BoxDecoration(
-                                color: GlobalColors.submitButtonColor, borderRadius: BorderRadius.circular(8)),
+                            decoration:
+                                BoxDecoration(color: GlobalColors.primaryColor, borderRadius: BorderRadius.circular(8)),
                             child: Text(
                               state is ProfileSuccess
                                   ? state.profileModel.jobName ?? "Job Not Assigned"
@@ -321,7 +317,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   //  height: SizeConfig.height(context, 0.2),
                   width: 0.9.sw,
                   decoration: BoxDecoration(
-                      color: GlobalColors.backgroundColor,
+                      color: GlobalColors.primaryColor,
                       borderRadius: BorderRadius.circular(
                         0.06.sw,
                       )),

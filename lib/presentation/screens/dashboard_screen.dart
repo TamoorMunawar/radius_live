@@ -23,6 +23,8 @@ import 'package:radar/presentation/widgets/radius_text_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
+bool isJobAccepted = false;
+
 class DashBoardScreen extends StatefulWidget {
   const DashBoardScreen({super.key});
 
@@ -110,7 +112,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     print("aaaaa $formattedTime $formattedDate");
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.black,
         body: Stack(
           children: [
             buildDashboardWidget(context, formattedDate, formattedTime),
@@ -244,7 +245,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                         color: GlobalColors.textFieldHintColor,
                       ),
                       border: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.yellow
+                        borderSide: const BorderSide(color: GlobalColors.submitButtonColor
                             //    color: GlobalColors.ftsTextColor,
                             ),
                         borderRadius: BorderRadius.circular(
@@ -357,7 +358,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   height: SizeConfig.height(context, 0.03),
                 ),
                 SubmitButton(
-                  gradientFirstColor: const Color(0xFFC1954A),
+                  gradientFirstColor: GlobalColors.submitButtonColor,
                   width: SizeConfig.width(context, 0.85),
                   onPressed: () async {
                     if (alertFormKey.currentState!.validate()) {
@@ -587,11 +588,11 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                       height: SizeConfig.height(context, 0.1),
                       width: SizeConfig.width(context, 0.27),
                       decoration: BoxDecoration(
-                        border: Border.all(color: GlobalColors.textFieldHintColor),
+                        // border: Border.all(color: GlobalColors.textFieldHintColor),
                         borderRadius: BorderRadius.circular(
                           SizeConfig.width(context, 0.03),
                         ),
-                        color: GlobalColors.backgroundColor,
+                        color: GlobalColors.primaryColor,
                       ),
                       //   padding: EdgeInsets.only(top: SizeConfig.height(context, 0.022),bottom: SizeConfig.height(context, 0.018)),
                       child: Column(
@@ -631,9 +632,13 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 ),
               ),
               SubmitButton(
-                gradientFirstColor: const Color(0xFFC1954A),
+                gradientFirstColor: GlobalColors.submitButtonColor,
                 width: SizeConfig.width(context, 0.9),
                 onPressed: () async {
+                  if (!isJobAccepted) {
+                    AppUtils.showFlushBar("Accept a job to proceed.", context);
+                    return;
+                  }
                   Navigator.pushNamed(context, AppRoutes.qrCodeScreenRoute);
                 },
                 child: Text(
@@ -834,11 +839,11 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                     height: SizeConfig.height(context, 0.1),
                     width: SizeConfig.width(context, 0.27),
                     decoration: BoxDecoration(
-                      border: Border.all(color: GlobalColors.textFieldHintColor),
+                      // border: Border.all(color: GlobalColors.textFieldHintColor),
                       borderRadius: BorderRadius.circular(
                         SizeConfig.width(context, 0.03),
                       ),
-                      color: GlobalColors.backgroundColor,
+                      color: GlobalColors.primaryColor,
                     ),
                     //   padding: EdgeInsets.only(top: SizeConfig.height(context, 0.022),bottom: SizeConfig.height(context, 0.018)),
                     child: Column(
@@ -870,9 +875,14 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               ),
             ),
             SubmitButton(
-              gradientFirstColor: const Color(0xFFC1954A),
+              gradientFirstColor: GlobalColors.submitButtonColor,
               width: SizeConfig.width(context, 0.9),
               onPressed: () async {
+                if (!isJobAccepted) {
+                  AppUtils.showFlushBar("Accept a job to proceed.", context);
+                  return;
+                }
+
                 Navigator.pushNamed(context, AppRoutes.qrCodeScreenRoute);
               },
               child: Text(

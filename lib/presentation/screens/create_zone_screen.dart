@@ -51,7 +51,7 @@ class _CreateZoneScreenState extends State<CreateZoneScreen> {
     jobCubit = BlocProvider.of<JobCubit>(context);
     createZoneCubit = BlocProvider.of<CreateZoneCubit>(context);
     supervisiorCubit.getSupervisior();
-    jobCubit.getJob(eventModelId: widget.args.eventId,isZone: false);
+    jobCubit.getJob(eventModelId: widget.args.eventId, isZone: false);
     // TODO: implement initState
     super.initState();
   }
@@ -59,14 +59,13 @@ class _CreateZoneScreenState extends State<CreateZoneScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: GlobalColors.backgroundColor,
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
           },
           icon: Padding(
-            padding: EdgeInsets.only(left: SizeConfig.width(context, 0.05),right:  SizeConfig.width(context, 0.05)),
+            padding: EdgeInsets.only(left: SizeConfig.width(context, 0.05), right: SizeConfig.width(context, 0.05)),
             child: Icon(
               Icons.arrow_back_ios,
               size: SizeConfig.width(context, 0.05),
@@ -140,8 +139,7 @@ class _CreateZoneScreenState extends State<CreateZoneScreen> {
                   AppUtils.showFlushBar(state.errorMessage, context);
                 }
                 if (state is CreateZoneSuccess) {
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, AppRoutes.pagesScreenRoute, (route) => false,
+                  Navigator.pushNamedAndRemoveUntil(context, AppRoutes.pagesScreenRoute, (route) => false,
                       arguments: 0);
                   AppUtils.showFlushBar("Zone Created SuccessFully".tr(), context);
                 }
@@ -195,8 +193,7 @@ class _CreateZoneScreenState extends State<CreateZoneScreen> {
                               value: item,
                               child: Text(
                                 item.name ?? "",
-                                style: TextStyle(
-                                    color: GlobalColors.textFieldHintColor),
+                                style: TextStyle(color: GlobalColors.textFieldHintColor),
                               ),
                             );
                           }).toList(),
@@ -211,7 +208,7 @@ class _CreateZoneScreenState extends State<CreateZoneScreen> {
                               color: GlobalColors.textFieldHintColor,
                             ),
                             border: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.yellow
+                              borderSide: const BorderSide(color: GlobalColors.submitButtonColor
                                   //    color: GlobalColors.ftsTextColor,
                                   ),
                               borderRadius: BorderRadius.circular(
@@ -274,8 +271,7 @@ class _CreateZoneScreenState extends State<CreateZoneScreen> {
                               value: item,
                               child: Text(
                                 item.name ?? "",
-                                style: TextStyle(
-                                    color: GlobalColors.textFieldHintColor),
+                                style: TextStyle(color: GlobalColors.textFieldHintColor),
                               ),
                             );
                           }).toList(),
@@ -290,7 +286,7 @@ class _CreateZoneScreenState extends State<CreateZoneScreen> {
                               color: GlobalColors.textFieldHintColor,
                             ),
                             border: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.yellow
+                              borderSide: const BorderSide(color: GlobalColors.submitButtonColor
                                   //    color: GlobalColors.ftsTextColor,
                                   ),
                               borderRadius: BorderRadius.circular(

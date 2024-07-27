@@ -36,16 +36,14 @@ class _UsherListByEventScreenState extends State<UsherListByEventScreen> {
 
   Future _initialScrollListener() async {
     if (isLoadingMore) return;
-    if (initialScrollController.position.pixels ==
-        initialScrollController.position.maxScrollExtent) {
+    if (initialScrollController.position.pixels == initialScrollController.position.maxScrollExtent) {
       print("if scroll listener called");
       setState(() {
         isLoadingMore = true;
       });
       count = count + 1;
 
-      usherList.addAll(await usherCubit.getUsherByEvent(
-          eventId: widget.eventId, page: count));
+      usherList.addAll(await usherCubit.getUsherByEvent(eventId: widget.eventId, page: count));
     }
     setState(() {
       isLoadingMore = false;
@@ -95,14 +93,10 @@ class _UsherListByEventScreenState extends State<UsherListByEventScreen> {
   Widget build(BuildContext context) {
     print("usher List length ${usherList.length}");
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.black,
-        //GlobalColors.backgroundColor,
         centerTitle: true,
-
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
@@ -211,10 +205,7 @@ class _UsherListByEventScreenState extends State<UsherListByEventScreen> {
                                             value.toLowerCase(),
                                           ) ??
                                       false) ||
-                                  (dH.iqamaId
-                                          ?.toLowerCase()
-                                          .contains(value.toLowerCase()) ??
-                                      false) ||
+                                  (dH.iqamaId?.toLowerCase().contains(value.toLowerCase()) ?? false) ||
                                   ("${dH.whatsappNumberCountryCode}${dH.whatsappNumber}"
                                           ?.toLowerCase()
                                           .contains(value.toLowerCase()) ??
@@ -225,8 +216,7 @@ class _UsherListByEventScreenState extends State<UsherListByEventScreen> {
                       setState(() {
                         foundUshersList = results;
                         if (kDebugMode) {
-                          print(
-                              "foundUshersList $foundUshersList ${foundUshersList.length}");
+                          print("foundUshersList $foundUshersList ${foundUshersList.length}");
                         }
                       });
                     },
@@ -240,8 +230,7 @@ class _UsherListByEventScreenState extends State<UsherListByEventScreen> {
               : (usherList.isEmpty || foundUshersList.isEmpty)
                   ? Center(
                       child: Padding(
-                        padding: EdgeInsets.only(
-                            top: SizeConfig.height(context, 0.2)),
+                        padding: EdgeInsets.only(top: SizeConfig.height(context, 0.2)),
                         child: Text(
                           "No Data Found".tr(),
                           style: TextStyle(
@@ -253,8 +242,7 @@ class _UsherListByEventScreenState extends State<UsherListByEventScreen> {
                     )
                   : Expanded(
                       child: ListView.separated(
-                      padding: EdgeInsets.only(
-                          bottom: SizeConfig.height(context, 0.1)),
+                      padding: EdgeInsets.only(bottom: SizeConfig.height(context, 0.1)),
                       controller: initialScrollController,
                       separatorBuilder: (context, index) {
                         return buildDividerWidget(
@@ -286,8 +274,7 @@ class _UsherListByEventScreenState extends State<UsherListByEventScreen> {
                                   children: [
                                     CircleAvatar(
                                       backgroundColor: Colors.transparent,
-                                      backgroundImage:
-                                          NetworkImage(item.imageUrl ?? ""),
+                                      backgroundImage: NetworkImage(item.imageUrl ?? ""),
                                       radius: SizeConfig.width(context, 0.08),
                                     ),
                                     SizedBox(
@@ -297,16 +284,14 @@ class _UsherListByEventScreenState extends State<UsherListByEventScreen> {
                                       // color: Colors.red,
                                       width: SizeConfig.width(context, 0.55),
                                       child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             item.name ?? "",
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontWeight: FontWeight.w500,
-                                              fontSize: SizeConfig.width(
-                                                  context, 0.032),
+                                              fontSize: SizeConfig.width(context, 0.032),
                                             ),
                                           ),
                                           RichText(
@@ -314,32 +299,26 @@ class _UsherListByEventScreenState extends State<UsherListByEventScreen> {
                                             TextSpan(
                                               text: "Email".tr(),
                                               style: TextStyle(
-                                                color: GlobalColors
-                                                    .textFieldHintColor,
+                                                color: GlobalColors.textFieldHintColor,
                                                 fontWeight: FontWeight.w700,
-                                                fontSize: SizeConfig.width(
-                                                    context, 0.032),
+                                                fontSize: SizeConfig.width(context, 0.032),
                                               ),
                                             ),
                                             TextSpan(
                                               text: ":  ${item.email}",
                                               style: TextStyle(
-                                                color: GlobalColors
-                                                    .textFieldHintColor,
+                                                color: GlobalColors.textFieldHintColor,
                                                 fontWeight: FontWeight.w700,
-                                                fontSize: SizeConfig.width(
-                                                    context, 0.032),
+                                                fontSize: SizeConfig.width(context, 0.032),
                                               ),
                                             ),
                                           ])),
                                           Text(
                                             "${item.alertMessage}",
                                             style: TextStyle(
-                                              color: GlobalColors
-                                                  .submitButtonColor,
+                                              color: GlobalColors.submitButtonColor,
                                               fontWeight: FontWeight.w700,
-                                              fontSize: SizeConfig.width(
-                                                  context, 0.032),
+                                              fontSize: SizeConfig.width(context, 0.032),
                                             ),
                                           ),
                                         ],
@@ -363,9 +342,7 @@ class _UsherListByEventScreenState extends State<UsherListByEventScreen> {
                           );
                         }
                       },
-                      itemCount: (isLoadingMore)
-                          ? foundUshersList.length
-                          : foundUshersList.length,
+                      itemCount: (isLoadingMore) ? foundUshersList.length : foundUshersList.length,
                     ))
         ],
       ),

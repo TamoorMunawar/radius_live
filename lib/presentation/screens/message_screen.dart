@@ -15,14 +15,10 @@ class _MessageScreenState extends State<MessageScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.black,
-        //GlobalColors.backgroundColor,
         centerTitle: true,
-
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
@@ -53,9 +49,7 @@ class _MessageScreenState extends State<MessageScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(
-            padding: EdgeInsets.only(
-                left: SizeConfig.width(context, 0.05),
-                right: SizeConfig.width(context, 0.05)),
+            padding: EdgeInsets.only(left: SizeConfig.width(context, 0.05), right: SizeConfig.width(context, 0.05)),
             child: Material(
               color: Colors.transparent,
               shadowColor: const Color(0xff006DFC).withOpacity(0.16),
@@ -75,9 +69,8 @@ class _MessageScreenState extends State<MessageScreen> {
                     ),
                   ),*/
                   prefixIcon: Padding(
-                    padding: EdgeInsets.only(
-                        left: SizeConfig.width(context, 0.04),
-                        right: SizeConfig.width(context, 0.02)),
+                    padding:
+                        EdgeInsets.only(left: SizeConfig.width(context, 0.04), right: SizeConfig.width(context, 0.02)),
                     child: Image.asset(
                       "assets/icons/search_icon.png",
                       width: SizeConfig.width(context, 0.01),
@@ -150,8 +143,7 @@ class _MessageScreenState extends State<MessageScreen> {
                           left: SizeConfig.width(context, 0.05),
                           right: SizeConfig.width(context, 0.05)),
                       decoration: BoxDecoration(
-                          border: Border.all(
-                              color: GlobalColors.textFieldHintColor),
+                          border: Border.all(color: GlobalColors.textFieldHintColor),
                           color: GlobalColors.backgroundColor,
                           borderRadius: BorderRadius.circular(
                             SizeConfig.width(context, 0.02),
@@ -166,8 +158,7 @@ class _MessageScreenState extends State<MessageScreen> {
                       child: ListTile(
                         contentPadding: EdgeInsets.zero,
                         leading: CircleAvatar(
-                          backgroundImage:
-                          AssetImage("assets/icons/profile_icon.png"),
+                          backgroundImage: AssetImage("assets/icons/profile_icon.png"),
                           radius: SizeConfig.width(context, 0.07),
                         ),
                         title: Text(

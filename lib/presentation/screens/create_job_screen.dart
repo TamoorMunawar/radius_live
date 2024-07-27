@@ -48,7 +48,7 @@ class _CreateJobScreenState extends State<CreateJobScreen> {
             Navigator.pop(context);
           },
           icon: Padding(
-            padding: EdgeInsets.only(left: SizeConfig.width(context, 0.05),right:  SizeConfig.width(context, 0.05)),
+            padding: EdgeInsets.only(left: SizeConfig.width(context, 0.05), right: SizeConfig.width(context, 0.05)),
             child: Icon(
               Icons.arrow_back_ios,
               size: SizeConfig.width(context, 0.05),
@@ -75,7 +75,7 @@ class _CreateJobScreenState extends State<CreateJobScreen> {
           //  right: SizeConfig.width(context, 0.07),
         ),
         height: SizeConfig.height(context, 0.12),
-        color: GlobalColors.backgroundColor,
+        color: GlobalColors.primaryColor,
 
         // color: Colors.white,
         elevation: 0,
@@ -117,14 +117,12 @@ class _CreateJobScreenState extends State<CreateJobScreen> {
               listener: (context, state) {
                 if (state is CreateJobFailed) {
                   AppUtils.showFlushBar(state.errorMessage, context);
-                }if (state is CreateJobSuccess) {
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, AppRoutes.pagesScreenRoute, (route) => false,
+                }
+                if (state is CreateJobSuccess) {
+                  Navigator.pushNamedAndRemoveUntil(context, AppRoutes.pagesScreenRoute, (route) => false,
                       arguments: 0);
                   AppUtils.showFlushBar("Job Created SuccessFully".tr(), context);
-
                 }
-
               },
             ),
           ),

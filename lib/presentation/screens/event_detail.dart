@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:radar/constants/colors.dart';
 import 'package:radar/constants/route_arguments.dart';
 import 'package:radar/constants/router.dart';
 import 'package:radar/constants/size_config.dart';
+import 'package:radar/constants/strings.dart';
 import 'package:radar/domain/entities/zone/Zone.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:radar/domain/entities/events/event_detail/Event_detail.dart';
@@ -17,6 +19,7 @@ import 'package:radar/presentation/cubits/events/event_detail/event_detail_cubit
 
 import 'package:radar/presentation/screens/create_job_screen.dart';
 import 'package:radar/presentation/screens/create_zone_screen.dart';
+import 'package:radar/presentation/screens/dashboard_screen.dart';
 import 'package:radar/presentation/widgets/LoadingWidget.dart';
 import 'package:radar/presentation/widgets/button_widget.dart';
 import 'package:screenshot/screenshot.dart';
@@ -43,6 +46,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
   double latitude = 25.3960;
   double longitude = 68.3578;
   int? checkInEventModelId = 0;
+  bool _isChecked = false;
 
   int? checkOutEventModelId = 0;
   late EventDetailCubit eventDetailCubit;
@@ -51,15 +55,14 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
   String address = "";
   String? roleName;
   String? eventImagePath;
-  final Completer<GoogleMapController> _controller =
-      Completer<GoogleMapController>();
+  final Completer<GoogleMapController> _controller = Completer<GoogleMapController>();
 
   String removeHtmlTags(String htmlString) {
-    final RegExp regExp =
-        RegExp(r'<[^>]*>', multiLine: true, caseSensitive: false);
+    final RegExp regExp = RegExp(r'<[^>]*>', multiLine: true, caseSensitive: false);
 
     return htmlString.replaceAll(regExp, '');
   }
+
   final alertFormKey = GlobalKey<FormState>();
   Zone? zoneValue;
   Future getUserDetailsFromLocal() async {
@@ -75,7 +78,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
 
   static final CameraPosition _kGooglePlex = const CameraPosition(
     target: LatLng(24.8607, 67.0011),
-    zoom:12,
+    zoom: 12,
   );
   bool showAlert = false;
 
@@ -99,11 +102,9 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.black,
         //GlobalColors.backgroundColor,
         centerTitle: true,
 
@@ -112,7 +113,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
             Navigator.pop(context);
           },
           icon: Padding(
-            padding: EdgeInsets.only(left: SizeConfig.width(context, 0.05),right:  SizeConfig.width(context, 0.05)),
+            padding: EdgeInsets.only(left: SizeConfig.width(context, 0.05), right: SizeConfig.width(context, 0.05)),
             child: Icon(
               Icons.arrow_back_ios,
               size: SizeConfig.width(context, 0.05),
@@ -163,12 +164,11 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                     "latitude from APi ${eventDetail?.latitude} ${double.parse(eventDetail?.latitude.toString() ?? "24.8607")}");
                 print(
                     "longitude from APi ${eventDetail?.longitude} ${double.parse(eventDetail?.longitude.toString() ?? "67.0011")}");
-                longitude=double.parse(eventDetail?.longitude ?? "67.0011");
-                latitude=double.parse(eventDetail?.latitude ?? "24.8607");
+                longitude = double.parse(eventDetail?.longitude ?? "67.0011");
+                latitude = double.parse(eventDetail?.latitude ?? "24.8607");
 
                 setState(() {});
               }
-
             }
           },
           builder: (context, state) {
@@ -191,14 +191,10 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                           children: [
                             (eventDetail?.eventName == null)
                                 ? Container()
-                                : TitleAndNameWidget(
-                                    title: "English Name".tr(),
-                                    subtitle: "${eventDetail?.eventName}"),
+                                : TitleAndNameWidget(title: "English Name".tr(), subtitle: "${eventDetail?.eventName}"),
                             (eventDetail?.eventName == null)
                                 ? Container()
-                                : TitleAndNameWidget(
-                                    title: "Arabic Name".tr(),
-                                    subtitle: "${eventDetail?.eventName}"),
+                                : TitleAndNameWidget(title: "Arabic Name".tr(), subtitle: "${eventDetail?.eventName}"),
                           ],
                         ),
                         Row(
@@ -206,13 +202,8 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                           children: [
                             (eventDetail?.country?.name == null)
                                 ? Container()
-                                : TitleAndNameWidget(
-                                    title: "Country".tr(),
-                                    subtitle: "${eventDetail?.country?.name}"),
-                             TitleAndNameWidget(
-                                title: "City".tr(),
-                                subtitle:
-                                    "${eventDetail?.cityId}"),
+                                : TitleAndNameWidget(title: "Country".tr(), subtitle: "${eventDetail?.country?.name}"),
+                            TitleAndNameWidget(title: "City".tr(), subtitle: "${eventDetail?.cityId}"),
                           ],
                         ),
                         Row(
@@ -220,9 +211,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                           children: [
                             (eventDetail?.district == null)
                                 ? Container()
-                                : TitleAndNameWidget(
-                                    title: "District".tr(),
-                                    subtitle: "${eventDetail?.district}"),
+                                : TitleAndNameWidget(title: "District".tr(), subtitle: "${eventDetail?.district}"),
                           ],
                         ),
                         Container(
@@ -232,20 +221,17 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                           child: Center(
                             child: GoogleMap(
                               mapType: MapType.normal,
-                              initialCameraPosition: CameraPosition(
-                                  target: LatLng(latitude, longitude), zoom: 14),
+                              initialCameraPosition: CameraPosition(target: LatLng(latitude, longitude), zoom: 14),
                               markers: {
                                 Marker(
                                   markerId: const MarkerId("home123123123"),
-                                  position: LatLng(latitude,longitude),
+                                  position: LatLng(latitude, longitude),
                                   infoWindow: InfoWindow(title: 'Event  Location'.tr()),
-                                  icon:
-                                  BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+                                  icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
                                 ),
-
                               },
                               onMapCreated: (GoogleMapController controller) {
-                            //   _controller.complete(controller);
+                                //   _controller.complete(controller);
                               },
                             ),
                           ),
@@ -256,15 +242,11 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                             (eventDetail?.formatStartDate == null)
                                 ? Container()
                                 : TitleAndNameWidget(
-                                    title: "Date From".tr(),
-                                    maxLine: 2,
-                                    subtitle: "${eventDetail?.formatStartDate}"),
+                                    title: "Date From".tr(), maxLine: 2, subtitle: "${eventDetail?.formatStartDate}"),
                             (eventDetail?.formatEndDate == null)
                                 ? Container()
                                 : TitleAndNameWidget(
-                                    maxLine: 2,
-                                    title: "Date To".tr(),
-                                    subtitle: "${eventDetail?.formatEndDate}"),
+                                    maxLine: 2, title: "Date To".tr(), subtitle: "${eventDetail?.formatEndDate}"),
                           ],
                         ),
                         SizedBox(
@@ -275,14 +257,10 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                           children: [
                             (eventDetail?.startTime == null)
                                 ? Container()
-                                : TitleAndNameWidget(
-                                    title: "Start in".tr(),
-                                    subtitle: "${eventDetail?.startTime}"),
+                                : TitleAndNameWidget(title: "Start in".tr(), subtitle: "${eventDetail?.startTime}"),
                             (eventDetail?.endTime == null)
                                 ? Container()
-                                : TitleAndNameWidget(
-                                    title: "End in".tr(),
-                                    subtitle: "${eventDetail?.endTime}"),
+                                : TitleAndNameWidget(title: "End in".tr(), subtitle: "${eventDetail?.endTime}"),
                           ],
                         ),
                         Row(
@@ -291,13 +269,11 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                             (eventDetail?.manager?.name == null)
                                 ? Container()
                                 : TitleAndNameWidget(
-                                    title: "Event Manager".tr(),
-                                    subtitle: "${eventDetail?.manager?.name}"),
+                                    title: "Event Manager".tr(), subtitle: "${eventDetail?.manager?.name}"),
                             (eventDetail?.leadTimeUnit == null)
                                 ? Container()
                                 : TitleAndNameWidget(
-                                    title: "Lead Time Unit".tr(),
-                                    subtitle: "${eventDetail?.leadTimeUnit}"),
+                                    title: "Lead Time Unit".tr(), subtitle: "${eventDetail?.leadTimeUnit}"),
                           ],
                         ),
                         Row(
@@ -308,8 +284,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                                 : TitleAndNameWidget(
                                     titleMaxLine: 2,
                                     title: "Warehouse Manager".tr(),
-                                    subtitle:
-                                        "${eventDetail?.wareHouseManager?.name}"),
+                                    subtitle: "${eventDetail?.wareHouseManager?.name}"),
                             /*   TitleAndNameWidget(
                                 title: "Payment Interval", subtitle: "Naperville"),*/
                           ],
@@ -322,14 +297,11 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                           children: [
                             (eventDetail?.leadTime == null)
                                 ? Container()
-                                : TitleAndNameWidget(
-                                    title: "Lead Time".tr(),
-                                    subtitle: "${eventDetail?.leadTime}"),
+                                : TitleAndNameWidget(title: "Lead Time".tr(), subtitle: "${eventDetail?.leadTime}"),
                             (eventDetail?.location == null)
                                 ? Container()
                                 : TitleAndNameWidget(
-                                    title: "Location Radius".tr(),
-                                    subtitle: "${eventDetail?.location}"),
+                                    title: "Location Radius".tr(), subtitle: "${eventDetail?.location}"),
                           ],
                         ),
                         Row(
@@ -337,26 +309,18 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                           children: [
                             (eventDetail?.latitude == null)
                                 ? Container()
-                                : TitleAndNameWidget(
-                                    title: "Latitude".tr(),
-                                    subtitle: "${eventDetail?.latitude}"),
+                                : TitleAndNameWidget(title: "Latitude".tr(), subtitle: "${eventDetail?.latitude}"),
                             (eventDetail?.longitude == null)
                                 ? Container()
-                                : TitleAndNameWidget(
-                                    title: "Longitude".tr(),
-                                    subtitle: "${eventDetail?.longitude}"),
+                                : TitleAndNameWidget(title: "Longitude".tr(), subtitle: "${eventDetail?.longitude}"),
                           ],
                         ),
-                        (eventDetail?.dayoff.toString() == "null" ||
-                                eventDetail?.dayoff == null)
+                        (eventDetail?.dayoff.toString() == "null" || eventDetail?.dayoff == null)
                             ? Container()
                             : Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  TitleAndNameWidget(
-                                      width: 0.7,
-                                      title: "Day Off",
-                                      subtitle: "${eventDetail?.dayoff}"),
+                                  TitleAndNameWidget(width: 0.7, title: "Day Off", subtitle: "${eventDetail?.dayoff}"),
                                 ],
                               ),
                         /*   Row(
@@ -403,14 +367,12 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                                   fontWeight: FontWeight.w500,
                                   color: Colors.white),
                             ),
-                            (roleName == "Usher"||roleName == "Client")
+                            (roleName == "Usher" || roleName == "Client")
                                 ? Container()
                                 : IconButton(
                                     onPressed: () {
-                                      Navigator.pushNamed(
-                                          context, AppRoutes.createJobScreenRoute,
-                                          arguments: CreateJobScreenArgs(
-                                              id: eventDetail?.id ?? 0));
+                                      Navigator.pushNamed(context, AppRoutes.createJobScreenRoute,
+                                          arguments: CreateJobScreenArgs(id: eventDetail?.id ?? 0));
                                     },
                                     icon: Icon(
                                       Icons.add_circle_outline_sharp,
@@ -430,8 +392,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                                 (index) => JobWidget(
                                   eventDetail: eventDetail ?? EventDetail(id: 0),
                                   eventId: widget.args.eventId,
-                                  job: eventDetail?.eventZonesAll?[index].job ??
-                                      Job(),
+                                  job: eventDetail?.eventZonesAll?[index].job ?? Job(),
                                 ),
                               )),
                         ),
@@ -451,12 +412,12 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                                   fontWeight: FontWeight.w500,
                                   color: Colors.white),
                             ),
-                            (roleName == "Usher"||roleName == "Client")
+                            (roleName == "Usher" || roleName == "Client")
                                 ? Container()
                                 : IconButton(
                                     onPressed: () {
                                       print("sdfsmdnfsdfnsndf,mnsmdnf");
-                                       Navigator.pushNamed(
+                                      Navigator.pushNamed(
                                         context,
                                         AppRoutes.createZoneScreenRoute,
                                         arguments: CreateZoneScreenArgs(
@@ -485,9 +446,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                                 (index) => ZonesWidget(
                                   eventDetail: eventDetail ?? EventDetail(id: 0),
                                   eventId: widget.args.eventId,
-                                  getZone:
-                                      eventDetail?.eventZonesAll?[index].getZone ??
-                                          GetZone(id: 0),
+                                  getZone: eventDetail?.eventZonesAll?[index].getZone ?? GetZone(id: 0),
                                 ),
                               )),
                         ),
@@ -513,12 +472,13 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                               child: Text(
                                 removeHtmlTags(eventDetail?.projectSummary ?? ""),
                                 style: TextStyle(
-                                    fontSize: SizeConfig.width(
-                                      context,
-                                      0.040,
-                                    ),
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white,),
+                                  fontSize: SizeConfig.width(
+                                    context,
+                                    0.040,
+                                  ),
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white,
+                                ),
                               ),
                             )
                           ],
@@ -542,46 +502,63 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                                   )
                                 ],
                               ),
+                        (widget.args.finalInvitation)
+                            ? Container()
+                            : buildCheckBoxWidget(
+                                context: context,
+                                checkValue: _isChecked,
+                                title: "I_am_accepting_the".tr(),
+                                onChange: (bool? value) {
+                                  setState(() {
+                                    _isChecked = value ?? false;
+                                  });
+                                }),
                         SizedBox(
                           height: SizeConfig.height(context, 0.02),
                         ),
-                        (widget.args.finalInvitation&&roleName != "Usher"&&roleName != "Client")
-                            ?SubmitButton(
-                          gradientFirstColor: const Color(0xFFC1954A),
-                          width: SizeConfig.width(context, 0.85),
-                          onPressed: () async {
-                            Navigator.pushNamed(
-                              context,
-                              AppRoutes.scanQrcodeForUsherInviteScreenRoute,
-                              arguments: UsherInviteScreenArgs(
-                                  eventId: widget.args.eventId,finalInvitation: false, eventZoneAll: eventDetail?.eventZonesAll??[],
-                              ),
-                            );
-                          },
-                          child: Text(
-                            'Invite Usher'.tr(),
-                            style: TextStyle(
-                              color: GlobalColors.submitButtonTextColor,
-                              fontSize: SizeConfig.width(context, 0.04),
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ):Container(),
+                        (widget.args.finalInvitation && roleName != "Usher" && roleName != "Client")
+                            ? SubmitButton(
+                                gradientFirstColor: const Color(0xFFC1954A),
+                                width: SizeConfig.width(context, 0.85),
+                                onPressed: () async {
+                                  Navigator.pushNamed(
+                                    context,
+                                    AppRoutes.scanQrcodeForUsherInviteScreenRoute,
+                                    arguments: UsherInviteScreenArgs(
+                                      eventId: widget.args.eventId,
+                                      finalInvitation: false,
+                                      eventZoneAll: eventDetail?.eventZonesAll ?? [],
+                                    ),
+                                  );
+                                },
+                                child: Text(
+                                  'Invite Usher'.tr(),
+                                  style: TextStyle(
+                                    color: GlobalColors.submitButtonTextColor,
+                                    fontSize: SizeConfig.width(context, 0.04),
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              )
+                            : Container(),
                         (widget.args.finalInvitation)
-                            ?   Container()
+                            ? Container()
                             : SubmitButton(
-                                gradientFirstColor:
-                                    Color(0xFFEF4A4A).withOpacity(0.2),
+                                gradientFirstColor: Color(0xFFEF4A4A).withOpacity(0.2),
                                 width: SizeConfig.width(context, 0.9),
                                 onPressed: () async {
+                                  if (!_isChecked) {
+                                    AppUtils.showFlushBar(
+                                      "Terms_and_Condition".tr(),
+                                      context,
+                                    );
+                                    return;
+                                  }
                                   int.parse(eventDetail?.leadTime ?? "0");
-                                  int time =
-                                      int.parse(eventDetail?.leadTime ?? "0") ?? 0;
-                                  print(
-                                      "sddddddddddddd ${int.parse(eventDetail?.leadTime ?? "0")}");
+                                  int time = int.parse(eventDetail?.leadTime ?? "0") ?? 0;
+                                  log("sddddddddddddd ${int.parse(eventDetail?.leadTime ?? "0")}");
                                   if (time > 0) {
-                                    acceptInvitationCubit.acceptInvitation(
-                                        status: 1, eventId: widget.args.eventId);
+                                    acceptInvitationCubit.acceptInvitation(status: 1, eventId: widget.args.eventId);
                                   } else {
                                     AppUtils.showFlushBar(
                                       "Event is Expired".tr(),
@@ -589,22 +566,17 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                                     );
                                   }
                                 },
-                                child: BlocConsumer<AcceptInvitationCubit,
-                                    AcceptInvitationState>(
+                                child: BlocConsumer<AcceptInvitationCubit, AcceptInvitationState>(
                                   listener: (context, state) {
-                                    print("state AcceptInvitation state $state");
-                                    if (state is AcceptInvitationFailed) {
-                                      AppUtils.showFlushBar(
-                                          state.errorMessage, context);
-                                    }
+                                    log("state AcceptInvitation state $state");
+
+                                    if (state is AcceptInvitationFailed) {}
                                     if (state is AcceptInvitationSuccess) {
+                                      isJobAccepted = true;
                                       Navigator.pushNamedAndRemoveUntil(
-                                          context,
-                                          AppRoutes.pagesScreenRoute,
-                                          (route) => false,
+                                          context, AppRoutes.pagesScreenRoute, (route) => false,
                                           arguments: 2);
-                                      AppUtils.showFlushBar(
-                                          "Job Accept Successfully".tr(), context);
+                                      AppUtils.showFlushBar("Job Accept Successfully".tr(), context);
                                       //    Navigator.pop(context);
 
                                       /*    Navigator.pushReplacementNamed(
@@ -633,29 +605,22 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                         (widget.args.finalInvitation)
                             ? Container()
                             : SubmitButton(
-                                gradientFirstColor:
-                                    const Color(0xFFEF4A4A).withOpacity(0.2),
+                                gradientFirstColor: const Color(0xFFEF4A4A).withOpacity(0.2),
                                 width: SizeConfig.width(context, 0.9),
                                 onPressed: () async {
-                                  acceptInvitationCubit.declineInvitation(
-                                      status: 0, eventId: widget.args.eventId);
+                                  acceptInvitationCubit.declineInvitation(status: 0, eventId: widget.args.eventId);
                                 },
-                                child: BlocConsumer<AcceptInvitationCubit,
-                                    AcceptInvitationState>(
+                                child: BlocConsumer<AcceptInvitationCubit, AcceptInvitationState>(
                                   listener: (context, state) {
                                     print("state AcceptInvitation state $state");
                                     if (state is DeclineInvitationFailed) {
-                                      AppUtils.showFlushBar(
-                                          state.errorMessage, context);
+                                      AppUtils.showFlushBar(state.errorMessage, context);
                                     }
                                     if (state is DeclineInvitationSuccess) {
                                       Navigator.pushNamedAndRemoveUntil(
-                                          context,
-                                          AppRoutes.pagesScreenRoute,
-                                          (route) => false,
+                                          context, AppRoutes.pagesScreenRoute, (route) => false,
                                           arguments: 2);
-                                      AppUtils.showFlushBar(
-                                          "Job Decline Successfully".tr(), context);
+                                      AppUtils.showFlushBar("Job Decline Successfully".tr(), context);
                                       //    Navigator.pop(context);
 
                                       /*    Navigator.pushReplacementNamed(
@@ -683,7 +648,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                         ),
                       ],
                     ),
-                   /* (showAlert)
+                    /* (showAlert)
                         ? buildAlertWidget(context: context, isCheckIn: isCheckInValue)
                         : Container(),
                     BlocListener<ScanQrcodeCubit, ScanQrcodeState>(
@@ -707,15 +672,107 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
       ),
     );
   }
-  Align buildAlertWidget(
-      {required BuildContext context, required bool isCheckIn}) {
+
+  Widget buildCheckBoxWidget(
+      {required BuildContext context,
+      required String title,
+      required bool checkValue,
+      required void Function(bool?) onChange}) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: SizeConfig.width(context, 0.07)),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                    fontFamily: "Noto Sans",
+                    color: GlobalColors.hintTextColor,
+                    fontSize: SizeConfig.width(context, 0.03),
+                    fontWeight: FontWeight.w500),
+              ),
+              InkWell(
+                onTap: () {
+                  _showTermsDialog(context);
+                },
+                child: Text(
+                  "Terms_and_Condition".tr(),
+                  style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      decorationColor: Colors.white,
+                      fontFamily: "Noto Sans",
+                      color: GlobalColors.hintTextColor,
+                      fontSize: SizeConfig.width(context, 0.025),
+                      fontWeight: FontWeight.w500),
+                ),
+              ),
+            ],
+          ),
+          Checkbox(
+              side: const BorderSide(color: Colors.grey),
+              checkColor: GlobalColors.submitButtonColor,
+              fillColor: MaterialStateProperty.all<Color>(Colors.white),
+              value: checkValue,
+              onChanged: onChange),
+        ],
+      ),
+    );
+  }
+
+  void _showTermsDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: GlobalColors.backgroundColor,
+          title: Text(
+            'شروط واحكام',
+            textAlign: TextAlign.right,
+            style: TextStyle(color: Colors.white, fontSize: SizeConfig.width(context, 0.05)),
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(
+                  Strings.termsAndConditionsText,
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: SizeConfig.width(context, 0.03),
+                  ),
+                ),
+                // Add more text here to elaborate on your terms and conditions
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            /*    TextButton(
+              child: Text('Disagree'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),*/
+            TextButton(
+              child: Text('Agree'.tr()),
+              onPressed: () {
+                // Code to execute when the user agrees with terms and conditions
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Align buildAlertWidget({required BuildContext context, required bool isCheckIn}) {
     return Align(
       alignment: Alignment.center,
       child: Container(
         decoration: BoxDecoration(
-            color: GlobalColors.backgroundColor,
-            borderRadius:
-            BorderRadius.circular(SizeConfig.width(context, 0.02))),
+            color: GlobalColors.backgroundColor, borderRadius: BorderRadius.circular(SizeConfig.width(context, 0.02))),
         height: SizeConfig.height(context, 0.3),
         width: SizeConfig.width(context, 0.9),
         padding: EdgeInsets.only(
@@ -776,8 +833,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                               value: item,
                               child: Text(
                                 item.categoryName ?? "",
-                                style: TextStyle(
-                                    color: GlobalColors.textFieldHintColor),
+                                style: TextStyle(color: GlobalColors.textFieldHintColor),
                               ),
                             );
                           }).toList(),
@@ -792,9 +848,9 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                               color: GlobalColors.textFieldHintColor,
                             ),
                             border: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.yellow
-                                //    color: GlobalColors.ftsTextColor,
-                              ),
+                              borderSide: const BorderSide(color: GlobalColors.submitButtonColor
+                                  //    color: GlobalColors.ftsTextColor,
+                                  ),
                               borderRadius: BorderRadius.circular(
                                 SizeConfig.width(context, 0.03),
                               ),
@@ -834,34 +890,27 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                   gradientFirstColor: const Color(0xFFC1954A),
                   width: SizeConfig.width(context, 0.85),
                   onPressed: () async {
-                    if (roleName == "Usher"||roleName=="Client") {
-                      AppUtils.showFlushBar(
-                          "You don't have permission to marked the Attandance".tr(),
-                          context);
+                    if (roleName == "Usher" || roleName == "Client") {
+                      AppUtils.showFlushBar("You don't have permission to marked the Attandance".tr(), context);
                       return;
                     }
                     var res = await Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                          const SimpleBarcodeScannerPage(),
+                          builder: (context) => const SimpleBarcodeScannerPage(),
                         ));
                     print("resssssv $res");
                     var response = jsonDecode(res);
-                    ScanQrCodePayload qrcodeResult =
-                    ScanQrCodePayload.fromJson(response);
+                    ScanQrCodePayload qrcodeResult = ScanQrCodePayload.fromJson(response);
                     print("resssssvisCheckInValue ${isCheckInValue}");
-                    qrcodeResult.type =
-                    (isCheckInValue) ? "checkIn" : "CheckOut";
+                    qrcodeResult.type = (isCheckInValue) ? "checkIn" : "CheckOut";
                     print("ScanQrCodePayload ${qrcodeResult.name}");
                     print("ScanQrCodePayload ${qrcodeResult.id}");
                     print("ScanQrCodePayload ${qrcodeResult.id}");
                     if (qrcodeResult?.name?.isNotEmpty ?? false) {
                       scanQrCodeCubit.scanQrCodeByEventId(
                         isCheckout: (isCheckInValue) ? false : true,
-                        eventModelId: (isCheckInValue)
-                            ? checkInEventModelId
-                            : checkOutEventModelId,
+                        eventModelId: (isCheckInValue) ? checkInEventModelId : checkOutEventModelId,
                         zoneId: zoneValue?.id,
                         latitude: latitude,
                         longitude: longitude,
@@ -891,8 +940,8 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
       ),
     );
   }
-  Row buildEventLogo(
-      {required BuildContext context, String? leadTime, String? logo}) {
+
+  Row buildEventLogo({required BuildContext context, String? leadTime, String? logo}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -927,22 +976,16 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
               width: SizeConfig.width(context, 0.3),
               padding: EdgeInsets.only(left: SizeConfig.width(context, 0.03)),
               decoration: BoxDecoration(
-                  color: Color(0xFF57FF491A),
-                  borderRadius:
-                      BorderRadius.circular(SizeConfig.width(context, 0.02))),
+                  color: Color(0xFF57FF491A), borderRadius: BorderRadius.circular(SizeConfig.width(context, 0.02))),
               child: ListTile(
                 contentPadding: EdgeInsets.zero,
                 title: Text(
                   "${"Lead Time".tr()} :",
-                  style: TextStyle(
-                      color: Color(0xFF57FF49),
-                      fontSize: SizeConfig.width(context, 0.03)),
+                  style: TextStyle(color: Color(0xFF57FF49), fontSize: SizeConfig.width(context, 0.03)),
                 ),
                 subtitle: Text(
                   "$leadTime ${eventDetail?.leadTimeUnit}",
-                  style: TextStyle(
-                      color: Color(0xFF57FF49),
-                      fontSize: SizeConfig.width(context, 0.03)),
+                  style: TextStyle(color: Color(0xFF57FF49), fontSize: SizeConfig.width(context, 0.03)),
                 ),
               ),
             )
@@ -970,7 +1013,7 @@ class JobWidget extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         // color: Colors.red,
-        color: const Color(0xFF1A1A1A),
+        color: GlobalColors.primaryColor,
         borderRadius: BorderRadius.circular(
           SizeConfig.width(context, 0.02),
         ),
@@ -1008,11 +1051,7 @@ class JobWidget extends StatelessWidget {
               : Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    TitleAndNameWidget(
-                        title: "Total Male Salary".tr(
-
-                        ),
-                        subtitle: "${job?.totalMaleSalary}"),
+                    TitleAndNameWidget(title: "Total Male Salary".tr(), subtitle: "${job?.totalMaleSalary}"),
                   ],
                 ),
           (job?.dailyMaleSalary == null)
@@ -1020,9 +1059,7 @@ class JobWidget extends StatelessWidget {
               : Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    TitleAndNameWidget(
-                        title: "Daily Male Salary".tr(),
-                        subtitle: "${job?.dailyMaleSalary}"),
+                    TitleAndNameWidget(title: "Daily Male Salary".tr(), subtitle: "${job?.dailyMaleSalary}"),
                   ],
                 ),
           (job?.description == null)
@@ -1060,8 +1097,7 @@ class ZonesWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        // color: Colors.red,
-        color: const Color(0xFF1A1A1A),
+        color: GlobalColors.primaryColor,
         borderRadius: BorderRadius.circular(
           SizeConfig.width(context, 0.02),
         ),
@@ -1099,9 +1135,7 @@ class ZonesWidget extends StatelessWidget {
               : Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    TitleAndNameWidget(
-                        title: "Supervisior".tr(),
-                        subtitle: "${eventDetail.manager?.name}"),
+                    TitleAndNameWidget(title: "Supervisior".tr(), subtitle: "${eventDetail.manager?.name}"),
                   ],
                 ),
           (getZone.location == null)
@@ -1109,8 +1143,7 @@ class ZonesWidget extends StatelessWidget {
               : Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    TitleAndNameWidget(
-                        title: "Location".tr(), subtitle: "${getZone.location}"),
+                    TitleAndNameWidget(title: "Location".tr(), subtitle: "${getZone.location}"),
                   ],
                 ),
           (getZone.description == null)
@@ -1175,7 +1208,7 @@ class TitleAndNameWidget extends StatelessWidget {
         ),
         subtitle: Text(
           subtitle,
-         // textAlign: TextAlign.left,
+          // textAlign: TextAlign.left,
           maxLines: maxLine ?? 1,
           style: TextStyle(
             fontSize: SizeConfig.width(

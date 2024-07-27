@@ -17,11 +17,9 @@ class _AttandaceScreenState extends State<AttandaceScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.black,
         //GlobalColors.backgroundColor,
         centerTitle: true,
         actions: [
@@ -29,8 +27,7 @@ class _AttandaceScreenState extends State<AttandaceScreen> {
             onPressed: () {
               //  Navigator.pop(context);
             },
-            icon: Image.asset("assets/icons/message_icon.png",
-                width: SizeConfig.width(context, 0.05)),
+            icon: Image.asset("assets/icons/message_icon.png", width: SizeConfig.width(context, 0.05)),
             color: Colors.white,
           ),
           IconButton(
@@ -39,13 +36,12 @@ class _AttandaceScreenState extends State<AttandaceScreen> {
             },
             icon: Padding(
               padding: EdgeInsets.only(right: SizeConfig.width(context, 0.05)),
-              child: Image.asset("assets/icons/notification.png",
-                  width: SizeConfig.width(context, 0.05)),
+              child: Image.asset("assets/icons/notification.png", width: SizeConfig.width(context, 0.05)),
             ),
             color: Colors.white,
           ),
         ],
-     /*   leading: IconButton(
+        /*   leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
           },
@@ -73,8 +69,7 @@ class _AttandaceScreenState extends State<AttandaceScreen> {
           children: List.generate(20, (index) {
             return EventsDetailTab(
               title: "Event Name",
-              subtitle:
-                  "Syracuse, Connecticut May 20, 2023 to May 21, 2023 10:00 AM to 10:00 PM",
+              subtitle: "Syracuse, Connecticut May 20, 2023 to May 21, 2023 10:00 AM to 10:00 PM",
               imagePath: "assets/icons/Event.png",
             );
           }),
@@ -96,13 +91,13 @@ class EventsDetailTab extends StatelessWidget {
   final String? imagePath;
   final String? title;
   final String? subtitle;
-final VoidCallback ?onTap;
+  final VoidCallback? onTap;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-     //   height: SizeConfig.height(context, 0.135),
+        //   height: SizeConfig.height(context, 0.135),
         width: SizeConfig.width(context, 0.9),
         margin: EdgeInsets.only(
             top: SizeConfig.height(context, 0.02),
@@ -131,7 +126,7 @@ final VoidCallback ?onTap;
               width: SizeConfig.width(context, 0.03),
             ),
             Container(
-           //   height: SizeConfig.height(context, 0.1),
+              //   height: SizeConfig.height(context, 0.1),
               // color: Colors.red,
               width: SizeConfig.width(context, 0.6),
               child: Column(

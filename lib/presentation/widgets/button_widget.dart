@@ -32,8 +32,7 @@ class SubmitButton extends StatelessWidget {
         decoration: ShapeDecoration(
           color: gradientFirstColor ?? GlobalColors.submitButtonColor,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(
-                borderWidth ?? SizeConfig.width(context, 0.025)),
+            borderRadius: BorderRadius.circular(borderWidth ?? SizeConfig.width(context, 0.025)),
           ),
         ),
         child: Center(child: child),
@@ -75,16 +74,13 @@ class ProfileButton extends StatelessWidget {
             left: SizeConfig.width(context, 0.02),
             right: SizeConfig.width(context, 0.04),
           ),
-          margin: EdgeInsets.only(
-              left: SizeConfig.width(context, 0.03),
-              right: SizeConfig.width(context, 0.05)),
+          margin: EdgeInsets.only(left: SizeConfig.width(context, 0.03), right: SizeConfig.width(context, 0.05)),
           width: width ?? SizeConfig.width(context, 0.9),
           //      height: height ?? SizeConfig.height(context, 0.08),
           decoration: ShapeDecoration(
-            color: gradientFirstColor ?? GlobalColors.profileButtonColor,
+            color: gradientFirstColor ?? GlobalColors.primaryColor,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(
-                  borderWidth ?? SizeConfig.width(context, 0.025)),
+              borderRadius: BorderRadius.circular(borderWidth ?? SizeConfig.width(context, 0.025)),
             ),
           ),
           //    alignment: Alignment.centerLeft,

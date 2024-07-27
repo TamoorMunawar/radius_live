@@ -23,7 +23,6 @@ class _ComplainScreenState extends State<ComplainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: GlobalColors.backgroundColor,
       bottomNavigationBar: BottomAppBar(
         padding: EdgeInsets.only(
           bottom: SizeConfig.height(context, 0.055),
@@ -58,14 +57,13 @@ class _ComplainScreenState extends State<ComplainScreen> {
       appBar: AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
-        backgroundColor: GlobalColors.backgroundColor,
         centerTitle: true,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
           },
           icon: Padding(
-            padding: EdgeInsets.only(left: SizeConfig.width(context, 0.05),right:  SizeConfig.width(context, 0.05)),
+            padding: EdgeInsets.only(left: SizeConfig.width(context, 0.05), right: SizeConfig.width(context, 0.05)),
             child: Icon(
               Icons.arrow_back_ios,
               size: SizeConfig.width(context, 0.05),
@@ -93,15 +91,16 @@ class _ComplainScreenState extends State<ComplainScreen> {
 
               color: Colors.transparent,
               shadowColor: const Color(0xff006DFC).withOpacity(0.16),
-              child: DropdownButtonFormField<String>(dropdownColor: GlobalColors.backgroundColor,
-                padding: EdgeInsets.only(
-                    left: SizeConfig.width(context, 0.07),
-                    right: SizeConfig.width(context, 0.07)),
+              child: DropdownButtonFormField<String>(
+                dropdownColor: GlobalColors.backgroundColor,
+                padding: EdgeInsets.only(left: SizeConfig.width(context, 0.07), right: SizeConfig.width(context, 0.07)),
                 items: countryList.map((String item) {
                   return DropdownMenuItem<String>(
-
                     value: item,
-                    child: Text(item ?? "",style: TextStyle(color: GlobalColors.textFieldHintColor),),
+                    child: Text(
+                      item ?? "",
+                      style: TextStyle(color: GlobalColors.textFieldHintColor),
+                    ),
                   );
                 }).toList(),
                 value: country,
@@ -115,9 +114,9 @@ class _ComplainScreenState extends State<ComplainScreen> {
                     color: GlobalColors.textFieldHintColor,
                   ),
                   border: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.yellow
-                      //    color: GlobalColors.ftsTextColor,
-                    ),
+                    borderSide: const BorderSide(color: GlobalColors.submitButtonColor
+                        //    color: GlobalColors.ftsTextColor,
+                        ),
                     borderRadius: BorderRadius.circular(
                       SizeConfig.width(context, 0.03),
                     ),
@@ -149,15 +148,16 @@ class _ComplainScreenState extends State<ComplainScreen> {
 
               color: Colors.transparent,
               shadowColor: const Color(0xff006DFC).withOpacity(0.16),
-              child: DropdownButtonFormField<String>(dropdownColor: GlobalColors.backgroundColor,
-                padding: EdgeInsets.only(
-                    left: SizeConfig.width(context, 0.07),
-                    right: SizeConfig.width(context, 0.07)),
+              child: DropdownButtonFormField<String>(
+                dropdownColor: GlobalColors.backgroundColor,
+                padding: EdgeInsets.only(left: SizeConfig.width(context, 0.07), right: SizeConfig.width(context, 0.07)),
                 items: countryList.map((String item) {
                   return DropdownMenuItem<String>(
-
                     value: item,
-                    child: Text(item ?? "",style: TextStyle(color: GlobalColors.textFieldHintColor),),
+                    child: Text(
+                      item ?? "",
+                      style: TextStyle(color: GlobalColors.textFieldHintColor),
+                    ),
                   );
                 }).toList(),
                 value: country,
@@ -171,9 +171,9 @@ class _ComplainScreenState extends State<ComplainScreen> {
                     color: GlobalColors.textFieldHintColor,
                   ),
                   border: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.yellow
-                      //    color: GlobalColors.ftsTextColor,
-                    ),
+                    borderSide: const BorderSide(color: GlobalColors.submitButtonColor
+                        //    color: GlobalColors.ftsTextColor,
+                        ),
                     borderRadius: BorderRadius.circular(
                       SizeConfig.width(context, 0.03),
                     ),
@@ -200,7 +200,8 @@ class _ComplainScreenState extends State<ComplainScreen> {
             SizedBox(
               height: SizeConfig.height(context, 0.02),
             ),
-            RadiusTextField(maxLength: 9,
+            RadiusTextField(
+              maxLength: 9,
               controller: _currentPasswordController,
               hintText: 'Type Message'.tr(),
               validator: (String? value) {

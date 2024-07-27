@@ -30,20 +30,16 @@ class _JobDashBoardScreenState extends State<JobDashBoardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: GlobalColors.backgroundColor,
       appBar: AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
-        backgroundColor: GlobalColors.backgroundColor,
         centerTitle: true,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
           },
           icon: Padding(
-            padding: EdgeInsets.only(
-                left: SizeConfig.width(context, 0.05),
-                right: SizeConfig.width(context, 0.05)),
+            padding: EdgeInsets.only(left: SizeConfig.width(context, 0.05), right: SizeConfig.width(context, 0.05)),
             child: Icon(
               Icons.arrow_back_ios,
               size: SizeConfig.width(context, 0.05),
@@ -141,8 +137,7 @@ class _JobDashBoardScreenState extends State<JobDashBoardScreen> {
           ),
           buildDividerWidget(context: context),
           Expanded(
-            child: BlocConsumer<DashboardCubit, DashboardState>(
-                builder: (context, state) {
+            child: BlocConsumer<DashboardCubit, DashboardState>(builder: (context, state) {
               if (state is DashboardDetailLoading) {
                 return Flexible(flex: 8, child: const LoadingWidget());
               }
@@ -154,7 +149,7 @@ class _JobDashBoardScreenState extends State<JobDashBoardScreen> {
                   fit: FlexFit.tight,
                   child: ListView.separated(
                       separatorBuilder: (context, index) {
-                        return           buildDividerWidget(context: context);
+                        return buildDividerWidget(context: context);
                       },
                       itemCount: state.jobDashboard.length,
                       itemBuilder: (context, index) {
@@ -186,9 +181,7 @@ class _JobDashBoardScreenState extends State<JobDashBoardScreen> {
                                     //   donationHistoryItem.donationDate ?? '',
                                     // ),
                                     style: TextStyle(
-                                        color: GlobalColors.whiteColor,
-                                        fontSize:
-                                            SizeConfig.width(context, 0.035)),
+                                        color: GlobalColors.whiteColor, fontSize: SizeConfig.width(context, 0.035)),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
@@ -202,9 +195,7 @@ class _JobDashBoardScreenState extends State<JobDashBoardScreen> {
                                     //   donationHistoryItem.donationDate ?? '',
                                     // ),
                                     style: TextStyle(
-                                        color: GlobalColors.whiteColor,
-                                        fontSize:
-                                            SizeConfig.width(context, 0.035)),
+                                        color: GlobalColors.whiteColor, fontSize: SizeConfig.width(context, 0.035)),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
@@ -218,9 +209,7 @@ class _JobDashBoardScreenState extends State<JobDashBoardScreen> {
                                     //   donationHistoryItem.donationDate ?? '',
                                     // ),
                                     style: TextStyle(
-                                        color: GlobalColors.whiteColor,
-                                        fontSize:
-                                            SizeConfig.width(context, 0.035)),
+                                        color: GlobalColors.whiteColor, fontSize: SizeConfig.width(context, 0.035)),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
@@ -236,8 +225,7 @@ class _JobDashBoardScreenState extends State<JobDashBoardScreen> {
                                     style: TextStyle(
                                         fontWeight: FontWeight.w700,
                                         color: GlobalColors.submitButtonColor,
-                                        fontSize:
-                                            SizeConfig.width(context, 0.035)),
+                                        fontSize: SizeConfig.width(context, 0.035)),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
@@ -262,10 +250,9 @@ class _JobDashBoardScreenState extends State<JobDashBoardScreen> {
   }
 }
 
-Widget buildDividerWidget({required BuildContext context,EdgeInsetsGeometry ?padding}) {
+Widget buildDividerWidget({required BuildContext context, EdgeInsetsGeometry? padding}) {
   return Padding(
-    padding: padding??EdgeInsets.symmetric(
-        horizontal: SizeConfig.width(context, 0.05)),
+    padding: padding ?? EdgeInsets.symmetric(horizontal: SizeConfig.width(context, 0.05)),
     child: Divider(
       color: Colors.white.withOpacity(0.3),
     ),

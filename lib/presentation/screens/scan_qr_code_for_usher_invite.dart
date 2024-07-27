@@ -27,8 +27,7 @@ class ScanQrCodeForUsherInvite extends StatefulWidget {
   final UsherInviteScreenArgs args;
 
   @override
-  State<ScanQrCodeForUsherInvite> createState() =>
-      _ScanQrCodeForUsherInviteState();
+  State<ScanQrCodeForUsherInvite> createState() => _ScanQrCodeForUsherInviteState();
 }
 
 class _ScanQrCodeForUsherInviteState extends State<ScanQrCodeForUsherInvite> {
@@ -73,8 +72,7 @@ class _ScanQrCodeForUsherInviteState extends State<ScanQrCodeForUsherInvite> {
 
     if (permission == LocationPermission.deniedForever) {
       // Permissions are denied forever, handle appropriately.
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
+      return Future.error('Location permissions are permanently denied, we cannot request permissions.');
     }
 
     // When we reach here, permissions are granted and we can
@@ -104,22 +102,16 @@ class _ScanQrCodeForUsherInviteState extends State<ScanQrCodeForUsherInvite> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.black,
-        //GlobalColors.backgroundColor,
         centerTitle: true,
-
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
           },
           icon: Padding(
-            padding: EdgeInsets.only(
-                left: SizeConfig.width(context, 0.05),
-                right: SizeConfig.width(context, 0.05)),
+            padding: EdgeInsets.only(left: SizeConfig.width(context, 0.05), right: SizeConfig.width(context, 0.05)),
             child: Icon(
               Icons.arrow_back_ios,
               size: SizeConfig.width(context, 0.05),
@@ -183,8 +175,7 @@ class _ScanQrCodeForUsherInviteState extends State<ScanQrCodeForUsherInvite> {
                                   value: item,
                                   child: Text(
                                     item.categoryName ?? "",
-                                    style: TextStyle(
-                                        color: GlobalColors.textFieldHintColor),
+                                    style: TextStyle(color: GlobalColors.textFieldHintColor),
                                   ),
                                 );
                               }).toList(),
@@ -194,10 +185,7 @@ class _ScanQrCodeForUsherInviteState extends State<ScanQrCodeForUsherInvite> {
                                   jobDropDownValue = null;
                                   zoneValue = value;
                                 });
-                                jobCubit.getJob(
-                                    eventModelId: widget.args.eventId,
-                                    zoneId: zoneValue?.id,
-                                    isZone: true);
+                                jobCubit.getJob(eventModelId: widget.args.eventId, zoneId: zoneValue?.id, isZone: true);
                               },
                               decoration: InputDecoration(
                                 filled: false,
@@ -206,8 +194,7 @@ class _ScanQrCodeForUsherInviteState extends State<ScanQrCodeForUsherInvite> {
                                   color: GlobalColors.textFieldHintColor,
                                 ),
                                 border: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                      color: Colors.yellow
+                                  borderSide: const BorderSide(color: GlobalColors.submitButtonColor
                                       //    color: GlobalColors.ftsTextColor,
                                       ),
                                   borderRadius: BorderRadius.circular(
@@ -224,8 +211,7 @@ class _ScanQrCodeForUsherInviteState extends State<ScanQrCodeForUsherInvite> {
                                   ),
                                 ),
                               ),
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
                               validator: (value) {
                                 if (value == null) {
                                   return 'Please select a Zone'.tr();
@@ -263,8 +249,7 @@ class _ScanQrCodeForUsherInviteState extends State<ScanQrCodeForUsherInvite> {
                                   value: item,
                                   child: Text(
                                     item.name ?? "",
-                                    style: TextStyle(
-                                        color: GlobalColors.textFieldHintColor),
+                                    style: TextStyle(color: GlobalColors.textFieldHintColor),
                                   ),
                                 );
                               }).toList(),
@@ -279,8 +264,7 @@ class _ScanQrCodeForUsherInviteState extends State<ScanQrCodeForUsherInvite> {
                                   color: GlobalColors.textFieldHintColor,
                                 ),
                                 border: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                      color: Colors.yellow
+                                  borderSide: const BorderSide(color: GlobalColors.submitButtonColor
                                       //    color: GlobalColors.ftsTextColor,
                                       ),
                                   borderRadius: BorderRadius.circular(
@@ -297,8 +281,7 @@ class _ScanQrCodeForUsherInviteState extends State<ScanQrCodeForUsherInvite> {
                                   ),
                                 ),
                               ),
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
                               validator: (value) {
                                 if (value == null) {
                                   return 'Please select a Job'.tr();
@@ -322,8 +305,7 @@ class _ScanQrCodeForUsherInviteState extends State<ScanQrCodeForUsherInvite> {
                     BlocListener<ScanQrCodeCubit, ScanQrCodeState>(
                       listener: (context, state) {
                         if (state is ScanQrcodeForUsherInviteSuccess) {
-                          print(
-                              "ssssssssssssssssssssssssssssssssdfdfdfdffffffffff");
+                          print("ssssssssssssssssssssssssssssssssdfdfdfdffffffffff");
                           scanQrCodeCubit.scanQrCodeByEventId(
                             latitude: latitude,
                             eventModelId: widget.args.eventId,
@@ -355,9 +337,7 @@ class _ScanQrCodeForUsherInviteState extends State<ScanQrCodeForUsherInvite> {
                             setState(() {
                               isLoading = false;
                             });
-                            AppUtils.showFlushBar(
-                                "Usher Check In Marked SuccessFully".tr(),
-                                context);
+                            AppUtils.showFlushBar("Usher Check In Marked SuccessFully".tr(), context);
                           }
                         }
                         if (state is ScanQrcodeFailure) {
@@ -376,16 +356,14 @@ class _ScanQrCodeForUsherInviteState extends State<ScanQrCodeForUsherInvite> {
                       onPressed: () async {
                         if (formKey.currentState!.validate()) {
                           if (zoneValue == null) {
-                            AppUtils.showFlushBar(
-                                "Please select a Zone".tr(), context);
+                            AppUtils.showFlushBar("Please select a Zone".tr(), context);
                             return;
                           }
                           if (jobDropDownValue == null) {
-                            AppUtils.showFlushBar(
-                                "Please select a Job".tr(), context);
+                            AppUtils.showFlushBar("Please select a Job".tr(), context);
                             return;
                           }
-                     zoneSeatsCubit.zoneSeats(zoneId: zoneValue?.id);
+                          zoneSeatsCubit.zoneSeats(zoneId: zoneValue?.id);
                         }
                       },
                       child: BlocConsumer<ZoneSeatsCubit, ZoneSeatsState>(
@@ -394,19 +372,15 @@ class _ScanQrCodeForUsherInviteState extends State<ScanQrCodeForUsherInvite> {
                             AppUtils.showFlushBar(state.errorMessage, context);
                           }
                           if (state is ZoneSeatsSuccess) {
-
                             var res = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                  const SimpleBarcodeScannerPage(),
+                                  builder: (context) => const SimpleBarcodeScannerPage(),
                                 ));
                             print("resssssv $res");
                             var response = jsonDecode(res);
-                            qrcodeResult =
-                                ScanQrCodeUsherInvitePayload.fromJson(response);
-                            qrcodeResultData =
-                                ScanQrCodePayload.fromJson(response);
+                            qrcodeResult = ScanQrCodeUsherInvitePayload.fromJson(response);
+                            qrcodeResultData = ScanQrCodePayload.fromJson(response);
 
                             if (kDebugMode) {
                               print("ScanQrCodePayload ${qrcodeResult?.name}");
@@ -449,7 +423,6 @@ class _ScanQrCodeForUsherInviteState extends State<ScanQrCodeForUsherInvite> {
                         },
                       ),
                     ),
-
                   ],
                 ),
               ),

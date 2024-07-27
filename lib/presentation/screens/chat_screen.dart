@@ -14,11 +14,9 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.black,
         //GlobalColors.backgroundColor,
         centerTitle: true,
         actions: [
@@ -26,8 +24,7 @@ class _ChatScreenState extends State<ChatScreen> {
             onPressed: () {
               //  Navigator.pop(context);
             },
-            icon: Image.asset("assets/icons/message_icon.png",
-                width: SizeConfig.width(context, 0.05)),
+            icon: Image.asset("assets/icons/message_icon.png", width: SizeConfig.width(context, 0.05)),
             color: Colors.white,
           ),
           IconButton(
@@ -36,8 +33,7 @@ class _ChatScreenState extends State<ChatScreen> {
             },
             icon: Padding(
               padding: EdgeInsets.only(right: SizeConfig.width(context, 0.05)),
-              child: Image.asset("assets/icons/notification.png",
-                  width: SizeConfig.width(context, 0.05)),
+              child: Image.asset("assets/icons/notification.png", width: SizeConfig.width(context, 0.05)),
             ),
             color: Colors.white,
           ),
@@ -47,7 +43,7 @@ class _ChatScreenState extends State<ChatScreen> {
             Navigator.pop(context);
           },
           icon: Padding(
-            padding: EdgeInsets.only(left: SizeConfig.width(context, 0.05),right:  SizeConfig.width(context, 0.05)),
+            padding: EdgeInsets.only(left: SizeConfig.width(context, 0.05), right: SizeConfig.width(context, 0.05)),
             child: Icon(
               Icons.arrow_back_ios,
               size: SizeConfig.width(context, 0.05),
@@ -68,15 +64,11 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-          shape: RoundedRectangleBorder(
-              borderRadius:
-                  BorderRadius.circular(SizeConfig.width(context, 0.1))),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(SizeConfig.width(context, 0.1))),
           backgroundColor: GlobalColors.submitButtonColor,
-          child: Image.asset("assets/icons/message.png",
-              width: SizeConfig.width(context, 0.07)),
+          child: Image.asset("assets/icons/message.png", width: SizeConfig.width(context, 0.07)),
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => MessageScreen()));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => MessageScreen()));
           }),
       body: SingleChildScrollView(
         child: Column(
@@ -106,19 +98,16 @@ class _ChatScreenState extends State<ChatScreen> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Padding(
-                    padding:
-                        EdgeInsets.only(right: SizeConfig.width(context, 0.01)),
+                    padding: EdgeInsets.only(right: SizeConfig.width(context, 0.01)),
                     child: Text(
                       "04:09 PM",
-                      style: TextStyle(
-                          fontSize: SizeConfig.width(context, 0.023),
-                          color: GlobalColors.textFieldHintColor),
+                      style:
+                          TextStyle(fontSize: SizeConfig.width(context, 0.023), color: GlobalColors.textFieldHintColor),
                     ),
                   ),
                   ListTile(
                     leading: CircleAvatar(
-                      backgroundImage:
-                          AssetImage("assets/icons/profile_icon.png"),
+                      backgroundImage: AssetImage("assets/icons/profile_icon.png"),
                       radius: SizeConfig.width(context, 0.055),
                     ),
                     title: Text(

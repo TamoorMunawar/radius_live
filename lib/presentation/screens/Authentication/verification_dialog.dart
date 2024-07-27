@@ -95,9 +95,9 @@ class _VerificationDialogState extends State<VerificationDialog> {
                     activeColor: GlobalColors.submitButtonColor,
                     inactiveColor: GlobalColors.whiteColor,
                     disabledColor: GlobalColors.whiteColor,
-                    selectedFillColor: GlobalColors.profileButtonColor,
-                    activeFillColor: GlobalColors.profileButtonColor,
-                    inactiveFillColor: GlobalColors.profileButtonColor,
+                    selectedFillColor: GlobalColors.primaryColor,
+                    activeFillColor: GlobalColors.primaryColor,
+                    inactiveFillColor: GlobalColors.primaryColor,
                     selectedColor: GlobalColors.submitButtonColor),
                 cursorColor: GlobalColors.whiteColor,
 

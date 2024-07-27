@@ -36,14 +36,12 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: GlobalColors.backgroundColor,
       bottomNavigationBar: BottomAppBar(
         padding: EdgeInsets.only(
           bottom: SizeConfig.height(context, 0.055),
           //  right: SizeConfig.width(context, 0.07),
         ),
         height: SizeConfig.height(context, 0.12),
-        color: GlobalColors.backgroundColor,
 
         // color: Colors.white,
         elevation: 0,
@@ -68,10 +66,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   AppUtils.showFlushBar(state.errorMessage, context);
                 }
                 if (state is ChangePasswordSuccess) {
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, AppRoutes.loginScreenRoute, (route) => false);
-                  AppUtils.showFlushBar(
-                      "Password Has been change Successfully".tr(), context);
+                  Navigator.pushNamedAndRemoveUntil(context, AppRoutes.loginScreenRoute, (route) => false);
+                  AppUtils.showFlushBar("Password Has been change Successfully".tr(), context);
                 }
               },
               builder: (context, state) {
@@ -94,14 +90,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       appBar: AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
-        backgroundColor: GlobalColors.backgroundColor,
         centerTitle: true,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
           },
           icon: Padding(
-            padding: EdgeInsets.only(left: SizeConfig.width(context, 0.05),right:  SizeConfig.width(context, 0.05)),
+            padding: EdgeInsets.only(left: SizeConfig.width(context, 0.05), right: SizeConfig.width(context, 0.05)),
             child: Icon(
               Icons.arrow_back_ios,
               size: SizeConfig.width(context, 0.05),
@@ -126,7 +121,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               SizedBox(
                 height: SizeConfig.height(context, 0.04),
               ),
-              RadiusTextField(isPassword: true,
+              RadiusTextField(
+                isPassword: true,
                 controller: _currentPasswordController,
                 hintText: 'Current Password'.tr(),
                 validator: (String? value) {
@@ -139,7 +135,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               SizedBox(
                 height: SizeConfig.height(context, 0.02),
               ),
-              RadiusTextField(isPassword: true,
+              RadiusTextField(
+                isPassword: true,
                 controller: _newPasswordController,
                 hintText: 'New Password'.tr(),
                 validator: (String? value) {
@@ -152,13 +149,15 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               SizedBox(
                 height: SizeConfig.height(context, 0.02),
               ),
-              RadiusTextField(isPassword: true,
+              RadiusTextField(
+                isPassword: true,
                 controller: _confirmPasswordController,
                 hintText: 'Confirm New Password'.tr(),
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
                     return 'Please Enter Confirm Password'.tr();
-                  }if (value!=_newPasswordController.text) {
+                  }
+                  if (value != _newPasswordController.text) {
                     return 'Password should be same'.tr();
                   }
                   return null;

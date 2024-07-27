@@ -17,11 +17,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.black,
         //GlobalColors.backgroundColor,
         centerTitle: true,
         actions: [
@@ -29,8 +27,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             onPressed: () {
               //  Navigator.pop(context);
             },
-            icon: Image.asset("assets/icons/message_icon.png",
-                width: SizeConfig.width(context, 0.05)),
+            icon: Image.asset("assets/icons/message_icon.png", width: SizeConfig.width(context, 0.05)),
             color: Colors.white,
           ),
           IconButton(
@@ -39,8 +36,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             },
             icon: Padding(
               padding: EdgeInsets.only(right: SizeConfig.width(context, 0.05)),
-              child: Image.asset("assets/icons/notification.png",
-                  width: SizeConfig.width(context, 0.05)),
+              child: Image.asset("assets/icons/notification.png", width: SizeConfig.width(context, 0.05)),
             ),
             color: Colors.white,
           ),
@@ -50,7 +46,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             Navigator.pop(context);
           },
           icon: Padding(
-            padding: EdgeInsets.only(left: SizeConfig.width(context, 0.05),right:  SizeConfig.width(context, 0.05)),
+            padding: EdgeInsets.only(left: SizeConfig.width(context, 0.05), right: SizeConfig.width(context, 0.05)),
             child: Icon(
               Icons.arrow_back_ios,
               size: SizeConfig.width(context, 0.05),
@@ -74,20 +70,19 @@ class _NotificationScreenState extends State<NotificationScreen> {
             return Container(
               height: SizeConfig.height(context, 0.135),
               width: SizeConfig.width(context, 0.9),
-
               margin: EdgeInsets.only(
                   top: SizeConfig.height(context, 0.02),
                   left: SizeConfig.width(context, 0.05),
                   right: SizeConfig.width(context, 0.05)),
               decoration: BoxDecoration(
-                border: Border.all(color: GlobalColors.textFieldHintColor),
+                  border: Border.all(color: GlobalColors.textFieldHintColor),
                   color: GlobalColors.backgroundColor,
                   borderRadius: BorderRadius.circular(
                     SizeConfig.width(context, 0.02),
                   )),
               padding: EdgeInsets.only(
                 top: SizeConfig.height(context, 0.01),
-             //   bottom: SizeConfig.height(context, 0.01),
+                //   bottom: SizeConfig.height(context, 0.01),
                 left: SizeConfig.width(context, 0.02),
                 right: SizeConfig.width(context, 0.02),
               ),
@@ -96,13 +91,15 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Padding(
-                    padding:  EdgeInsets.only(right: SizeConfig.width(context, 0.01)),
-                    child: Text("04:09 PM",style: TextStyle(color: GlobalColors.textFieldHintColor),),
+                    padding: EdgeInsets.only(right: SizeConfig.width(context, 0.01)),
+                    child: Text(
+                      "04:09 PM",
+                      style: TextStyle(color: GlobalColors.textFieldHintColor),
+                    ),
                   ),
                   ListTile(
                     leading: CircleAvatar(
                       backgroundImage: AssetImage("assets/icons/profile_icon.png"),
-
                       radius: SizeConfig.width(context, 0.055),
                     ),
                     title: Text(

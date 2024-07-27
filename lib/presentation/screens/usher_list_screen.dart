@@ -94,12 +94,9 @@ class _UsherListScreenState extends State<UsherListScreen> {
   Widget build(BuildContext context) {
     print("usher List length ${usherList.length}");
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.black,
-        //GlobalColors.backgroundColor,
         centerTitle: true,
 
         /*   leading: IconButton(

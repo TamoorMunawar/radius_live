@@ -10,8 +10,7 @@ class NotificationSettingScreen extends StatefulWidget {
   const NotificationSettingScreen({super.key});
 
   @override
-  State<NotificationSettingScreen> createState() =>
-      _NotificationSettingScreenState();
+  State<NotificationSettingScreen> createState() => _NotificationSettingScreenState();
 }
 
 class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
@@ -22,26 +21,23 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.black,
-        //GlobalColors.backgroundColor,
         centerTitle: true,
-leading: IconButton(
-  onPressed: () {
-    Navigator.pop(context);
-  },
-  icon: Padding(
-    padding: EdgeInsets.only(left: SizeConfig.width(context, 0.05),right:  SizeConfig.width(context, 0.05)),
-    child: Icon(
-      Icons.arrow_back_ios,
-      size: SizeConfig.width(context, 0.05),
-    ),
-  ),
-  color: Colors.white,
-),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Padding(
+            padding: EdgeInsets.only(left: SizeConfig.width(context, 0.05), right: SizeConfig.width(context, 0.05)),
+            child: Icon(
+              Icons.arrow_back_ios,
+              size: SizeConfig.width(context, 0.05),
+            ),
+          ),
+          color: Colors.white,
+        ),
         title: Text(
           "Notification Settings".tr(),
           style: TextStyle(
@@ -76,10 +72,10 @@ leading: IconButton(
                     ),
                   ),
                   Switch(
-                      activeColor: Color(0xFFDAA35A),
-                      activeTrackColor: Colors.black,
-                      inactiveThumbColor: Color(0xFFDAA35A),
-                      inactiveTrackColor: Colors.black,
+                      activeColor: GlobalColors.primaryColor,
+                      activeTrackColor: GlobalColors.backgroundColor,
+                      inactiveThumbColor: GlobalColors.submitButtonColor,
+                      inactiveTrackColor: GlobalColors.backgroundColor,
                       value: allFlag,
                       onChanged: (bool value) {
                         setState(() {
@@ -108,10 +104,10 @@ leading: IconButton(
                     ),
                   ),
                   Switch(
-                      activeColor: const Color(0xFFDAA35A),
-                      activeTrackColor: Colors.black,
-                      inactiveThumbColor: Color(0xFFDAA35A),
-                      inactiveTrackColor: Colors.black,
+                      activeColor: GlobalColors.primaryColor,
+                      activeTrackColor: GlobalColors.backgroundColor,
+                      inactiveThumbColor: GlobalColors.submitButtonColor,
+                      inactiveTrackColor: GlobalColors.backgroundColor,
                       value: alterFlag,
                       onChanged: (bool value) {
                         setState(() {
@@ -142,10 +138,10 @@ leading: IconButton(
                     ),
                   ),
                   Switch(
-                      activeColor: Color(0xFFDAA35A),
-                      activeTrackColor: Colors.black,
-                      inactiveThumbColor: Color(0xFFDAA35A),
-                      inactiveTrackColor: Colors.black,
+                      activeColor: GlobalColors.primaryColor,
+                      activeTrackColor: GlobalColors.backgroundColor,
+                      inactiveThumbColor: GlobalColors.submitButtonColor,
+                      inactiveTrackColor: GlobalColors.backgroundColor,
                       value: complainFlag,
                       onChanged: (bool value) {
                         setState(() {
@@ -195,16 +191,13 @@ class NotificationSettingButton extends StatelessWidget {
           left: SizeConfig.width(context, 0.04),
           right: SizeConfig.width(context, 0.04),
         ),
-        margin: EdgeInsets.only(
-            left: SizeConfig.width(context, 0.05),
-            right: SizeConfig.width(context, 0.05)),
+        margin: EdgeInsets.only(left: SizeConfig.width(context, 0.05), right: SizeConfig.width(context, 0.05)),
         width: width ?? SizeConfig.width(context, 0.9),
         height: height ?? SizeConfig.height(context, 0.09),
         decoration: ShapeDecoration(
-          color: gradientFirstColor ?? GlobalColors.profileButtonColor,
+          color: gradientFirstColor ?? GlobalColors.primaryColor,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(
-                borderWidth ?? SizeConfig.width(context, 0.025)),
+            borderRadius: BorderRadius.circular(borderWidth ?? SizeConfig.width(context, 0.025)),
           ),
         ),
         alignment: Alignment.centerLeft,

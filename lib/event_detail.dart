@@ -97,11 +97,11 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: GlobalColors.backgroundColor,
       appBar: AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.black,
+        backgroundColor: GlobalColors.primaryColor,
         //GlobalColors.backgroundColor,
         centerTitle: true,
 
@@ -727,7 +727,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                               color: GlobalColors.textFieldHintColor,
                             ),
                             border: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.yellow
+                              borderSide: const BorderSide(color: GlobalColors.submitButtonColor
                                   //    color: GlobalColors.ftsTextColor,
                                   ),
                               borderRadius: BorderRadius.circular(
