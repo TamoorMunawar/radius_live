@@ -498,7 +498,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                         ),
                         (widget.args.finalInvitation && roleName != "Usher")
                             ? SubmitButton(
-                                gradientFirstColor: const Color(0xFFC1954A),
+                                gradientFirstColor: GlobalColors.submitButtonColor,
                                 width: SizeConfig.width(context, 0.85),
                                 onPressed: () async {
                                   Navigator.pushNamed(
@@ -766,7 +766,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                   height: SizeConfig.height(context, 0.03),
                 ),
                 SubmitButton(
-                  gradientFirstColor: const Color(0xFFC1954A),
+                  gradientFirstColor: GlobalColors.submitButtonColor,
                   width: SizeConfig.width(context, 0.85),
                   onPressed: () async {
                     if (roleName == "Usher" || roleName == "Client") {

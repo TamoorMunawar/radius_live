@@ -259,58 +259,58 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
         children: [
           Column(
             children: [
-              Padding(
-                padding: EdgeInsets.only(
-                    top: SizeConfig.height(context, 0.02),
-                    bottom: SizeConfig.height(context, 0.02),
-                    left: SizeConfig.width(context, 0.05),
-                    right: SizeConfig.width(context, 0.05)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: List.generate(2, (index) {
-                    return GestureDetector(
-                      onTap: () async {
-                        for (var element in tabList) {
-                          element.isSelected = false;
-                        }
-                        setState(() {
-                          tabList[index].isSelected = true;
-                          showAlert = false;
-                          finalCount = 1;
-                          count = 1;
-                          finalEventList.clear();
-                          finalEventList = [];
-                          zoneValue = null;
-                          //   isLoadingMoreCheckout=true;
-                        });
-                        getFinalEventData();
-                      },
-                      child: Container(
-                        height: SizeConfig.height(context, 0.05),
-                        width: SizeConfig.width(context, 0.44),
-                        decoration: BoxDecoration(
-                          color: tabList[index].isSelected ?? false
-                              ? GlobalColors.submitButtonColor
-                              : GlobalColors.submitButtonTextColor,
-                          borderRadius: BorderRadius.circular(
-                            SizeConfig.width(context, 0.02),
-                          ),
-                        ),
-                        child: Center(
-                            child: Text(
-                          tabList[index].title ?? "",
-                          style: TextStyle(
-                              color: tabList[index].isSelected ?? false
-                                  ? GlobalColors.whiteColor
-                                  : GlobalColors.submitButtonColor,
-                              fontWeight: FontWeight.w500,
-                              fontSize: SizeConfig.width(context, 0.03)),
-                        )),
-                      ),
-                    );
-                  }),
-                ),
-              ),
+              // Padding(
+              //   padding: EdgeInsets.only(
+              //       top: SizeConfig.height(context, 0.02),
+              //       bottom: SizeConfig.height(context, 0.02),
+              //       left: SizeConfig.width(context, 0.05),
+              //       right: SizeConfig.width(context, 0.05)),
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //     children: List.generate(2, (index) {
+              //       return GestureDetector(
+              //         onTap: () async {
+              //           for (var element in tabList) {
+              //             element.isSelected = false;
+              //           }
+              //           setState(() {
+              //             tabList[index].isSelected = true;
+              //             showAlert = false;
+              //             finalCount = 1;
+              //             count = 1;
+              //             finalEventList.clear();
+              //             finalEventList = [];
+              //             zoneValue = null;
+              //             //   isLoadingMoreCheckout=true;
+              //           });
+              //           getFinalEventData();
+              //         },
+              //         child: Container(
+              //           height: SizeConfig.height(context, 0.05),
+              //           width: SizeConfig.width(context, 0.44),
+              //           decoration: BoxDecoration(
+              //             color: tabList[index].isSelected ?? false
+              //                 ? GlobalColors.submitButtonColor
+              //                 : GlobalColors.submitButtonTextColor,
+              //             borderRadius: BorderRadius.circular(
+              //               SizeConfig.width(context, 0.02),
+              //             ),
+              //           ),
+              //           child: Center(
+              //               child: Text(
+              //             tabList[index].title ?? "",
+              //             style: TextStyle(
+              //                 color: tabList[index].isSelected ?? false
+              //                     ? GlobalColors.whiteColor
+              //                     : GlobalColors.submitButtonColor,
+              //                 fontWeight: FontWeight.w500,
+              //                 fontSize: SizeConfig.width(context, 0.03)),
+              //           )),
+              //         ),
+              //       );
+              //     }),
+              //   ),
+              // ),
               (isLoadingMoreCheckout)
                   ? const LoadingWidget()
                   : (finalEventList.isEmpty)
@@ -476,7 +476,7 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
                 ),
               ),
               Text(
-                "Zone".tr(),
+                (isCheckInValue) ? 'Check In'.tr() : 'Check out'.tr(),
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
@@ -486,77 +486,77 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
               SizedBox(
                 height: SizeConfig.height(context, 0.02),
               ),
-              Material(
-                color: Colors.transparent,
-                shadowColor: const Color(0xff006DFC).withOpacity(0.16),
-                child: BlocConsumer<ZoneCubit, ZoneState>(
-                  builder: (context, state) {
-                    if (state is ZoneLoading) {
-                      return const LoadingWidget();
-                    }
-                    if (state is ZoneSuccess) {
-                      return DropdownButtonFormField<Zone>(
-                        isExpanded: true,
-                        dropdownColor: GlobalColors.backgroundColor,
-                        padding: const EdgeInsets.only(),
-                        items: state.result.map((Zone item) {
-                          return DropdownMenuItem<Zone>(
-                            value: item,
-                            child: Text(
-                              item.categoryName ?? "",
-                              style: TextStyle(color: GlobalColors.textFieldHintColor),
-                            ),
-                          );
-                        }).toList(),
-                        value: zoneValue,
-                        onChanged: (value) {
-                          setState(() {
-                            zoneValue = value;
-                            print("zone id ${zoneValue?.id} ");
-                          });
-                        },
-                        decoration: InputDecoration(
-                          filled: false,
-                          hintText: 'Select Zone'.tr(),
-                          hintStyle: TextStyle(
-                            color: GlobalColors.textFieldHintColor,
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide: const BorderSide(color: GlobalColors.submitButtonColor
-                                //    color: GlobalColors.ftsTextColor,
-                                ),
-                            borderRadius: BorderRadius.circular(
-                              SizeConfig.width(context, 0.03),
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: GlobalColors.hintTextColor,
-                              //    color: GlobalColors.ftsTextColor,
-                            ),
-                            borderRadius: BorderRadius.circular(
-                              SizeConfig.width(context, 0.03),
-                            ),
-                          ),
-                        ),
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) {
-                          if (value == null) {
-                            return 'Please select a Zone';
-                          }
-                          return null;
-                        },
-                      );
-                    }
-                    return Container();
-                  },
-                  listener: (context, state) {
-                    if (state is ZoneFailure) {
-                      AppUtils.showFlushBar(state.errorMessage, context);
-                    }
-                  },
-                ),
-              ),
+              // Material(
+              //   color: Colors.transparent,
+              //   shadowColor: const Color(0xff006DFC).withOpacity(0.16),
+              //   child: BlocConsumer<ZoneCubit, ZoneState>(
+              //     builder: (context, state) {
+              //       if (state is ZoneLoading) {
+              //         return const LoadingWidget();
+              //       }
+              //       if (state is ZoneSuccess) {
+              //         return DropdownButtonFormField<Zone>(
+              //           isExpanded: true,
+              //           dropdownColor: GlobalColors.backgroundColor,
+              //           padding: const EdgeInsets.only(),
+              //           items: state.result.map((Zone item) {
+              //             return DropdownMenuItem<Zone>(
+              //               value: item,
+              //               child: Text(
+              //                 item.categoryName ?? "",
+              //                 style: TextStyle(color: GlobalColors.textFieldHintColor),
+              //               ),
+              //             );
+              //           }).toList(),
+              //           value: zoneValue,
+              //           onChanged: (value) {
+              //             setState(() {
+              //               zoneValue = value;
+              //               print("zone id ${zoneValue?.id} ");
+              //             });
+              //           },
+              //           decoration: InputDecoration(
+              //             filled: false,
+              //             hintText: 'Select Zone'.tr(),
+              //             hintStyle: TextStyle(
+              //               color: GlobalColors.textFieldHintColor,
+              //             ),
+              //             border: OutlineInputBorder(
+              //               borderSide: const BorderSide(color: GlobalColors.submitButtonColor
+              //                   //    color: GlobalColors.ftsTextColor,
+              //                   ),
+              //               borderRadius: BorderRadius.circular(
+              //                 SizeConfig.width(context, 0.03),
+              //               ),
+              //             ),
+              //             focusedBorder: OutlineInputBorder(
+              //               borderSide: BorderSide(
+              //                 color: GlobalColors.hintTextColor,
+              //                 //    color: GlobalColors.ftsTextColor,
+              //               ),
+              //               borderRadius: BorderRadius.circular(
+              //                 SizeConfig.width(context, 0.03),
+              //               ),
+              //             ),
+              //           ),
+              //           autovalidateMode: AutovalidateMode.onUserInteraction,
+              //           validator: (value) {
+              //             if (value == null) {
+              //               return 'Please select a Zone';
+              //             }
+              //             return null;
+              //           },
+              //         );
+              //       }
+              //       return Container();
+              //     },
+              //     listener: (context, state) {
+              //       if (state is ZoneFailure) {
+              //         AppUtils.showFlushBar(state.errorMessage, context);
+              //       }
+              //     },
+              //   ),
+              // ),
               SizedBox(
                 height: SizeConfig.height(context, 0.02),
               ),
@@ -608,10 +608,10 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
 
                         bool isWithinRadius = _checkIfWithinRadius(
                             zoneLat: event.latitude, zoneLong: event.longitude, zonRadius: event.radius);
-                        if (zoneValue == null) {
-                          AppUtils.showFlushBar("Please select a Zone".tr(), context);
-                          return;
-                        }
+                        // if (zoneValue == null) {
+                        //   AppUtils.showFlushBar("Please select a Zone".tr(), context);
+                        //   return;
+                        // }
                         if (!isWithinRadius) {
                           AppUtils.showFlushBar("You are not in the Zone", context);
 
@@ -661,14 +661,14 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
                         ),
                       ))
                   : SubmitButton(
-                      gradientFirstColor: const Color(0xFFC1954A),
+                      gradientFirstColor: GlobalColors.submitButtonColor,
                       width: SizeConfig.width(context, 0.85),
                       onPressed: () async {
                         print("ssss");
-                        if (zoneValue == null) {
-                          AppUtils.showFlushBar("Please select a Zone".tr(), context);
-                          return;
-                        }
+                        // if (zoneValue == null) {
+                        //   AppUtils.showFlushBar("Please select a Zone".tr(), context);
+                        //   return;
+                        // }
                         if (roleName != "Usher" || roleName != "Client") {
                           AppUtils.showFlushBar("You don't have permission to marked the Attandance".tr(), context);
                           return;

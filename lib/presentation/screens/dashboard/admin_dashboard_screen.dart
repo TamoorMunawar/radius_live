@@ -479,7 +479,7 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
                   ],
                 ),
                 circularStrokeCap: CircularStrokeCap.round,
-                progressColor: Color(0xFFC79E52),
+                progressColor: GlobalColors.submitButtonColor,
               ),
               (roleName == "Client")
                   ? Container(
@@ -776,7 +776,7 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
                 ),
               ),
               SubmitButton(
-                gradientFirstColor: const Color(0xFFC1954A),
+                gradientFirstColor: GlobalColors.submitButtonColor,
                 onPressed: () async {
                   if (kDebugMode) {
                     print("event value zone ${state.dashboardDetail.eventId?.toInt()}");

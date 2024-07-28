@@ -346,7 +346,7 @@ class _ScanQrCodeForUsherInviteState extends State<ScanQrCodeForUsherInvite> {
                       child: Container(),
                     ),
                     SubmitButton(
-                      gradientFirstColor: const Color(0xFFC1954A),
+                      gradientFirstColor: GlobalColors.submitButtonColor,
                       width: SizeConfig.width(context, 0.85),
                       onPressed: () async {
                         if (formKey.currentState!.validate()) {
