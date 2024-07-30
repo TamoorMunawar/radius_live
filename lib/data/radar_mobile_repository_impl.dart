@@ -1685,4 +1685,45 @@ class RadarMobileRepositoryImpl implements RadarMobileRepository {
       throw Exception(e.toString().substring(11));
     }
   }
+
+  @override
+  Future<List<MyEvent>> getEventList() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      var url = Uri.parse('${NetworkUtils.baseUrl}/get-events-list');
+
+      http.Response response = await http.get(
+        url,
+        headers: authorizationHeaders(prefs),
+      );
+
+      log("repository::getEventsList::url: $url");
+
+      var responseBody = jsonDecode(response.body);
+      log("repository::getEventsList::responseBody: $responseBody\n");
+
+      // UserDetail userDetails = UserDetail.fromJson(responseBody["data"]);
+      if (responseBody["message"] == "Success") {
+        List list = responseBody['data']['data'] as List;
+        log("inside  getEventsList  ${responseBody['data']['data']}");
+        List<MyEvent> eventList = [];
+
+        if (list.isNotEmpty) {
+          for (int i = 0; i < list.length; i++) {
+            eventList.add((list[i]["id"], list[i]["event_name"]));
+          }
+        }
+        return eventList;
+      } else {
+        throw Exception(responseBody["message"]);
+      }
+    } on TimeoutException catch (_) {
+      throw Exception(noTimeOutMsg);
+    } on SocketException catch (_) {
+      throw Exception(noInternetConnectivityMsg);
+    } on Exception catch (e) {
+      log('repository::getUshersByEvent::exception = ${e.toString()}');
+      throw Exception(e.toString().substring(11));
+    }
+  }
 }

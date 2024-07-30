@@ -121,13 +121,11 @@ class CreateZoneScreenArgs {
 
 class ReviewScreenArgs {
   final int usherId;
-  final int eventId;
 
   final Department? department;
 
   ReviewScreenArgs({
     required this.usherId,
-    required this.eventId,
     required this.department,
   });
 }

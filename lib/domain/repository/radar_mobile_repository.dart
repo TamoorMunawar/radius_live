@@ -156,4 +156,7 @@ abstract class RadarMobileRepository {
   Future<List<Attandance>> getAttandance();
 
   Future<bool> addReview(ReviewPayload reviewPayload);
+  Future<List<MyEvent>> getEventList();
 }
+
+typedef MyEvent = (int id, String name);

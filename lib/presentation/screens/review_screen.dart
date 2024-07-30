@@ -6,25 +6,25 @@ import 'package:radar/constants/app_utils.dart';
 import 'package:radar/constants/colors.dart';
 import 'package:radar/constants/extensions.dart';
 import 'package:custom_rating_bar/custom_rating_bar.dart';
+import 'package:radar/data/radar_mobile_repository_impl.dart';
 import 'package:radar/domain/entities/review_payload/review_playload.dart';
+import 'package:radar/domain/repository/radar_mobile_repository.dart';
+import 'package:radar/domain/usecase/event/event_list/event_list_usecase.dart';
 import 'package:radar/presentation/cubits/review/review_cubit.dart';
 import 'package:radar/presentation/cubits/review/review_state.dart';
 import 'package:radar/presentation/widgets/LoadingWidget.dart';
 import 'package:radar/presentation/widgets/button_widget.dart';
 import 'package:radar/presentation/widgets/text_field.dart';
-
 import '../../domain/entities/ushers/Department.dart';
 
 class ReviewScreen extends StatefulWidget {
   final int usherId;
-  final int eventId;
 
   final Department? department;
   const ReviewScreen({
     super.key,
     required this.usherId,
     required this.department,
-    required this.eventId,
   });
 
   @override
@@ -35,10 +35,14 @@ class _ReviewScreenState extends State<ReviewScreen> {
   late TextEditingController _reviewController;
   double _rating = 1;
   bool _isBanned = true;
+  List<MyEvent> _eventList = [];
+  final EventListUsecase _usecase = EventListUsecase(repository: RadarMobileRepositoryImpl());
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  int? eventId;
   @override
   void initState() {
     _reviewController = TextEditingController();
+    _getEventList();
     super.initState();
   }
 
@@ -46,6 +50,15 @@ class _ReviewScreenState extends State<ReviewScreen> {
   void dispose() {
     _reviewController.dispose();
     super.dispose();
+  }
+
+  _getEventList() async {
+    _eventList = await _usecase.getEventList();
+    log(_eventList.length.toString());
+
+    setState(() {
+      eventId = _eventList[0].$1;
+    });
   }
 
   @override
@@ -96,14 +109,19 @@ class _ReviewScreenState extends State<ReviewScreen> {
                 if (!_formKey.currentState!.validate()) {
                   return;
                 }
+
                 _formKey.currentState!.save();
+                if (widget.department == null) {
+                  AppUtils.showFlushBar("Team is not assigned", context);
+                  return;
+                }
                 context.read<ReviewCubit>().addReview(ReviewPayload(
                     review: _reviewController.text,
                     rating: _rating.toInt(),
                     usherId: widget.usherId,
                     teamId: widget.department?.id ?? 0,
                     isBanned: _isBanned,
-                    eventId: widget.eventId));
+                    eventId: eventId ?? 0));
               },
               height: 0.06.sh,
               child: Text(
@@ -171,6 +189,38 @@ class _ReviewScreenState extends State<ReviewScreen> {
                     onChanged: (val) {
                       setState(() {
                         _isBanned = val!;
+                      });
+                    },
+                  ),
+                ),
+              ),
+              SizedBox(height: 0.02.sh),
+              Padding(
+                padding: EdgeInsets.only(left: 0.05.sw, right: 0.05.sw),
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: GlobalColors.hintTextColor),
+                    borderRadius: BorderRadius.circular(0.02.sw),
+                  ),
+                  child: DropdownButton<int?>(
+                    dropdownColor: GlobalColors.backgroundColor,
+                    value: eventId,
+                    isExpanded: true,
+                    underline: Container(),
+                    padding: EdgeInsets.only(left: 0.05.sw, right: 0.05.sw),
+                    items: [
+                      for (int i = 0; i < _eventList.length; i++)
+                        DropdownMenuItem(
+                          value: _eventList[i].$1,
+                          child: Text(
+                            _eventList[i].$2,
+                            style: TextStyle(color: GlobalColors.hintTextColor),
+                          ),
+                        ),
+                    ],
+                    onChanged: (val) {
+                      setState(() {
+                        eventId = val;
                       });
                     },
                   ),
