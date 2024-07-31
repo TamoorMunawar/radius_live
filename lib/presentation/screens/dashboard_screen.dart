@@ -49,6 +49,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   double percent = 0.0;
 
   Future getUserDetailsFromLocal() async {
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     roleName = prefs.getString(
           "role_name",
@@ -76,7 +77,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
 
   String? departmentValue;
   List<String> genderList = ["Male", "Female", "Other"];
-
+  String? country;
+  List<String> countryList = ["Event Complain", "General Complain"];
   @override
   void initState() {
     LogManager.info("dashboard_usecase.dart");
@@ -93,6 +95,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   @override
   void dispose() {
     _timer?.cancel();
+    _messageController.clear();
     //  departmentCubit.close();
     // attandanceCubit.close();
     // createAlertCubit.close();
@@ -214,6 +217,60 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                       ),
                     ),
                   ]),
+                ),
+                SizedBox(
+                  height: SizeConfig.height(context, 0.02),
+                ),
+                Material(
+                  color: Colors.transparent,
+                  shadowColor: const Color(0xff006DFC).withOpacity(0.16),
+                  child: DropdownButtonFormField<String>(
+                    dropdownColor: GlobalColors.backgroundColor,
+                    padding: EdgeInsets.only(),                    items: countryList.map((String item) {
+                      return DropdownMenuItem<String>(
+                        value: item,
+                        child: Text(
+                          item ?? "",
+                          style: TextStyle(color: GlobalColors.textFieldHintColor),
+                        ),
+                      );
+                    }).toList(),
+                    value: country,
+                    onChanged: (value) {
+                      setState(() => country = value);
+                    },
+                    decoration: InputDecoration(
+                      filled: false,
+                      hintText: 'Select Complain type'.tr(),
+                      hintStyle: TextStyle(
+                        color: GlobalColors.textFieldHintColor,
+                      ),
+                      border: OutlineInputBorder(
+                        borderSide: const BorderSide(color: GlobalColors.submitButtonColor
+                          //    color: GlobalColors.ftsTextColor,
+                        ),
+                        borderRadius: BorderRadius.circular(
+                          SizeConfig.width(context, 0.03),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: GlobalColors.hintTextColor,
+                          //    color: GlobalColors.ftsTextColor,
+                        ),
+                        borderRadius: BorderRadius.circular(
+                          SizeConfig.width(context, 0.03),
+                        ),
+                      ),
+                    ),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) {
+                      if (value == null) {
+                        return 'Please select a country'.tr();
+                      }
+                      return null;
+                    },
+                  ),
                 ),
                 SizedBox(
                   height: SizeConfig.height(context, 0.02),
