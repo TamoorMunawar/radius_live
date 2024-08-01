@@ -380,7 +380,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         onPressed: () async {
                           Navigator.pushNamed(context, AppRoutes.complainScreenRoute);
                         },
-                        title: 'Complain to Supervisor'.tr(),
+                        title: 'Logistics'.tr(),
                         icon: Symbols.report,
                       ),
                       SizedBox(
