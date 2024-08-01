@@ -36,6 +36,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
   double _rating = 1;
   bool _isBanned = true;
   List<MyEvent> _eventList = [];
+
   final EventListUsecase _usecase = EventListUsecase(repository: RadarMobileRepositoryImpl());
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   int? eventId;

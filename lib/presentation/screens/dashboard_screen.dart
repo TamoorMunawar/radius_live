@@ -377,7 +377,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   child: BlocConsumer<CreateAlertCubit, CreateAlertState>(
                     builder: (context, state) {
                       if (state is CreateAlertLoading) {
-                        return LoadingWidget();
+                        return const LoadingWidget();
                       }
                       return Text(
                         'Send Alert'.tr(),
