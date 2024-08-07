@@ -16,10 +16,10 @@ pluginManagement {
         gradlePluginPortal()
     }
 
-    plugins {
-        id "dev.flutter.flutter-gradle-plugin" version "1.0.0" apply false
-        id "org.jetbrains.kotlin.android" version "2.0.0" apply false // Update to correct version
-    }
+//    plugins {
+//        id "dev.flutter.flutter-gradle-plugin" version "1.0.0" apply false
+//        id "org.jetbrains.kotlin.android" version "2.0.10" apply false // Update to correct version
+//    }
 }
 
 plugins {
