@@ -98,6 +98,7 @@ class CreateJobScreenArgs {
   });
 }
 
+
 class EditProfileScreenArgs {
   final bool isFromLogin;
   final String phoneCode;
