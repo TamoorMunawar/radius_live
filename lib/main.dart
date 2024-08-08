@@ -9,10 +9,13 @@ import 'package:location/location.dart';
 import 'package:radar/constants/colors.dart';
 import 'package:radar/constants/size_config.dart';
 import 'package:radar/observer.dart';
+import 'package:radar/presentation/cubits/logistics/logistics_state.dart';
 import 'package:radar/presentation/cubits/theme/theme_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'constants/generate_route.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
+
+import 'domain/repository/logistics_repo.dart';
 
 LocationData? _locationData;
 Location location = Location();
@@ -140,7 +143,11 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [BlocProvider(create: (_) => ThemeCubit())],
+      providers: [
+        BlocProvider(
+          create: (context) => BuyAssetCubit(BuyAssetRepository()),
+        ),
+        BlocProvider(create: (_) => ThemeCubit())],
       child: MaterialApp(
         supportedLocales: context.supportedLocales,
         localizationsDelegates: context.localizationDelegates,
