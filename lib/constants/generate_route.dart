@@ -57,7 +57,7 @@ import 'package:radar/presentation/cubits/ushers/usher_cubit.dart';
 import 'package:radar/presentation/cubits/zone/zone_cubit.dart';
 import 'package:radar/presentation/screens/Authentication/Login.dart';
 import 'package:radar/presentation/screens/Authentication/change_password.dart';
-import 'package:radar/presentation/screens/Authentication/complain_screen.dart';
+import 'package:radar/presentation/screens/Authentication/logistic_screen.dart';
 import 'package:radar/presentation/screens/Authentication/edit_profile.dart';
 import 'package:radar/presentation/screens/Authentication/forgot_password.dart';
 import 'package:radar/presentation/screens/Authentication/profile_screen.dart';
