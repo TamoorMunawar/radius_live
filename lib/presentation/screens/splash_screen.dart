@@ -49,9 +49,13 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   String appUpdateUrl = (Platform.isAndroid)
-      ? 'https://play.google.com/store/apps/details?id=com.radius.radiusvebzaapp'
-      : "https://apps.apple.com/pk/app/radius/id6475689398";
-  String? currentVersion = "";
+      ?
+  "1.0.43"
+  //'https://play.google.com/store/apps/details?id=com.radius.radiusvebzaapp'
+      :
+  "1.0.43";
+  //"https://apps.apple.com/pk/app/radius/id6475689398";
+  String? currentVersion = "1.0.43";
 
   void checkLocationServiceStatus() async {
     var location = Location();
