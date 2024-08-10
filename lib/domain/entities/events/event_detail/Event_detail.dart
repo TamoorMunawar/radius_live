@@ -61,8 +61,6 @@ class EventDetail {
     this.endDate,
     this.startTime,
     this.endTime,
-    this.startTimeDay,
-    this.endTimeDay,
     this.managerId,
     this.warehouseManagerId,
     this.leadTime,
@@ -102,18 +100,7 @@ class EventDetail {
     radius = json['radius'];
     startDate = json['start_date'] == null ? null : DateTime.parse(json['start_date']);
     endDate = json['end_date'] == null ? null : DateTime.parse(json['end_date']);
-    startTimeDay = json["start_date"] == null
-        ? null
-        : TimeOfDay(
-            hour: int.parse(json["start_date"].toString().split(":").first),
-            minute: int.parse(json["start_date"].toString().split(":").last),
-          );
-    endTimeDay = json["end_date"] == null
-        ? null
-        : TimeOfDay(
-            hour: int.parse(json["end_date"].toString().split(":").first),
-            minute: int.parse(json["end_date"].toString().split(":").last),
-          );
+
     startTime = json['start_time'];
     endTime = json['end_time'];
     managerId = json['manager_id'];
@@ -161,8 +148,6 @@ class EventDetail {
   DateTime? endDate;
   String? startTime;
   String? endTime;
-  TimeOfDay? startTimeDay;
-  TimeOfDay? endTimeDay;
   String? managerId;
   String? warehouseManagerId;
   String? leadTime;

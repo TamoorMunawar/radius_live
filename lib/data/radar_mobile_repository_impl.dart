@@ -140,7 +140,7 @@ class RadarMobileRepositoryImpl implements RadarMobileRepository {
 
       var responseBody = jsonDecode(response.body);
 
-      if (responseBody["success"]) {
+      if (responseBody.containsKey("data")) {
         return true;
       } else {
         throw Exception(responseBody["message"]);

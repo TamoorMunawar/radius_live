@@ -431,7 +431,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                         setState(() {
                           showAlert = false;
                           _messageController.clear();
-                          departmentValue = null;
+                          eventId = null;
                         });
                       }
                       if (state is CreateAlertFailure) {

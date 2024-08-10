@@ -93,32 +93,35 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
     eventDetailCubit = BlocProvider.of<EventDetailCubit>(context);
     acceptInvitationCubit = BlocProvider.of<AcceptInvitationCubit>(context);
     eventDetailCubit.getEventDetailById(eventId: widget.args.eventId);
-    // TODO: implement initState
     super.initState();
   }
 
   EventDetail? eventDetail;
 
   bool _checkIfExpired() {
-    // DateTime startDate = DateTime(
-    //   eventDetail!.startDate!.year,
-    //   eventDetail!.startDate!.month,
-    //   eventDetail!.startDate!.day,
-    //   eventDetail!.startTimeDay!.hour,
-    //   eventDetail!.startTimeDay!.minute,
-    // );
-    // DateTime endDate = DateTime(
-    //   eventDetail!.startDate!.year,
-    //   eventDetail!.startDate!.month,
-    //   eventDetail!.startDate!.day,
-    //   eventDetail!.startTimeDay!.hour,
-    //   eventDetail!.startTimeDay!.minute,
-    // );
+    DateTime startTime = DateTime(
+      eventDetail!.startDate!.year,
+      eventDetail!.startDate!.month,
+      eventDetail!.startDate!.day,
+      int.parse(eventDetail!.startTime.toString().split(":").first),
+      int.parse(eventDetail!.startTime.toString().split(":").last),
+    );
+    DateTime? expiryTime;
+    if (eventDetail!.leadTimeUnit == "hours") {
+      expiryTime = startTime.add(Duration(hours: int.parse(eventDetail!.leadTime!)));
+    } else if (eventDetail!.leadTimeUnit == "days") {
+      expiryTime = startTime.add(Duration(days: int.parse(eventDetail!.leadTime!)));
+    }
 
-    log(eventDetail!.startDate!.toIso8601String());
-    log(eventDetail!.endDate!.toIso8601String());
+    String date = DateFormat("yyyy:MM:dd hh:mm a").format(expiryTime!);
+    log(date);
 
-    return true;
+    final now = DateTime.now();
+    if (now.difference(expiryTime).isNegative) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   @override
@@ -181,7 +184,6 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
             }
             if (state is EventDetailSuccess) {
               eventDetail = state.eventDetail;
-              _checkIfExpired();
 
               if (eventDetail != null && eventDetail?.latitude != null) {
                 print(
@@ -209,7 +211,8 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                         buildEventLogo(
                             context: context,
                             leadTime: "${eventDetail?.leadTime}",
-                            logo: "$eventImagePath${eventDetail?.logo}"),
+                            logo: "$eventImagePath${eventDetail?.logo}",
+                            isExpired: _checkIfExpired()),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -526,7 +529,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                                   )
                                 ],
                               ),
-                        (widget.args.finalInvitation)
+                        (widget.args.finalInvitation || _checkIfExpired())
                             ? Container()
                             : buildCheckBoxWidget(
                                 context: context,
@@ -565,10 +568,10 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                                 ),
                               )
                             : Container(),
-                        (widget.args.finalInvitation)
+                        (widget.args.finalInvitation || _checkIfExpired())
                             ? Container()
                             : SubmitButton(
-                                gradientFirstColor: Color(0xFFEF4A4A).withOpacity(0.2),
+                                gradientFirstColor: const Color(0xFFEF4A4A).withOpacity(0.2),
                                 width: SizeConfig.width(context, 0.9),
                                 onPressed: () async {
                                   if (!_isChecked) {
@@ -610,7 +613,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                                   },
                                   builder: (context, state) {
                                     if (state is AcceptInvitationLoading) {
-                                      return LoadingWidget();
+                                      return const LoadingWidget();
                                     }
                                     return Text(
                                       'Accept Job'.tr(),
@@ -626,7 +629,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                         SizedBox(
                           height: SizeConfig.height(context, 0.01),
                         ),
-                        (widget.args.finalInvitation)
+                        (widget.args.finalInvitation || _checkIfExpired())
                             ? Container()
                             : SubmitButton(
                                 gradientFirstColor: const Color(0xFFEF4A4A).withOpacity(0.2),
@@ -654,7 +657,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                                   },
                                   builder: (context, state) {
                                     if (state is DeclineInvitationLoading) {
-                                      return LoadingWidget();
+                                      return const LoadingWidget();
                                     }
                                     return Text(
                                       'Decline Job'.tr(),
@@ -846,12 +849,12 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                   child: BlocConsumer<ZoneCubit, ZoneState>(
                     builder: (context, state) {
                       if (state is ZoneLoading) {
-                        return LoadingWidget();
+                        return const LoadingWidget();
                       }
                       if (state is ZoneSuccess) {
                         return DropdownButtonFormField<Zone>(
                           dropdownColor: GlobalColors.backgroundColor,
-                          padding: EdgeInsets.only(),
+                          padding: const EdgeInsets.only(),
                           items: state.result.map((Zone item) {
                             return DropdownMenuItem<Zone>(
                               value: item,
@@ -965,13 +968,13 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
     );
   }
 
-  Row buildEventLogo({required BuildContext context, String? leadTime, String? logo}) {
+  Row buildEventLogo({required BuildContext context, String? leadTime, String? logo, required bool isExpired}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         (logo == null)
             ? CircleAvatar(
-                backgroundImage: AssetImage("assets/icons/Event.png"),
+                backgroundImage: const AssetImage("assets/icons/Event.png"),
                 radius: SizeConfig.width(context, 0.09),
               )
             : CircleAvatar(
@@ -998,20 +1001,30 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
               //alignment: Alignment.center,
               // height: SizeConfig.height(context, 0.07),
               width: SizeConfig.width(context, 0.3),
-              padding: EdgeInsets.only(left: SizeConfig.width(context, 0.03)),
-              decoration: BoxDecoration(
-                  color: Color(0xFF57FF491A), borderRadius: BorderRadius.circular(SizeConfig.width(context, 0.02))),
-              child: ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(
-                  "${"Lead Time".tr()} :",
-                  style: TextStyle(color: Color(0xFF57FF49), fontSize: SizeConfig.width(context, 0.03)),
-                ),
-                subtitle: Text(
-                  "$leadTime ${eventDetail?.leadTimeUnit}",
-                  style: TextStyle(color: Color(0xFF57FF49), fontSize: SizeConfig.width(context, 0.03)),
-                ),
+              alignment: Alignment.center,
+              padding: EdgeInsets.symmetric(
+                horizontal: SizeConfig.width(context, 0.03),
+                vertical: isExpired ? SizeConfig.height(context, 0.03) : 0,
               ),
+              decoration: BoxDecoration(
+                  color: const Color(0xFF57FF491A),
+                  borderRadius: BorderRadius.circular(SizeConfig.width(context, 0.02))),
+              child: isExpired
+                  ? Text(
+                      "Expired",
+                      style: TextStyle(color: const Color(0xFF57FF49), fontSize: SizeConfig.width(context, 0.03)),
+                    )
+                  : ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        "${"Lead Time".tr()} :",
+                        style: TextStyle(color: const Color(0xFF57FF49), fontSize: SizeConfig.width(context, 0.03)),
+                      ),
+                      subtitle: Text(
+                        "$leadTime ${eventDetail?.leadTimeUnit}",
+                        style: TextStyle(color: const Color(0xFF57FF49), fontSize: SizeConfig.width(context, 0.03)),
+                      ),
+                    ),
             )
           ],
         )
