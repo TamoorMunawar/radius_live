@@ -99,6 +99,28 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
 
   EventDetail? eventDetail;
 
+  bool _checkIfExpired() {
+    // DateTime startDate = DateTime(
+    //   eventDetail!.startDate!.year,
+    //   eventDetail!.startDate!.month,
+    //   eventDetail!.startDate!.day,
+    //   eventDetail!.startTimeDay!.hour,
+    //   eventDetail!.startTimeDay!.minute,
+    // );
+    // DateTime endDate = DateTime(
+    //   eventDetail!.startDate!.year,
+    //   eventDetail!.startDate!.month,
+    //   eventDetail!.startDate!.day,
+    //   eventDetail!.startTimeDay!.hour,
+    //   eventDetail!.startTimeDay!.minute,
+    // );
+
+    log(eventDetail!.startDate!.toIso8601String());
+    log(eventDetail!.endDate!.toIso8601String());
+
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -159,6 +181,8 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
             }
             if (state is EventDetailSuccess) {
               eventDetail = state.eventDetail;
+              _checkIfExpired();
+
               if (eventDetail != null && eventDetail?.latitude != null) {
                 print(
                     "latitude from APi ${eventDetail?.latitude} ${double.parse(eventDetail?.latitude.toString() ?? "24.8607")}");

@@ -109,19 +109,28 @@ class RadarMobileRepositoryImpl implements RadarMobileRepository {
 
   @override
   Future<bool> createAlert({
-    String? heading,
-    String? to,
-    String? departmentId,
-    String? description,
+    // String? heading,
+    // String? to,
+    // String? departmentId,
+    // String? description,
+    int? eventId,
+    String? message,
   }) async {
     try {
-      var url = Uri.parse('${NetworkUtils.baseUrl}/notice/store');
+      // var url = Uri.parse('${NetworkUtils.baseUrl}/notice/store');
+      var url = Uri.parse('${NetworkUtils.baseUrl}/complain');
+
       SharedPreferences prefs = await SharedPreferences.getInstance();
+      // String jsonBody = jsonEncode(<String, dynamic>{
+      //   "heading": heading,
+      //   "to": to,
+      //   "department_id": departmentId,
+      //   "description": description,
+      // });
       String jsonBody = jsonEncode(<String, dynamic>{
-        "heading": heading,
-        "to": to,
-        "department_id": departmentId,
-        "description": description,
+        "user_id": prefs.getInt("user_id"),
+        "event_model_id": eventId,
+        "text": message,
       });
       print("repository::createAlert::jsonBody: $jsonBody\n");
 

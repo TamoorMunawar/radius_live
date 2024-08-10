@@ -7,14 +7,25 @@ part 'create_alert_state.dart';
 class CreateAlertCubit extends Cubit<CreateAlertState> {
   CreateAlertCubit(this.usecase) : super(CreateAlertInitial());
   final CreateAlertUsecase usecase;
-  void createAlert({  String? heading,
-    String? to,
-    String? departmentId,
-    String? description,}) async {
+  void createAlert({
+    // String? heading,
+    // String? to,
+    // String? departmentId,
+    // String? description,
+    int? eventId,
+    String? message,
+  }) async {
     try {
       emit(CreateAlertLoading());
-      bool result = await usecase.createAlert(description:description ,departmentId: departmentId,heading: heading,to: to);
-      emit(CreateAlertSuccess(result: result ));
+      bool result = await usecase.createAlert(
+        // description: description,
+        // departmentId: departmentId,
+        // heading: heading,
+        // to: to,
+        eventId: eventId,
+        message: message,
+      );
+      emit(CreateAlertSuccess(result: result));
     } on Exception catch (e) {
       emit(
         CreateAlertFailure(

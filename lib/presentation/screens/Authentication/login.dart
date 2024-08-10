@@ -1400,6 +1400,7 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                       }*/
                       SharedPreferences prefs = await SharedPreferences.getInstance();
                       prefs.setBool("isVerified", state.loginModel.isVerified ?? false);
+                      prefs.setInt("user_id", state.loginModel.id ?? 0);
 
                       // prefs.setBool("isProfileUpdated", true);
 

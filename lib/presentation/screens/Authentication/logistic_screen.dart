@@ -2,11 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:radar/constants/colors.dart';
-import 'package:radar/constants/router.dart';
 import 'package:radar/constants/size_config.dart';
 import 'package:radar/presentation/widgets/button_widget.dart';
-import 'package:radar/presentation/widgets/radius_text_field.dart';
-
 import '../../cubits/logistics/logistics_state.dart';
 import '../job_dashboard_screen.dart';
 
@@ -18,15 +15,9 @@ class ComplainScreen extends StatefulWidget {
 }
 
 class _ComplainScreenState extends State<ComplainScreen> {
-  String? country;
-  List<String> countryList = ["Special Event", "Type of Report"];
-  var _currentPasswordController = TextEditingController();
-  var _newPasswordController = TextEditingController();
-  var _confirmPasswordController = TextEditingController();
   @override
   void initState() {
     super.initState();
-    // Fetch data when the screen initializes
     context.read<BuyAssetCubit>().fetchAssets();
   }
 
@@ -42,9 +33,7 @@ class _ComplainScreenState extends State<ComplainScreen> {
             Navigator.pop(context);
           },
           icon: Padding(
-            padding: EdgeInsets.only(
-                left: SizeConfig.width(context, 0.05),
-                right: SizeConfig.width(context, 0.05)),
+            padding: EdgeInsets.only(left: SizeConfig.width(context, 0.05), right: SizeConfig.width(context, 0.05)),
             child: Icon(
               Icons.arrow_back_ios,
               size: SizeConfig.width(context, 0.05),
@@ -155,12 +144,11 @@ class _ComplainScreenState extends State<ComplainScreen> {
           BlocBuilder<BuyAssetCubit, BuyAssetState>(
             builder: (context, state) {
               if (state is BuyAssetLoading) {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               } else if (state is BuyAssetLoaded) {
-                // Wrap ListView in an Expanded widget to constrain its height
                 return Expanded(
                   child: ListView.builder(
-                    itemCount: 1,
+                    itemCount: state.assets.length,
                     itemBuilder: (context, index) {
                       print(state.assets.length);
                       return Padding(
@@ -172,12 +160,11 @@ class _ComplainScreenState extends State<ComplainScreen> {
                               flex: 1,
                               child: Center(
                                 child: Text(
-                                 "${state.assets[index].assetName}" ?? "name",
+                                  state.assets[index].assetName,
                                   style: TextStyle(
                                     color: GlobalColors.goodMorningColor,
                                     fontWeight: FontWeight.w400,
-                                    fontSize:
-                                        SizeConfig.width(context, 0.040),
+                                    fontSize: SizeConfig.width(context, 0.040),
                                   ),
                                 ),
                               ),
@@ -186,12 +173,11 @@ class _ComplainScreenState extends State<ComplainScreen> {
                               flex: 1,
                               child: Center(
                                 child: Text(
-                                  "${state.assets[index].quantity}" ?? "name",
+                                  "${state.assets[index].quantity}",
                                   style: TextStyle(
                                     color: GlobalColors.goodMorningColor,
                                     fontWeight: FontWeight.w400,
-                                    fontSize:
-                                        SizeConfig.width(context, 0.040),
+                                    fontSize: SizeConfig.width(context, 0.040),
                                   ),
                                 ),
                               ),
@@ -205,7 +191,7 @@ class _ComplainScreenState extends State<ComplainScreen> {
                                 decoration: InputDecoration(
                                   hintText: 'Enter Value',
                                   fillColor: GlobalColors.goodMorningColor,
-                                  border: OutlineInputBorder(),
+                                  border: const OutlineInputBorder(),
                                 ),
                               ),
                             ),

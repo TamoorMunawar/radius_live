@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 
 import 'Event_zone_all.dart';
 import 'Manager.dart';
@@ -45,44 +46,47 @@ import 'Country.dart';
 
 class EventDetail {
   EventDetail({
-      this.id, 
-      this.addedBy, 
-      this.eventName, 
-      this.logo, 
-      this.countryId, 
-      this.cityId, 
-      this.district, 
-      this.latitude, 
-      this.longitude, 
-      this.location, 
-      this.radius, 
-      this.startDate, 
-      this.endDate, 
-      this.startTime, 
-      this.endTime, 
-      this.managerId, 
-      this.warehouseManagerId, 
-      this.leadTime, 
-      this.leadTimeUnit, 
-      this.projectSummary, 
-      this.termsCondition, 
-      this.termsConditionArabic, 
-      this.hiddenFields, 
-      this.status, 
-      this.completionPercent, 
-      this.currencyId, 
-      this.budget, 
-      this.dayoff, 
-      this.deletedAt, 
-      this.formatStartDate, 
-      this.formatEndDate, 
-      this.isProjectAdmin, 
-      this.fullAddress, 
-      this.members, 
-      this.eventZonesAll, 
-      this.manager, 
-      this.wareHouseManager, 
-      this.country,});
+    this.id,
+    this.addedBy,
+    this.eventName,
+    this.logo,
+    this.countryId,
+    this.cityId,
+    this.district,
+    this.latitude,
+    this.longitude,
+    this.location,
+    this.radius,
+    this.startDate,
+    this.endDate,
+    this.startTime,
+    this.endTime,
+    this.startTimeDay,
+    this.endTimeDay,
+    this.managerId,
+    this.warehouseManagerId,
+    this.leadTime,
+    this.leadTimeUnit,
+    this.projectSummary,
+    this.termsCondition,
+    this.termsConditionArabic,
+    this.hiddenFields,
+    this.status,
+    this.completionPercent,
+    this.currencyId,
+    this.budget,
+    this.dayoff,
+    this.deletedAt,
+    this.formatStartDate,
+    this.formatEndDate,
+    this.isProjectAdmin,
+    this.fullAddress,
+    this.members,
+    this.eventZonesAll,
+    this.manager,
+    this.wareHouseManager,
+    this.country,
+  });
 
   EventDetail.fromJson(dynamic json) {
     id = json['id'];
@@ -96,8 +100,20 @@ class EventDetail {
     longitude = json['longitude'];
     location = json['location'];
     radius = json['radius'];
-    startDate = json['start_date'];
-    endDate = json['end_date'];
+    startDate = json['start_date'] == null ? null : DateTime.parse(json['start_date']);
+    endDate = json['end_date'] == null ? null : DateTime.parse(json['end_date']);
+    startTimeDay = json["start_date"] == null
+        ? null
+        : TimeOfDay(
+            hour: int.parse(json["start_date"].toString().split(":").first),
+            minute: int.parse(json["start_date"].toString().split(":").last),
+          );
+    endTimeDay = json["end_date"] == null
+        ? null
+        : TimeOfDay(
+            hour: int.parse(json["end_date"].toString().split(":").first),
+            minute: int.parse(json["end_date"].toString().split(":").last),
+          );
     startTime = json['start_time'];
     endTime = json['end_time'];
     managerId = json['manager_id'];
@@ -126,7 +142,8 @@ class EventDetail {
       });
     }
     manager = json['manager'] != null ? Manager.fromJson(json['manager']) : null;
-    wareHouseManager = json['ware_house_manager'] != null ? WareHouseManager.fromJson(json['ware_house_manager']) : null;
+    wareHouseManager =
+        json['ware_house_manager'] != null ? WareHouseManager.fromJson(json['ware_house_manager']) : null;
     country = json['country'] != null ? Country.fromJson(json['country']) : null;
   }
   int? id;
@@ -140,10 +157,12 @@ class EventDetail {
   String? longitude;
   dynamic location;
   String? radius;
-  String? startDate;
-  String? endDate;
+  DateTime? startDate;
+  DateTime? endDate;
   String? startTime;
   String? endTime;
+  TimeOfDay? startTimeDay;
+  TimeOfDay? endTimeDay;
   String? managerId;
   String? warehouseManagerId;
   String? leadTime;
@@ -181,8 +200,8 @@ class EventDetail {
     map['longitude'] = longitude;
     map['location'] = location;
     map['radius'] = radius;
-    map['start_date'] = startDate;
-    map['end_date'] = endDate;
+    map['start_date'] = startDate!.toIso8601String();
+    map['end_date'] = endDate!.toIso8601String();
     map['start_time'] = startTime;
     map['end_time'] = endTime;
     map['manager_id'] = managerId;
@@ -220,5 +239,4 @@ class EventDetail {
     }
     return map;
   }
-
 }

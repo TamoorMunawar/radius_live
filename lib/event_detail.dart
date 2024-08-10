@@ -14,7 +14,6 @@ import 'package:radar/domain/entities/events/event_detail/Event_detail.dart';
 import 'package:radar/domain/entities/events/event_detail/Job.dart';
 import 'package:radar/presentation/cubits/scan_qr_code/scan_qrcode_cubit.dart';
 import 'package:radar/presentation/cubits/events/event_detail/event_detail_cubit.dart';
-
 import 'package:radar/presentation/screens/create_job_screen.dart';
 import 'package:radar/presentation/screens/create_zone_screen.dart';
 import 'package:radar/presentation/widgets/LoadingWidget.dart';
@@ -239,11 +238,10 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                             (eventDetail?.formatStartDate == null)
                                 ? Container()
                                 : TitleAndNameWidget(
-                                    title: "Date From", maxLine: 2, subtitle: "${eventDetail?.formatStartDate}"),
+                                    title: "Date From", maxLine: 2, subtitle: "${eventDetail?.startDate}"),
                             (eventDetail?.formatEndDate == null)
                                 ? Container()
-                                : TitleAndNameWidget(
-                                    maxLine: 2, title: "Date To", subtitle: "${eventDetail?.formatEndDate}"),
+                                : TitleAndNameWidget(maxLine: 2, title: "Date To", subtitle: "${eventDetail?.endDate}"),
                           ],
                         ),
                         SizedBox(

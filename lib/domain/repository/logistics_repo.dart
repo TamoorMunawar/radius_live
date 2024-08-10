@@ -3,7 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../entities/logictis/logistics.dart';
 
-
 Map<String, String> authorizationHeaders(SharedPreferences prefs) {
   final token = prefs.getString("token");
   return {

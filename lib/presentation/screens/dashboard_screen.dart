@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -8,10 +9,13 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:radar/constants/app_utils.dart';
 import 'package:radar/constants/colors.dart';
+import 'package:radar/constants/extensions.dart';
 import 'package:radar/constants/logger.dart';
 import 'package:radar/constants/router.dart';
 import 'package:radar/constants/size_config.dart';
 import 'package:radar/domain/entities/department/Department.dart';
+import 'package:radar/domain/repository/radar_mobile_repository.dart';
+import 'package:radar/domain/usecase/event/event_list/event_list_usecase.dart';
 import 'package:radar/presentation/cubits/attandance/attandance_cubit.dart';
 import 'package:radar/presentation/cubits/create_alert/create_alert_cubit.dart';
 import 'package:radar/presentation/cubits/department/department_cubit.dart';
@@ -23,6 +27,8 @@ import 'package:radar/presentation/widgets/radius_text_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
+import '../../data/radar_mobile_repository_impl.dart';
+
 bool isJobAccepted = false;
 
 class DashBoardScreen extends StatefulWidget {
@@ -33,6 +39,12 @@ class DashBoardScreen extends StatefulWidget {
 }
 
 class _DashBoardScreenState extends State<DashBoardScreen> {
+  final EventListUsecase _usecase = EventListUsecase(
+    repository: RadarMobileRepositoryImpl(),
+  );
+  List<MyEvent> _eventList = [];
+  int? eventId;
+
   late DepartmentCubit departmentCubit;
   late CreateAlertCubit createAlertCubit;
   late AttandanceCubit attandanceCubit;
@@ -49,7 +61,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   double percent = 0.0;
 
   Future getUserDetailsFromLocal() async {
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
     roleName = prefs.getString(
           "role_name",
@@ -77,8 +88,9 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
 
   String? departmentValue;
   List<String> genderList = ["Male", "Female", "Other"];
-  String? country;
-  List<String> countryList = ["Event Complain", "General Complain"];
+  String _complain = "Event Complain";
+  final List<String> _complainTypes = ["Event Complain", "General Complain"];
+  int _complainValue = 0;
   @override
   void initState() {
     LogManager.info("dashboard_usecase.dart");
@@ -88,8 +100,17 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     attandanceCubit.getAttandanceData();
     //   departmentCubit.getDepartment();
     getUserDetailsFromLocal();
-    // TODO: implement initState
+    _getEventList();
     super.initState();
+  }
+
+  _getEventList() async {
+    _eventList = await _usecase.getEventList();
+    log(_eventList.length.toString());
+
+    setState(() {
+      eventId = _eventList[0].$1;
+    });
   }
 
   @override
@@ -223,10 +244,11 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 ),
                 Material(
                   color: Colors.transparent,
-                  shadowColor: const Color(0xff006DFC).withOpacity(0.16),
+                  shadowColor: Color(0xFF006DFC).withOpacity(0.16),
                   child: DropdownButtonFormField<String>(
                     dropdownColor: GlobalColors.backgroundColor,
-                    padding: EdgeInsets.only(),                    items: countryList.map((String item) {
+                    padding: EdgeInsets.only(),
+                    items: _complainTypes.map((String item) {
                       return DropdownMenuItem<String>(
                         value: item,
                         child: Text(
@@ -235,9 +257,17 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                         ),
                       );
                     }).toList(),
-                    value: country,
+                    value: _complain,
                     onChanged: (value) {
-                      setState(() => country = value);
+                      setState(() => _complain = value!);
+                      log(_complain.toString());
+                      if (_complain == _complainTypes[0]) {
+                        _complainValue = 0;
+                      } else {
+                        _complainValue = 1;
+                        eventId = null;
+                      }
+                      log(_complainValue.toString());
                     },
                     decoration: InputDecoration(
                       filled: false,
@@ -247,8 +277,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                       ),
                       border: OutlineInputBorder(
                         borderSide: const BorderSide(color: GlobalColors.submitButtonColor
-                          //    color: GlobalColors.ftsTextColor,
-                        ),
+                            //    color: GlobalColors.ftsTextColor,
+                            ),
                         borderRadius: BorderRadius.circular(
                           SizeConfig.width(context, 0.03),
                         ),
@@ -275,94 +305,37 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 SizedBox(
                   height: SizeConfig.height(context, 0.02),
                 ),
-                Material(
-                  color: Colors.transparent,
-                  shadowColor: const Color(0xff006DFC).withOpacity(0.16),
-                  child: DropdownButtonFormField<String>(
-                    dropdownColor: GlobalColors.backgroundColor,
-                    padding: EdgeInsets.only(),
-                    items: ["Accident".tr(), "Misbehave".tr(), "Overcrowd".tr(), "Food".tr(), "Fight".tr()]
-                        .map((String item) {
-                      return DropdownMenuItem<String>(
-                        value: item,
-                        child: Text(
-                          item ?? "",
-                          style: TextStyle(color: GlobalColors.textFieldHintColor),
-                        ),
-                      );
-                    }).toList(),
-                    value: departmentValue,
-                    onChanged: (value) {
-                      setState(() => departmentValue = value);
-                    },
-                    decoration: InputDecoration(
-                      filled: false,
-                      hintText: 'Select'.tr(),
-                      hintStyle: TextStyle(
-                        color: GlobalColors.textFieldHintColor,
-                      ),
-                      border: OutlineInputBorder(
-                        borderSide: const BorderSide(color: GlobalColors.submitButtonColor
-                            //    color: GlobalColors.ftsTextColor,
-                            ),
-                        borderRadius: BorderRadius.circular(
-                          SizeConfig.width(
-                            context,
-                            0.03,
-                          ),
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: GlobalColors.hintTextColor,
-                          //    color: GlobalColors.ftsTextColor,
-                        ),
-                        borderRadius: BorderRadius.circular(
-                          SizeConfig.width(context, 0.03),
-                        ),
-                      ),
-                    ),
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (value) {
-                      if (value == null) {
-                        return 'Please select a Department'.tr();
-                      }
-                      return null;
-                    },
-                  ),
-                  /*  child: BlocConsumer<DepartmentCubit, DepartmentState>(
-                    builder: (context, state) {
-                      if (state is DepartmentLoading) {
-                        return LoadingWidget();
-                      }
-                      if (state is DepartmentSuccess) {
-                        return DropdownButtonFormField<String>(
+                _complainValue == 0
+                    ? Material(
+                        color: Colors.transparent,
+                        shadowColor: const Color(0xff006DFC).withOpacity(0.16),
+                        child: DropdownButtonFormField<int?>(
                           dropdownColor: GlobalColors.backgroundColor,
-                          padding: EdgeInsets.only(),
-                          items: ["sdfsdfsdf","sdfsdf?","sdfsdf"].map((String item) {
-                            return DropdownMenuItem<String>(
-                              value: item,
-                              child: Text(
-                                item ?? "",
-                                style: TextStyle(
-                                    color: GlobalColors.textFieldHintColor),
+                          isExpanded: true,
+                          items: [
+                            for (int i = 0; i < _eventList.length; i++)
+                              DropdownMenuItem(
+                                value: _eventList[i].$1,
+                                child: Text(
+                                  _eventList[i].$2,
+                                  style: TextStyle(color: GlobalColors.hintTextColor),
+                                ),
                               ),
-                            );
-                          }).toList(),
-                          value: departmentValue,
+                          ],
+                          value: eventId,
                           onChanged: (value) {
-                            setState(() => departmentValue = value);
+                            setState(() {
+                              eventId = value;
+                            });
                           },
                           decoration: InputDecoration(
                             filled: false,
-                            hintText: 'Department',
+                            hintText: 'Select'.tr(),
                             hintStyle: TextStyle(
                               color: GlobalColors.textFieldHintColor,
                             ),
                             border: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.yellow
-                                  //    color: GlobalColors.ftsTextColor,
-                                  ),
+                              borderSide: const BorderSide(color: GlobalColors.submitButtonColor),
                               borderRadius: BorderRadius.circular(
                                 SizeConfig.width(context, 0.03),
                               ),
@@ -380,21 +353,25 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) {
                             if (value == null) {
-                              return 'Please select a Department';
+                              return 'Please select an Event'.tr();
                             }
                             return null;
                           },
-                        );
-                      }
-                      return Container();
-                    },
-                    listener: (context, state) {
-                      if (state is DepartmentFailure) {
-                        AppUtils.showFlushBar(state.errorMessage, context);
-                      }
-                    },
-                  ),*/
-                ),
+                        ),
+                      )
+                    : Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey.shade700, width: 1.5),
+                            borderRadius: BorderRadius.circular(
+                              SizeConfig.width(context, 0.03),
+                            )),
+                        child: Text(
+                          "General Complain",
+                          style: TextStyle(color: Colors.grey.shade700),
+                        ),
+                      ),
                 SizedBox(
                   height: SizeConfig.height(context, 0.02),
                 ),
@@ -419,15 +396,17 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   width: SizeConfig.width(context, 0.85),
                   onPressed: () async {
                     if (alertFormKey.currentState!.validate()) {
-                      AppUtils.showFlushBar("Your Message Has Been Sent Successfully".tr(), context);
                       setState(() {
                         showAlert = false;
                       });
-                      /* createAlertCubit.createAlert(
-                          description: _messageController.text,
-                          departmentId: departmentValue?.id.toString(),
-                          to: departmentValue?.teamName,
-                          heading: "App");*/
+                      createAlertCubit.createAlert(
+                        // description: _messageController.text,
+                        // departmentId: departmentValue?.id.toString(),
+                        // to: departmentValue?.teamName,
+                        // heading: "App",
+                        eventId: eventId,
+                        message: _messageController.text,
+                      );
                     }
                     //  Navigator.pushNamed(context, AppRoutes.resetScreenRoute);
                   },
@@ -447,6 +426,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                     },
                     listener: (context, state) {
                       if (state is CreateAlertSuccess) {
+                        AppUtils.showFlushBar("Your Message Has Been Sent Successfully".tr(), context);
+
                         setState(() {
                           showAlert = false;
                           _messageController.clear();

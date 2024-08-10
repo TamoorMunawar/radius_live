@@ -75,10 +75,12 @@ abstract class RadarMobileRepository {
   });
 
   Future<bool> createAlert({
-    String? heading,
-    String? to,
-    String? departmentId,
-    String? description,
+    // String? heading,
+    // String? to,
+    // String? departmentId,
+    // String? description,
+    int? eventId,
+    String? message,
   });
 
   Future<bool> changePassword({
