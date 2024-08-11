@@ -107,7 +107,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
       int.parse(eventDetail!.startTime.toString().split(":").last),
     );
     DateTime? expiryTime;
-    if (eventDetail!.leadTimeUnit == "hours") {
+    if (eventDetail!.leadTimeUnit == "hour") {
       expiryTime = startTime.add(Duration(hours: int.parse(eventDetail!.leadTime!)));
     } else if (eventDetail!.leadTimeUnit == "days") {
       expiryTime = startTime.add(Duration(days: int.parse(eventDetail!.leadTime!)));
