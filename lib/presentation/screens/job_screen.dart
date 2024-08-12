@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:radar/constants/colors.dart';
 import 'package:radar/constants/router.dart';
 import 'package:radar/constants/size_config.dart';
-import 'package:radar/presentation/screens/event_detail.dart';
+import 'package:radar/presentation/screens/event_detail_screen.dart';
 
 import 'package:radar/presentation/widgets/radius_text_field.dart';
 

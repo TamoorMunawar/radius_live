@@ -31,12 +31,13 @@ import 'package:radar/domain/usecase/verification/verification_usecase.dart';
 import 'package:radar/domain/usecase/zone/zone_usecase.dart';
 import 'package:radar/domain/usecase/zone_seats/zone_seats_usecase.dart';
 import 'package:radar/presentation/cubits/dashboard/dashboard_cubit.dart';
+import 'package:radar/presentation/cubits/events/event_detail/timer_cubit.dart';
 import 'package:radar/presentation/cubits/profile/profile_cubit.dart';
 import 'package:radar/presentation/cubits/review/review_cubit.dart';
 import 'package:radar/presentation/cubits/verification/verification_cubit.dart';
 import 'package:radar/presentation/cubits/zone_seats/zone_seats_cubit.dart';
 import 'package:radar/presentation/screens/dashboard/admin_dashboard_screen.dart';
-import 'package:radar/presentation/screens/event_detail.dart';
+import 'package:radar/presentation/screens/event_detail_screen.dart';
 import 'package:radar/presentation/cubits/accept_Invitation/accept_invitation_cubit.dart';
 import 'package:radar/presentation/cubits/announcement/announcement_cubit.dart';
 import 'package:radar/presentation/cubits/attandance/attandance_cubit.dart';
@@ -288,6 +289,9 @@ MultiBlocProvider eventScreen() {
 MultiBlocProvider eventDetailScreen({required EventDetailScreenArgs args}) {
   return MultiBlocProvider(
       providers: [
+        BlocProvider(
+          create: (context) => TimerCubit(),
+        ),
         BlocProvider(
           create: (context) => EventDetailCubit(EventDetailUsecase(repository: repository)),
         ),
