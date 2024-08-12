@@ -14,6 +14,7 @@ import 'package:radar/domain/entities/zone/Zone.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:radar/domain/entities/events/event_detail/Event_detail.dart';
 import 'package:radar/domain/entities/events/event_detail/Job.dart';
+import 'package:radar/presentation/cubits/events/event_detail/timer_cubit.dart';
 import 'package:radar/presentation/cubits/scan_qr_code/scan_qrcode_cubit.dart';
 import 'package:radar/presentation/cubits/events/event_detail/event_detail_cubit.dart';
 
@@ -55,6 +56,9 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
   String address = "";
   String? roleName;
   String? eventImagePath;
+
+  late final TimerCubit _timerCubit;
+
   final Completer<GoogleMapController> _controller = Completer<GoogleMapController>();
 
   String removeHtmlTags(String htmlString) {
@@ -76,7 +80,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
     setState(() {});
   }
 
-  static final CameraPosition _kGooglePlex = const CameraPosition(
+  static const CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(24.8607, 67.0011),
     zoom: 12,
   );
@@ -92,36 +96,18 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
     scanQrCodeCubit = BlocProvider.of<ScanQrCodeCubit>(context);
     eventDetailCubit = BlocProvider.of<EventDetailCubit>(context);
     acceptInvitationCubit = BlocProvider.of<AcceptInvitationCubit>(context);
+    _timerCubit = context.read<TimerCubit>();
+
     eventDetailCubit.getEventDetailById(eventId: widget.args.eventId);
     super.initState();
   }
 
   EventDetail? eventDetail;
 
-  bool _checkIfExpired() {
-    DateTime startTime = DateTime(
-      eventDetail!.startDate!.year,
-      eventDetail!.startDate!.month,
-      eventDetail!.startDate!.day,
-      int.parse(eventDetail!.startTime.toString().split(":").first),
-      int.parse(eventDetail!.startTime.toString().split(":").last),
-    );
-    DateTime? expiryTime;
-    if (eventDetail!.leadTimeUnit == "hour") {
-      expiryTime = startTime.add(Duration(hours: int.parse(eventDetail!.leadTime!)));
-    } else if (eventDetail!.leadTimeUnit == "days") {
-      expiryTime = startTime.add(Duration(days: int.parse(eventDetail!.leadTime!)));
-    }
-
-    String date = DateFormat("yyyy:MM:dd hh:mm a").format(expiryTime!);
-    log(date);
-
-    final now = DateTime.now();
-    if (now.difference(expiryTime).isNegative) {
-      return false;
-    } else {
-      return true;
-    }
+  @override
+  void dispose() {
+    _timerCubit.stop();
+    super.dispose();
   }
 
   @override
@@ -184,6 +170,10 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
             }
             if (state is EventDetailSuccess) {
               eventDetail = state.eventDetail;
+              bool isExpired = _timerCubit.checkIfExpired(eventDetail!);
+              if (!isExpired) {
+                _timerCubit.start();
+              }
 
               if (eventDetail != null && eventDetail?.latitude != null) {
                 print(
@@ -208,11 +198,15 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        buildEventLogo(
-                            context: context,
-                            leadTime: "${eventDetail?.leadTime}",
-                            logo: "$eventImagePath${eventDetail?.logo}",
-                            isExpired: _checkIfExpired()),
+                        BlocBuilder<TimerCubit, Duration>(builder: (context, state) {
+                          return buildEventLogo(
+                              context: context,
+                              // leadTime: "${eventDetail?.leadTime}",
+                              leadTime:
+                                  'Time left: ${state.inDays} days, ${state.inHours % 24} hours, ${state.inMinutes % 60} minutes, ${state.inSeconds % 60} seconds',
+                              logo: "$eventImagePath${eventDetail?.logo}",
+                              isExpired: context.read<TimerCubit>().checkIfExpired(eventDetail!));
+                        }),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -529,11 +523,12 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                                   )
                                 ],
                               ),
-                        (widget.args.finalInvitation || _checkIfExpired())
+                        (widget.args.finalInvitation || _timerCubit.checkIfExpired(eventDetail!))
                             ? Container()
                             : buildCheckBoxWidget(
                                 context: context,
                                 checkValue: _isChecked,
+                                detail: eventDetail,
                                 title: "I_am_accepting_the".tr(),
                                 onChange: (bool? value) {
                                   setState(() {
@@ -568,7 +563,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                                 ),
                               )
                             : Container(),
-                        (widget.args.finalInvitation || _checkIfExpired())
+                        (widget.args.finalInvitation || _timerCubit.checkIfExpired(eventDetail!))
                             ? Container()
                             : SubmitButton(
                                 gradientFirstColor: const Color(0xFFEF4A4A).withOpacity(0.2),
@@ -629,7 +624,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                         SizedBox(
                           height: SizeConfig.height(context, 0.01),
                         ),
-                        (widget.args.finalInvitation || _checkIfExpired())
+                        (widget.args.finalInvitation || _timerCubit.checkIfExpired(eventDetail!))
                             ? Container()
                             : SubmitButton(
                                 gradientFirstColor: const Color(0xFFEF4A4A).withOpacity(0.2),
@@ -700,11 +695,13 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
     );
   }
 
-  Widget buildCheckBoxWidget(
-      {required BuildContext context,
-      required String title,
-      required bool checkValue,
-      required void Function(bool?) onChange}) {
+  Widget buildCheckBoxWidget({
+    required BuildContext context,
+    required String title,
+    required bool checkValue,
+    required void Function(bool?) onChange,
+    EventDetail? detail,
+  }) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: SizeConfig.width(context, 0.07)),
       child: Row(
@@ -721,8 +718,13 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                     fontWeight: FontWeight.w500),
               ),
               InkWell(
-                onTap: () {
-                  _showTermsDialog(context);
+                onTap: () async {
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  _showTermsDialog(
+                    context,
+                    isEnglish: prefs.getBool('isEnglish') ?? false,
+                    eventDetail: detail!,
+                  );
                 },
                 child: Text(
                   "Terms_and_Condition".tr(),
@@ -748,14 +750,14 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
     );
   }
 
-  void _showTermsDialog(BuildContext context) {
+  void _showTermsDialog(BuildContext context, {required bool isEnglish, required EventDetail eventDetail}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: GlobalColors.backgroundColor,
           title: Text(
-            'شروط واحكام',
+            isEnglish ? 'Terms & Conditions' : 'شروط واحكام',
             textAlign: TextAlign.right,
             style: TextStyle(color: Colors.white, fontSize: SizeConfig.width(context, 0.05)),
           ),
@@ -763,7 +765,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
             child: ListBody(
               children: <Widget>[
                 Text(
-                  Strings.termsAndConditionsText,
+                  isEnglish ? eventDetail.termsCondition : eventDetail.termsConditionArabic,
                   textAlign: TextAlign.right,
                   style: TextStyle(
                     color: Colors.white,

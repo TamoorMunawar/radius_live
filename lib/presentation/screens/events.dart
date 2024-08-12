@@ -7,7 +7,7 @@ import 'package:radar/constants/route_arguments.dart';
 import 'package:radar/constants/router.dart';
 import 'package:radar/constants/size_config.dart';
 import 'package:radar/domain/entities/events/initial_event/Initial_event.dart';
-import 'package:radar/presentation/screens/event_detail.dart';
+import 'package:radar/presentation/screens/event_detail_screen.dart';
 import 'package:radar/presentation/cubits/events/initial_events/initial_event_cubit.dart';
 import 'package:radar/presentation/screens/attandance.dart';
 import 'package:radar/presentation/widgets/LoadingWidget.dart';
