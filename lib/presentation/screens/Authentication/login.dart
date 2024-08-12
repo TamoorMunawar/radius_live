@@ -61,6 +61,7 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
   final _loginMobileController = TextEditingController();
   final _cityController = TextEditingController();
   final _iqamaExpiryController = TextEditingController();
+  var depertmentCodeController = TextEditingController();
   bool isLoginWithMobile = true;
   bool? isChecker = false;
   bool isLogin = true;
@@ -670,6 +671,19 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                 height: SizeConfig.height(context, 0.02),
               ),
               RadiusTextField(
+                controller: depertmentCodeController,
+                hintText: 'Group Code'.tr(),
+                validator: (String? value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please_group_code'.tr();
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(
+                height: SizeConfig.height(context, 0.02),
+              ),
+              RadiusTextField(
                 inputFormatters: [
                   LengthLimitingTextInputFormatter(10),
                 ],
@@ -1013,13 +1027,13 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                           name: nameController.text.trim(),
                           email: _regEmailController.text.trim(),
                           password: _regPasswordController.text.trim(),
-
                           city: city,
                           gender: gender,
                           countryPhonecode: countryCode,
                           mobile: mobileController.text.trim(),
                           whatsappCountryCode: whatsappcountryCode,
                           whatsappNumber: whatsappController.text.trim(),
+                          departmentcode: depertmentCodeController.text.trim(),
                           //   age: _ageController.text,
                           //dateOfBirth: _ageController.text,
                           dateOfBirth: "16-05-1998",
@@ -1117,7 +1131,7 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                     countryCode = "";
                     mobileController.clear();
                     _ageController.clear();
-
+depertmentCodeController.clear();
                     _iqamaExpiryController.clear();
                     _idNumberController.clear();
                     isLogin = true;

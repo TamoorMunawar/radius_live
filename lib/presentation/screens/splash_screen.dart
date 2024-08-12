@@ -50,12 +50,12 @@ class _SplashScreenState extends State<SplashScreen> {
 
   String appUpdateUrl = (Platform.isAndroid)
       ?
-  "1.0.43"
+  "1.0.11+44"
   //'https://play.google.com/store/apps/details?id=com.radius.radiusvebzaapp'
       :
-  "1.0.43";
+  "1.0.11+44";
   //"https://apps.apple.com/pk/app/radius/id6475689398";
-  String? currentVersion = "1.0.43";
+  String? currentVersion = "1.0.11+44";
 
   void checkLocationServiceStatus() async {
     var location = Location();
@@ -128,7 +128,7 @@ class _SplashScreenState extends State<SplashScreen> {
           );
         } else {
           Navigator.pushNamed(context, AppRoutes.editProfileScreenRoute,
-              arguments: EditProfileScreenArgs(isFromLogin: true, phoneCode: "+92"));
+              arguments: EditProfileScreenArgs(isFromLogin: true, phoneCode: "+966"));
         }
         // print("indie 22");
         // if (widget.isProfile) {

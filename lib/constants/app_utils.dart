@@ -49,6 +49,8 @@ class AppUtils {
   }
 
   static List countryList = [
+    {"code": "SA", "label": "Saudi Arabia", "phone": "966", "phoneLength": 9},
+    {"code": "PK", "label": "Pakistan", "phone": "92", "phoneLength": 10},
     {"code": "AD", "label": "Andorra", "phone": "376", "phoneLength": 6},
     {
       "code": "AE",
@@ -394,7 +396,6 @@ class AppUtils {
       "phoneLength": 8
     },
     {"code": "PH", "label": "Philippines", "phone": "63", "phoneLength": 10},
-    {"code": "PK", "label": "Pakistan", "phone": "92", "phoneLength": 10},
     {"code": "PL", "label": "Poland", "phone": "48", "phoneLength": 9},
     {
       "code": "PM",
@@ -424,7 +425,6 @@ class AppUtils {
       "phoneLength": 10
     },
     {"code": "RW", "label": "Rwanda", "phone": "250", "phoneLength": 9},
-    {"code": "SA", "label": "Saudi Arabia", "phone": "966", "phoneLength": 9},
     {
       "code": "SB",
       "label": "Solomon Islands",

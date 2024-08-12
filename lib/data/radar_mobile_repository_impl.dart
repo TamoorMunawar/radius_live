@@ -307,6 +307,7 @@ class RadarMobileRepositoryImpl implements RadarMobileRepository {
         "device_id": registerPayload?.deviceId ?? "",
         "whatsapp_number": registerPayload?.whatsappNumber ?? "",
         "whatsapp_number_country_code": registerPayload?.whatsappCountryCode ?? "",
+        "department_code": registerPayload?.departmentcode ?? "",
       };
       var headers2 = <String, String>{
         "Content-Type": "multipart/form-data",

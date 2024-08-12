@@ -30,6 +30,7 @@ class RegisterPayload {
     this.whatsappNumber,
     this.city,
     this.image,
+    this.departmentcode,
   });
 
   RegisterPayload.fromJson(dynamic json) {
@@ -45,6 +46,7 @@ class RegisterPayload {
     image = json['image'];
     deviceId = json['device_id'];
     deviceName = json['device_name'];
+    departmentcode = json['department_code'];
   }
   String? iqamaId;
   String? name;
@@ -65,6 +67,7 @@ class RegisterPayload {
   String? deviceName;
   String? deviceId;
   String? city;
+  String? departmentcode;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -87,7 +90,7 @@ class RegisterPayload {
     map['device_token'] = deviceName;
     map['about_me'] = aboutMe;
     map['image'] = image;
-
+    map['department_code']= departmentcode;
     return map;
   }
 }
