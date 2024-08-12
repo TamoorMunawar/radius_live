@@ -340,10 +340,7 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                         ],
                       )),
                     ),
-                    Text(
-                      "${"App Version".tr()}  $currentVersion",
-                      style: TextStyle(color: Colors.white, fontSize: SizeConfig.width(context, 0.03)),
-                    )
+
                   ],
                 )
               : Container(),

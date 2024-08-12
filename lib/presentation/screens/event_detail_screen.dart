@@ -198,15 +198,16 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        BlocBuilder<TimerCubit, Duration>(builder: (context, state) {
-                          return buildEventLogo(
-                              context: context,
-                              // leadTime: "${eventDetail?.leadTime}",
-                              leadTime:
-                                  'Time left: ${state.inDays} days, ${state.inHours % 24} hours, ${state.inMinutes % 60} minutes, ${state.inSeconds % 60} seconds',
-                              logo: "$eventImagePath${eventDetail?.logo}",
-                              isExpired: context.read<TimerCubit>().checkIfExpired(eventDetail!));
-                        }),
+                        buildEventTimer(context),
+                        // BlocBuilder<TimerCubit, Duration>(builder: (context, state) {
+                        //   return buildEventLogo(
+                        //       context: context,
+                        //       // leadTime: "${eventDetail?.leadTime}",
+                        //       leadTime:
+                        //           'Time left: ${state.inDays} days, ${state.inHours % 24} hours, ${state.inMinutes % 60} minutes, ${state.inSeconds % 60} seconds',
+                        //       logo: "$eventImagePath${eventDetail?.logo}",
+                        //       isExpired: context.read<TimerCubit>().checkIfExpired(eventDetail!));
+                        // }),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -694,7 +695,17 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
       ),
     );
   }
-
+// Extracted individual helper methods
+  Widget buildEventTimer(BuildContext context) {
+    return BlocBuilder<TimerCubit, Duration>(builder: (context, state) {
+      return buildEventLogo(
+        context: context,
+        leadTime: 'Time left: ${state.inDays} days, ${state.inHours % 24} hours, ${state.inMinutes % 60} minutes, ${state.inSeconds % 60} seconds',
+        logo: "$eventImagePath${eventDetail?.logo}",
+        isExpired: context.read<TimerCubit>().checkIfExpired(eventDetail!),
+      );
+    });
+  }
   Widget buildCheckBoxWidget({
     required BuildContext context,
     required String title,

@@ -9,14 +9,14 @@ class TimerCubit extends Cubit<Duration> {
 
   Timer? _timer;
   DateTime? _expiryTime;
-
   start() {
+    if (_timer != null) return; // Prevent multiple timers
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) => _updateTimeDifference());
   }
-
   stop() {
-    _timer!.cancel();
+    _timer?.cancel();
     _timer = null;
+    _expiryTime = null; // Reset expiry time
   }
 
   bool checkIfExpired(EventDetail eventDetail) {
@@ -24,30 +24,29 @@ class TimerCubit extends Cubit<Duration> {
       eventDetail.startDate!.year,
       eventDetail.startDate!.month,
       eventDetail.startDate!.day,
-      int.parse(eventDetail.startTime.toString().split(":").first),
-      int.parse(eventDetail.startTime.toString().split(":").last),
+      int.parse(eventDetail.startTime.toString().split(":")[0]),
+      int.parse(eventDetail.startTime.toString().split(":")[1]),
+      eventDetail.startTime.toString().split(":").length > 2
+          ? int.parse(eventDetail.startTime.toString().split(":")[2])
+          : 0,
     );
-    DateTime? expiryTime;
+
     if (eventDetail.leadTimeUnit == "hour") {
-      expiryTime = startTime.add(Duration(hours: int.parse(eventDetail.leadTime!)));
+      _expiryTime = startTime.add(Duration(hours: int.parse(eventDetail.leadTime!)));
     } else if (eventDetail.leadTimeUnit == "days") {
-      expiryTime = startTime.add(Duration(days: int.parse(eventDetail.leadTime!)));
-    }
-
-    _expiryTime = expiryTime;
-
-    String date = DateFormat("yyyy:MM:dd hh:mm a").format(expiryTime!);
-    log(date);
-
-    final now = DateTime.now();
-    if (now.difference(expiryTime).isNegative) {
-      return false;
+      _expiryTime = startTime.add(Duration(days: int.parse(eventDetail.leadTime!)));
     } else {
-      return true;
+      // Handle other cases or throw an error
     }
+
+    log(DateFormat("yyyy:MM:dd hh:mm a").format(_expiryTime!));
+
+    return DateTime.now().isAfter(_expiryTime!);
   }
 
+
   void _updateTimeDifference() {
+    if (_expiryTime == null) return;
     final now = DateTime.now();
     emit(_expiryTime!.difference(now));
   }
