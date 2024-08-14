@@ -617,7 +617,7 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
 
                           return;
                         }
-                        if (roleName == "Usher" || roleName == "Client") {
+                        if (roleName != "Usher" || roleName != "Client") {
                           AppUtils.showFlushBar("You don't have permission to marked the Attandance".tr(), context);
                           return;
                         }
