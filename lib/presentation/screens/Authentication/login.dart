@@ -14,6 +14,9 @@ import 'package:radar/constants/generate_route.dart';
 import 'package:radar/constants/route_arguments.dart';
 import 'package:radar/constants/strings.dart';
 import 'package:radar/main.dart';
+import 'package:radar/presentation/screens/Authentication/sigup_otp/otp_cubit.dart';
+import 'package:radar/presentation/screens/Authentication/sigup_otp/otp_screen.dart';
+import 'package:radar/presentation/screens/Authentication/sigup_otp/repositery.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -42,6 +45,8 @@ import 'package:radar/presentation/widgets/button_widget.dart';
 
 import 'package:radar/presentation/widgets/radius_text_field.dart';
 import 'package:web_socket_client/web_socket_client.dart';
+
+import '../../../domain/usecase/verification/verification_usecase.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -1074,6 +1079,19 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                   },
                   listener: (context, state) async {
                     if (state is RegisterSuccess) {
+                      showDialog(
+                        context: context,
+                        builder: (c) => BlocProvider.value(
+                          value: OtpCubit(VerificationUsecase(repository: repository)), // Initialize VerificationCubit here
+                          child: VerificationDialog(
+                            email: state.register.email.toString(),
+                            countryCode: countryCode ?? "+966",
+                            cubit: context.read<OtpCubit>(),
+                          ),
+                        ),
+                      );
+                      print(state.register.email.toString(),);
+                      print(countryCode);
                       setState(() {
                         _cityController.clear();
                         _regEmailController.clear();
@@ -1091,16 +1109,11 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                         _iqamaExpiryController.clear();
                         _idNumberController.clear();
                       });
-
                       SharedPreferences prefs = await SharedPreferences.getInstance();
                       prefs.setBool("isVerified", state.register.isVerified ?? false);
 
-                      // await Navigator.pushNamed(context, AppRoutes.editProfileScreenRoute,
-                      //     arguments: EditProfileScreenArgs(
-                      //         isFromLogin: true, phoneCode: state.register.countryPhonecode ?? "+966"));
-
                       setState(() {
-                        isLogin = true;
+                        isLogin = false;
                       });
                       AppUtils.showFlushBar("Please_login_now".tr(), context);
                     }
@@ -1128,7 +1141,7 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                     countryCode = "";
                     mobileController.clear();
                     _ageController.clear();
-depertmentCodeController.clear();
+                    depertmentCodeController.clear();
                     _iqamaExpiryController.clear();
                     _idNumberController.clear();
                     isLogin = true;

@@ -85,6 +85,8 @@ import 'package:radar/presentation/screens/usher_list_screen.dart';
 import 'package:radar/presentation/screens/scan_qr_code_for_usher_invite.dart';
 import 'package:radar/presentation/screens/zone_dashboard_screen.dart';
 
+import '../presentation/screens/Authentication/updateGroup.dart';
+
 Route? onGenerateRoute(RouteSettings settings) {
   if (settings.name == AppRoutes.loginScreenRoute) {
     return MaterialPageRoute(
@@ -112,6 +114,11 @@ Route? onGenerateRoute(RouteSettings settings) {
   if (settings.name == AppRoutes.notificationScreenRoute) {
     return MaterialPageRoute(
       builder: (context) => NotificationScreen(),
+    );
+  }
+  if (settings.name == AppRoutes.updateGroupScreenRoute) {
+    return MaterialPageRoute(
+      builder: (context) => UpdateGroupCode(),
     );
   }
   if (settings.name == AppRoutes.forgotScreenRoute) {

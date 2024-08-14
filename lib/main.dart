@@ -12,11 +12,14 @@ import 'package:radar/firebase_options.dart';
 import 'package:radar/observer.dart';
 import 'package:radar/presentation/cubits/logistics/logistics_state.dart';
 import 'package:radar/presentation/cubits/theme/theme_cubit.dart';
+import 'package:radar/presentation/screens/Authentication/sigup_otp/otp_cubit.dart';
+import 'package:radar/presentation/screens/Authentication/sigup_otp/repositery.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'constants/generate_route.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 
 import 'domain/repository/logistics_repo.dart';
+import 'domain/usecase/verification/verification_usecase.dart';
 
 LocationData? _locationData;
 Location location = Location();
@@ -124,6 +127,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider<OtpCubit>(
+          create: (context) => OtpCubit(VerificationUsecase(repository: repository)),
+        ),
         BlocProvider(
           create: (context) => BuyAssetCubit(BuyAssetRepository()),
         ),
