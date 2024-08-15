@@ -340,7 +340,6 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                         ],
                       )),
                     ),
-
                   ],
                 )
               : Container(),
@@ -1043,7 +1042,10 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                           deviceId: deviceId,
                         );
 
-                        registerCubit.register(registerPayload: register, documentPath: newImage?.path);
+                        registerCubit.register(
+                          registerPayload: register,
+                          documentPath: newImage?.path,
+                        );
                       }
                     } else {
                       AppUtils.showFlushBar(
@@ -1061,7 +1063,7 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                 child: BlocConsumer<RegisterCubit, RegisterState>(
                   builder: (context, state) {
                     if (state is RegisterLoading) {
-                      return LoadingWidget();
+                      return const LoadingWidget();
                     }
                     return Text(
                       'Signup'.tr(),
@@ -1094,6 +1096,12 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
 
                       SharedPreferences prefs = await SharedPreferences.getInstance();
                       prefs.setBool("isVerified", state.register.isVerified ?? false);
+
+                      // Navigator.of(context).pushAndRemoveUntil(
+                      //     MaterialPageRoute(
+                      //         builder: (context) =>
+                      //             splashScreen(isProfile: state.register. != null ? false : true)),
+                      //     (Route<dynamic> route) => false);
 
                       // await Navigator.pushNamed(context, AppRoutes.editProfileScreenRoute,
                       //     arguments: EditProfileScreenArgs(
@@ -1128,7 +1136,7 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                     countryCode = "";
                     mobileController.clear();
                     _ageController.clear();
-depertmentCodeController.clear();
+                    depertmentCodeController.clear();
                     _iqamaExpiryController.clear();
                     _idNumberController.clear();
                     isLogin = true;

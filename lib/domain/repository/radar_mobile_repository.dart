@@ -159,6 +159,10 @@ abstract class RadarMobileRepository {
 
   Future<bool> addReview(ReviewPayload reviewPayload);
   Future<List<MyEvent>> getEventList();
+
+  Future<bool> userCheckIn();
+  Future<bool> userCheckout();
+  Future<int> getToday();
 }
 
 typedef MyEvent = (int id, String name);
