@@ -1736,4 +1736,93 @@ class RadarMobileRepositoryImpl implements RadarMobileRepository {
       throw Exception(e.toString().substring(11));
     }
   }
+
+  @override
+  Future<bool> usherCheckIn({int? eventId, double? latitude, double? longitude, int? zoneId}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      var url = Uri.parse('${NetworkUtils.baseUrl}/attendance/clock-in');
+
+      String jsonBody = jsonEncode(<String, dynamic>{
+        "event_model_id": eventId,
+        "currentLatitude": latitude,
+        "currentLongitude": longitude,
+        "zone_id": zoneId,
+      });
+      log("repository::addReview::jsonBody: $jsonBody\n");
+
+      http.Response response = await http.post(url, headers: authorizationHeaders(prefs), body: jsonBody);
+
+      log("repository::usherCheckIn::url: $url");
+
+      Map responseBody = jsonDecode(response.body);
+      log("repository::usherCheckIn::responseBody: $responseBody\n");
+      if (responseBody.containsKey("data") && responseBody["data"]["success"] == true) {
+        return true;
+      } else {
+        throw Exception(responseBody["message"]);
+      }
+    } on TimeoutException catch (_) {
+      throw Exception(noTimeOutMsg);
+    } on SocketException catch (_) {
+      throw Exception(noInternetConnectivityMsg);
+    } on Exception catch (e) {
+      log('repository::getUshersByEvent::exception = ${e.toString()}');
+      throw Exception(e.toString().substring(11));
+    }
+  }
+
+  @override
+  Future<bool> usherCheckout(int id) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      var url = Uri.parse('${NetworkUtils.baseUrl}/attendance/clock-out/$id');
+
+      http.Response response = await http.post(url, headers: authorizationHeaders(prefs));
+
+      log("repository::usherCheckout::url: $url");
+
+      Map responseBody = jsonDecode(response.body);
+      log("repository::usherCheckout::responseBody: $responseBody\n");
+      if (responseBody.containsKey("data") && responseBody["data"]["success"] == true) {
+        return true;
+      } else {
+        throw Exception(responseBody["message"]);
+      }
+    } on TimeoutException catch (_) {
+      throw Exception(noTimeOutMsg);
+    } on SocketException catch (_) {
+      throw Exception(noInternetConnectivityMsg);
+    } on Exception catch (e) {
+      log('repository::getUshersByEvent::exception = ${e.toString()}');
+      throw Exception(e.toString().substring(11));
+    }
+  }
+
+  @override
+  Future<int> getToday() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      var url = Uri.parse('${NetworkUtils.baseUrl}/attendance/today');
+
+      http.Response response = await http.get(url, headers: authorizationHeaders(prefs));
+
+      log("repository::getToday::url: $url");
+
+      Map responseBody = jsonDecode(response.body);
+      log("repository::getToday::responseBody: $responseBody\n");
+      if (responseBody.containsKey("data") && responseBody["data"]["attendance"] != null) {
+        return responseBody["data"]["attendance"]["id"];
+      } else {
+        throw Exception(responseBody["message"]);
+      }
+    } on TimeoutException catch (_) {
+      throw Exception(noTimeOutMsg);
+    } on SocketException catch (_) {
+      throw Exception(noInternetConnectivityMsg);
+    } on Exception catch (e) {
+      log('repository::getToday::exception = ${e.toString()}');
+      throw Exception(e.toString().substring(11));
+    }
+  }
 }

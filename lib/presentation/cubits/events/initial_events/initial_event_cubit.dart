@@ -14,9 +14,7 @@ class InitialEventCubit extends Cubit<InitialEventState> {
     try {
       emit(InitialEventLoading());
       List<InitialEvent> result = await usecase.getInitialEvent(page: page);
-      emit(
-        InitialEventSuccess(initialEvent: result),
-      );
+      emit(InitialEventSuccess(initialEvent: result));
     } on Exception catch (e) {
       emit(
         InitialEventFailure(
@@ -39,24 +37,28 @@ class InitialEventCubit extends Cubit<InitialEventState> {
       );
     }
   }
+
   Future<List<InitialEvent>> getFinalEventTest({int? page}) async {
     try {
-     // emit(FinalEventLoading());
+      // emit(FinalEventLoading());
       List<InitialEvent> result = await usecase.getFinalEvent(page: page);
-    //  emit(FinalEventSuccess(finalEvent: result));
+      //  emit(FinalEventSuccess(finalEvent: result));
 
-   return result; } on Exception catch (e) {
-   return [];
+      return result;
+    } on Exception catch (e) {
+      return [];
     }
   }
+
   Future<List<InitialEvent>> getInitialEventTest({int? page}) async {
     try {
-     // emit(FinalEventLoading());
+      // emit(FinalEventLoading());
       List<InitialEvent> result = await usecase.getInitialEvent(page: page);
-    //  emit(FinalEventSuccess(finalEvent: result));
+      //  emit(FinalEventSuccess(finalEvent: result));
 
-   return result; } on Exception catch (e) {
-   return [];
+      return result;
+    } on Exception catch (e) {
+      return [];
     }
   }
 }

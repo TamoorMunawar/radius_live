@@ -66,7 +66,7 @@ class _VerificationDialogState extends State<VerificationDialog> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: PinCodeTextField(
-                hintCharacter: "0",
+                hintCharacter: "",
                 hintStyle: const TextStyle(color: Colors.grey),
                 controller: _otpController,
 
@@ -139,24 +139,6 @@ class _VerificationDialogState extends State<VerificationDialog> {
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                  // child: BlocConsumer<VerificationCubit, VerificationState>(
-                  // listener: (context, state) {
-                  //   if (state is CheckOtpFailure) {
-                  //     AppUtils.showFlushBar(state.errorMessage, context);
-                  //   }
-                  //   if (state is CheckOtpSuccess) {
-                  //     if (widget.fromLogin) {
-                  //       AppUtils.showFlushBar("Account Verified Successfully", context);
-                  //       Navigator.of(context).pushAndRemoveUntil(
-                  //         MaterialPageRoute(builder: (context) => splashScreen(isProfile: true)),
-                  //         (Route<dynamic> route) => false,
-                  //       );
-                  //     } else {
-                  //       Navigator.pop(context);
-                  //     }
-                  //   }
-                  // },
-                  // builder: (context, state) {
                   child: _isLoading
                       ? const LoadingWidget()
                       : SubmitButton(

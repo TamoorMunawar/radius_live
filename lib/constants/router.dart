@@ -4,7 +4,7 @@ class AppRoutes {
   static String forgotScreenRoute = '/forgotScreenRoute';
   static String resetScreenRoute = '/resetScreenRoute';
   static String notificationScreenRoute = '/notificationScreenRoute';
-
+  static String updateGroupScreenRoute = '/updateGroupScreenRoute';
   static String otpScreenRoute = '/otpScreenRoute';
   static String dashboardJob = '/dashboardJob';
   static String dashboardZone = '/dashboardZone';

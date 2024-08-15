@@ -387,6 +387,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         height: 0.02.sh,
                       ),
                       ProfileButton(
+                        //    width: SizeConfig.width(context, 0.5),
+                        onPressed: () async {
+                          Navigator.pushNamed(context, AppRoutes.updateGroupScreenRoute);
+                        },
+                        title: 'Update Group'.tr(),
+                        icon: Symbols.local_activity,
+                      ),
+                      SizedBox(height: SizeConfig.height(context, 0.02)),
+                      ProfileButton(
                         gradientFirstColor: GlobalColors.logoutColor,
                         //    width: SizeConfig.width(context, 0.5),
                         onPressed: () async {
@@ -399,6 +408,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         },
                         title: 'Logout'.tr(), icon: Symbols.logout,
                       ),
+
                     ],
                   ),
                 ),

@@ -18,6 +18,7 @@ import 'package:radar/domain/entities/scan_qr_code/Scan_qr_code_payload.dart';
 import 'package:radar/domain/entities/zone/Zone.dart';
 import 'package:radar/presentation/cubits/events/initial_events/initial_event_cubit.dart';
 import 'package:radar/presentation/cubits/scan_qr_code/scan_qrcode_cubit.dart';
+import 'package:radar/presentation/cubits/ushers/usher_cubit.dart';
 import 'package:radar/presentation/cubits/zone/zone_cubit.dart';
 import 'package:radar/presentation/cubits/zone_seats/zone_seats_cubit.dart';
 import 'package:radar/presentation/screens/dashboard_screen.dart';
@@ -183,7 +184,7 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
   @override
   void initState() {
     scanQrCodeCubit = BlocProvider.of<ScanQrCodeCubit>(context);
-    zoneCubit = BlocProvider.of<ZoneCubit>(context);
+    // zoneCubit = BlocProvider.of<ZoneCubit>(context);
     initialEventCubit = BlocProvider.of<InitialEventCubit>(context);
     // zoneSeatsCubit = BlocProvider.of<ZoneSeatsCubit>(context);
     checkInScrollController.addListener(_checkInScrollListener);
@@ -483,77 +484,72 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
               SizedBox(
                 height: SizeConfig.height(context, 0.02),
               ),
-              // Material(
-              //   color: Colors.transparent,
-              //   shadowColor: const Color(0xff006DFC).withOpacity(0.16),
-              //   child: BlocConsumer<ZoneCubit, ZoneState>(
-              //     builder: (context, state) {
-              //       if (state is ZoneLoading) {
-              //         return const LoadingWidget();
-              //       }
-              //       if (state is ZoneSuccess) {
-              //         return DropdownButtonFormField<Zone>(
-              //           isExpanded: true,
-              //           dropdownColor: GlobalColors.backgroundColor,
-              //           padding: const EdgeInsets.only(),
-              //           items: state.result.map((Zone item) {
-              //             return DropdownMenuItem<Zone>(
-              //               value: item,
-              //               child: Text(
-              //                 item.categoryName ?? "",
-              //                 style: TextStyle(color: GlobalColors.textFieldHintColor),
-              //               ),
-              //             );
-              //           }).toList(),
-              //           value: zoneValue,
-              //           onChanged: (value) {
-              //             setState(() {
-              //               zoneValue = value;
-              //               print("zone id ${zoneValue?.id} ");
-              //             });
-              //           },
-              //           decoration: InputDecoration(
-              //             filled: false,
-              //             hintText: 'Select Zone'.tr(),
-              //             hintStyle: TextStyle(
-              //               color: GlobalColors.textFieldHintColor,
-              //             ),
-              //             border: OutlineInputBorder(
-              //               borderSide: const BorderSide(color: GlobalColors.submitButtonColor
-              //                   //    color: GlobalColors.ftsTextColor,
-              //                   ),
-              //               borderRadius: BorderRadius.circular(
-              //                 SizeConfig.width(context, 0.03),
-              //               ),
-              //             ),
-              //             focusedBorder: OutlineInputBorder(
-              //               borderSide: BorderSide(
-              //                 color: GlobalColors.hintTextColor,
-              //                 //    color: GlobalColors.ftsTextColor,
-              //               ),
-              //               borderRadius: BorderRadius.circular(
-              //                 SizeConfig.width(context, 0.03),
-              //               ),
-              //             ),
-              //           ),
-              //           autovalidateMode: AutovalidateMode.onUserInteraction,
-              //           validator: (value) {
-              //             if (value == null) {
-              //               return 'Please select a Zone';
-              //             }
-              //             return null;
-              //           },
-              //         );
-              //       }
-              //       return Container();
-              //     },
-              //     listener: (context, state) {
-              //       if (state is ZoneFailure) {
-              //         AppUtils.showFlushBar(state.errorMessage, context);
-              //       }
-              //     },
-              //   ),
-              // ),
+              Material(
+                color: Colors.transparent,
+                shadowColor: const Color(0xff006DFC).withOpacity(0.16),
+                child: DropdownButtonFormField<Zone>(
+                  isExpanded: true,
+                  dropdownColor: GlobalColors.backgroundColor,
+                  padding: const EdgeInsets.only(),
+                  // items: event.zones.map((Zone item) {
+                  //   return DropdownMenuItem<Zone>(
+                  //     value: item,
+                  //     child: Text(
+                  //       item.categoryName ?? "",
+                  //       style: TextStyle(color: GlobalColors.textFieldHintColor),
+                  //     ),
+                  //   );
+                  // }).toList(),
+                  items: [
+                    for (int i = 0; i < event!.zones!.length; i++)
+                      DropdownMenuItem<Zone>(
+                        value: event.zones![i],
+                        child: Text(
+                          event.zones?[i].categoryName ?? "",
+                          style: TextStyle(color: GlobalColors.textFieldHintColor),
+                        ),
+                      )
+                  ],
+                  value: zoneValue,
+                  onChanged: (value) {
+                    setState(() {
+                      zoneValue = value;
+                      print("zone id ${zoneValue?.id} ");
+                    });
+                  },
+                  decoration: InputDecoration(
+                    filled: false,
+                    hintText: 'Select Zone'.tr(),
+                    hintStyle: TextStyle(
+                      color: GlobalColors.textFieldHintColor,
+                    ),
+                    border: OutlineInputBorder(
+                      borderSide: const BorderSide(color: GlobalColors.submitButtonColor
+                          //    color: GlobalColors.ftsTextColor,
+                          ),
+                      borderRadius: BorderRadius.circular(
+                        SizeConfig.width(context, 0.03),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: GlobalColors.hintTextColor,
+                        //    color: GlobalColors.ftsTextColor,
+                      ),
+                      borderRadius: BorderRadius.circular(
+                        SizeConfig.width(context, 0.03),
+                      ),
+                    ),
+                  ),
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) {
+                    if (value == null) {
+                      return 'Please select a Zone';
+                    }
+                    return null;
+                  },
+                ),
+              ),
               SizedBox(
                 height: SizeConfig.height(context, 0.02),
               ),
@@ -591,124 +587,151 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
               SizedBox(
                 height: SizeConfig.height(context, 0.03),
               ),
-              (isCheckInValue)
-                  ? SubmitButton(
-                      gradientFirstColor: GlobalColors.submitButtonColor,
-                      width: SizeConfig.width(context, 0.85),
-                      onPressed: () async {
-                        File? image = await _pickImageFromCamera();
+              BlocConsumer<ScanQrCodeCubit, ScanQrCodeState>(
+                listener: (context, state) {
+                  if (state is UsherCheckinSuccess) {
+                    AppUtils.showFlushBar("Usher checked in successfully", context);
+                  }
+                  if (state is UsherCheckoutSuccess) {
+                    AppUtils.showFlushBar("Usher checked out successfully", context);
+                  }
+                  if (state is UsherAttendanceFailure) {
+                    AppUtils.showFlushBar(state.errorMessage, context);
+                  }
+                },
+                builder: (context, state) {
+                  return (isCheckInValue)
+                      ? SubmitButton(
+                          gradientFirstColor: GlobalColors.submitButtonColor,
+                          width: SizeConfig.width(context, 0.85),
+                          onPressed: () async {
+                            File? image = await _pickImageFromCamera();
 
-                        if (image == null) {
-                          AppUtils.showFlushBar("Please capture your image!", context);
-                          return;
-                        }
+                            if (image == null) {
+                              AppUtils.showFlushBar("Please capture your image!", context);
+                              return;
+                            }
 
-                        bool isWithinRadius = _checkIfWithinRadius(
-                            zoneLat: event.latitude, zoneLong: event.longitude, zonRadius: event.radius);
-                        // if (zoneValue == null) {
-                        //   AppUtils.showFlushBar("Please select a Zone".tr(), context);
-                        //   return;
-                        // }
-                        if (!isWithinRadius) {
-                          AppUtils.showFlushBar("You are not in the Zone", context);
+                            bool isWithinRadius = _checkIfWithinRadius(
+                                zoneLat: event.latitude, zoneLong: event.longitude, zonRadius: event.radius);
+                            if (zoneValue == null) {
+                              AppUtils.showFlushBar("Please select a Zone".tr(), context);
+                              return;
+                            }
+                            if (!isWithinRadius) {
+                              AppUtils.showFlushBar("You are not in the Zone", context);
 
-                          return;
-                        }
-                        if (roleName != "Usher" || roleName != "Client") {
-                          AppUtils.showFlushBar("You don't have permission to marked the Attandance".tr(), context);
-                          return;
-                        }
-                        var res = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const SimpleBarcodeScannerPage(),
-                            ));
-                        print("resssssv $res");
-                        var response = jsonDecode(res);
-                        ScanQrCodePayload qrcodeResult = ScanQrCodePayload.fromJson(response);
-                        print("resssssvisCheckInValue $isCheckInValue");
-                        qrcodeResult.type = (isCheckInValue) ? "checkIn" : "CheckOut";
-                        print("ScanQrCodePayload ${qrcodeResult.name}");
-                        print("ScanQrCodePayload ${qrcodeResult.id}");
-                        print("ScanQrCodePayload ${qrcodeResult.id}");
-                        if (qrcodeResult?.name?.isNotEmpty ?? false) {
-                          scanQrCodeCubit.scanQrCodeByEventId(
-                            isCheckout: (isCheckInValue) ? false : true,
-                            eventModelId: (isCheckInValue) ? checkInEventModelId : checkOutEventModelId,
-                            zoneId: zoneValue?.id,
-                            latitude: latitude,
-                            longitude: longitude,
-                            scanQrCodePayload: qrcodeResult,
-                            userId: qrcodeResult.id,
-                          );
-                        }
-                        setState(() {
-                          showAlert = false;
-                          zoneValue = null;
-                          isJobAccepted = true;
-                        });
-                        //  Navigator.pushNamed(context, AppRoutes.resetScreenRoute);
-                      },
-                      child: Text(
-                        (isCheckInValue) ? 'Check In'.tr() : 'Check out'.tr(),
-                        style: TextStyle(
-                          color: GlobalColors.submitButtonTextColor,
-                          fontSize: SizeConfig.width(context, 0.04),
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ))
-                  : SubmitButton(
-                      gradientFirstColor: GlobalColors.submitButtonColor,
-                      width: SizeConfig.width(context, 0.85),
-                      onPressed: () async {
-                        print("ssss");
-                        // if (zoneValue == null) {
-                        //   AppUtils.showFlushBar("Please select a Zone".tr(), context);
-                        //   return;
-                        // }
-                        if (roleName != "Usher" || roleName != "Client") {
-                          AppUtils.showFlushBar("You don't have permission to marked the Attandance".tr(), context);
-                          return;
-                        }
-                        var res = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const SimpleBarcodeScannerPage(),
-                            ));
-                        print("resssssv $res");
-                        var response = jsonDecode(res);
-                        ScanQrCodePayload qrcodeResult = ScanQrCodePayload.fromJson(response);
-                        print("resssssvisCheckInValue ${isCheckInValue}");
-                        qrcodeResult.type = (isCheckInValue) ? "checkIn" : "CheckOut";
-                        print("ScanQrCodePayload ${qrcodeResult.name}");
-                        print("ScanQrCodePayload ${qrcodeResult.id}");
-                        print("ScanQrCodePayload ${qrcodeResult.id}");
-                        if (qrcodeResult?.name?.isNotEmpty ?? false) {
-                          scanQrCodeCubit.scanQrCodeByEventId(
-                            isCheckout: (isCheckInValue) ? false : true,
-                            eventModelId: (isCheckInValue) ? checkInEventModelId : checkOutEventModelId,
-                            zoneId: zoneValue?.id,
-                            latitude: latitude,
-                            longitude: longitude,
-                            scanQrCodePayload: qrcodeResult,
-                            userId: qrcodeResult.id,
-                          );
-                        }
-                        setState(() {
-                          showAlert = false;
-                          zoneValue = null;
-                          isJobAccepted = false;
-                        });
-                        //  Navigator.pushNamed(context, AppRoutes.resetScreenRoute);
-                      },
-                      child: Text(
-                        (isCheckInValue) ? 'Check In'.tr() : 'Check out'.tr(),
-                        style: TextStyle(
-                          color: GlobalColors.submitButtonTextColor,
-                          fontSize: SizeConfig.width(context, 0.04),
-                          fontWeight: FontWeight.w500,
-                        ),
-                      )),
+                              return;
+                            }
+                            log(roleName ?? "Role");
+
+                            if (roleName != "Usher") {
+                              AppUtils.showFlushBar("You don't have permission to marked the Attandance".tr(), context);
+                              return;
+                            }
+
+                            scanQrCodeCubit.usherCheckIn(
+                              eventId: event.id,
+                              latitude: latitude,
+                              longitude: longitude,
+                              zoneId: zoneValue?.id,
+                            );
+                            // var res = await Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //       builder: (context) => const SimpleBarcodeScannerPage(),
+                            //     ));
+                            // print("resssssv $res");
+                            // var response = jsonDecode(res);
+                            // ScanQrCodePayload qrcodeResult = ScanQrCodePayload.fromJson(response);
+                            // print("resssssvisCheckInValue $isCheckInValue");
+                            // qrcodeResult.type = (isCheckInValue) ? "checkIn" : "CheckOut";
+                            // print("ScanQrCodePayload ${qrcodeResult.name}");
+                            // print("ScanQrCodePayload ${qrcodeResult.id}");
+                            // print("ScanQrCodePayload ${qrcodeResult.id}");
+                            // if (qrcodeResult?.name?.isNotEmpty ?? false) {
+                            //   scanQrCodeCubit.scanQrCodeByEventId(
+                            //     isCheckout: (isCheckInValue) ? false : true,
+                            //     eventModelId: (isCheckInValue) ? checkInEventModelId : checkOutEventModelId,
+                            //     zoneId: zoneValue?.id,
+                            //     latitude: latitude,
+                            //     longitude: longitude,
+                            //     scanQrCodePayload: qrcodeResult,
+                            //     userId: qrcodeResult.id,
+                            //   );
+                            // }
+                            setState(() {
+                              showAlert = false;
+                              zoneValue = null;
+                              isJobAccepted = true;
+                            });
+                            //  Navigator.pushNamed(context, AppRoutes.resetScreenRoute);
+                          },
+                          child: Text(
+                            (isCheckInValue) ? 'Check In'.tr() : 'Check out'.tr(),
+                            style: TextStyle(
+                              color: GlobalColors.submitButtonTextColor,
+                              fontSize: SizeConfig.width(context, 0.04),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ))
+                      : SubmitButton(
+                          gradientFirstColor: GlobalColors.submitButtonColor,
+                          width: SizeConfig.width(context, 0.85),
+                          onPressed: () async {
+                            if (zoneValue == null) {
+                              AppUtils.showFlushBar("Please select a Zone".tr(), context);
+                              return;
+                            }
+
+                            log(roleName ?? "Role");
+                            if (roleName != "Usher") {
+                              AppUtils.showFlushBar("You don't have permission to marked the Attandance".tr(), context);
+                              return;
+                            }
+
+                            scanQrCodeCubit.usherCheckout();
+                            // var res = await Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //       builder: (context) => const SimpleBarcodeScannerPage(),
+                            //     ));
+                            // print("resssssv $res");
+                            // var response = jsonDecode(res);
+                            // ScanQrCodePayload qrcodeResult = ScanQrCodePayload.fromJson(response);
+                            // print("resssssvisCheckInValue ${isCheckInValue}");
+                            // qrcodeResult.type = (isCheckInValue) ? "checkIn" : "CheckOut";
+                            // print("ScanQrCodePayload ${qrcodeResult.name}");
+                            // print("ScanQrCodePayload ${qrcodeResult.id}");
+                            // print("ScanQrCodePayload ${qrcodeResult.id}");
+                            // if (qrcodeResult?.name?.isNotEmpty ?? false) {
+                            //   scanQrCodeCubit.scanQrCodeByEventId(
+                            //     isCheckout: (isCheckInValue) ? false : true,
+                            //     eventModelId: (isCheckInValue) ? checkInEventModelId : checkOutEventModelId,
+                            //     zoneId: zoneValue?.id,
+                            //     latitude: latitude,
+                            //     longitude: longitude,
+                            //     scanQrCodePayload: qrcodeResult,
+                            //     userId: qrcodeResult.id,
+                            //   );
+                            // }
+                            setState(() {
+                              showAlert = false;
+                              zoneValue = null;
+                              isJobAccepted = false;
+                            });
+                            //  Navigator.pushNamed(context, AppRoutes.resetScreenRoute);
+                          },
+                          child: Text(
+                            (isCheckInValue) ? 'Check In'.tr() : 'Check out'.tr(),
+                            style: TextStyle(
+                              color: GlobalColors.submitButtonTextColor,
+                              fontSize: SizeConfig.width(context, 0.04),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ));
+                },
+              ),
             ],
           ),
         ),

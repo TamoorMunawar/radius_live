@@ -33,6 +33,44 @@ class ScanQrCodeUsecase {
     }
   }
 
+  Future<bool> usherCheckIn({
+    ScanQrCodePayload? scanQrCodePayload,
+    double? latitude,
+    double? longitude,
+    int? eventId,
+    int? zoneId,
+  }) async {
+    try {
+      return await repository.usherCheckIn(
+        eventId: eventId,
+        zoneId: zoneId,
+        longitude: longitude,
+        latitude: latitude,
+      );
+    } on Exception catch (e) {
+      LogManager.error("usherCheckIn::error", e);
+      throw Exception(e.toString().substring(11));
+    }
+  }
+
+  Future<bool> usherCheckout(int id) async {
+    try {
+      return await repository.usherCheckout(id);
+    } on Exception catch (e) {
+      LogManager.error("usherCheckout::error", e);
+      throw Exception(e.toString().substring(11));
+    }
+  }
+
+  Future<int> getToday() async {
+    try {
+      return await repository.getToday();
+    } on Exception catch (e) {
+      LogManager.error("getToday::error", e);
+      throw Exception(e.toString().substring(11));
+    }
+  }
+
   Future<bool?> scanQrCodeForUsherInvite({
     ScanQrCodeUsherInvitePayload? scanQrCodePayload,
     int? zoneId,
@@ -77,8 +115,7 @@ class ScanQrCodeUsecase {
 
   Future<String> getQrCode({String? latitude, String? longitude}) async {
     try {
-      return await repository.getQrCode(
-          longitude: longitude, latitude: latitude);
+      return await repository.getQrCode(longitude: longitude, latitude: latitude);
     } on Exception catch (e) {
       LogManager.error("getQrCode::error", e);
       throw Exception(e.toString().substring(11));

@@ -1,3 +1,5 @@
+import 'package:radar/domain/entities/zone/Zone.dart';
+
 import 'Zones.dart';
 import 'Country.dart';
 
@@ -114,7 +116,7 @@ class InitialEvent {
     if (json['zones'] != null) {
       zones = [];
       json['zones'].forEach((v) {
-        zones?.add(Zones.fromJson(v));
+        zones?.add(Zone.fromJson(v));
       });
     }
     manager = json['manager'];
@@ -153,7 +155,7 @@ class InitialEvent {
   bool? isProjectAdmin;
   String? fullAddress;
   List<dynamic>? members;
-  List<Zones>? zones;
+  List<Zone>? zones;
   dynamic manager;
   dynamic wareHouseManager;
   Country? country;

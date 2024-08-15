@@ -160,8 +160,8 @@ abstract class RadarMobileRepository {
   Future<bool> addReview(ReviewPayload reviewPayload);
   Future<List<MyEvent>> getEventList();
 
-  Future<bool> userCheckIn();
-  Future<bool> userCheckout();
+  Future<bool> usherCheckIn({int? eventId, double? latitude, double? longitude, int? zoneId});
+  Future<bool> usherCheckout(int id);
   Future<int> getToday();
 }
 
