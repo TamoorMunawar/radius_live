@@ -162,7 +162,7 @@ abstract class RadarMobileRepository {
 
   Future<bool> usherCheckIn({int? eventId, double? latitude, double? longitude, int? zoneId});
   Future<bool> usherCheckout(int id);
-  Future<int> getToday();
+  Future<(int, int)?> getToday();
 }
 
 typedef MyEvent = (int id, String name);

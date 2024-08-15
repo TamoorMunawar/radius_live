@@ -62,12 +62,12 @@ class ScanQrCodeUsecase {
     }
   }
 
-  Future<int> getToday() async {
+  Future<(int, int)?> getToday() async {
     try {
       return await repository.getToday();
     } on Exception catch (e) {
       LogManager.error("getToday::error", e);
-      throw Exception(e.toString().substring(11));
+      return null;
     }
   }
 

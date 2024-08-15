@@ -42,7 +42,8 @@ class ScanQrCodeCubit extends Cubit<ScanQrCodeState> {
   void usherCheckIn({int? eventId, double? latitude, double? longitude, int? zoneId}) async {
     try {
       emit(UsherAttendanceLoading());
-      bool result = await usecase.usherCheckIn(latitude: latitude, longitude: longitude);
+      bool result =
+          await usecase.usherCheckIn(eventId: eventId, latitude: latitude, longitude: longitude, zoneId: zoneId);
       emit(UsherCheckinSuccess(success: result));
     } on Exception catch (e) {
       emit(
@@ -56,9 +57,13 @@ class ScanQrCodeCubit extends Cubit<ScanQrCodeState> {
   void usherCheckout() async {
     try {
       emit(UsherAttendanceLoading());
-      int id = await usecase.getToday();
-      bool result = await usecase.usherCheckout(id);
-      emit(UsherCheckoutSuccess(success: result));
+      final attendance = await usecase.getToday();
+      if (attendance != null) {
+        bool result = await usecase.usherCheckout(attendance.$1);
+        emit(UsherCheckoutSuccess(success: result));
+      } else {
+        emit(const UsherAttendanceFailure(errorMessage: "You are not checked in!"));
+      }
     } on Exception catch (e) {
       emit(
         UsherAttendanceFailure(

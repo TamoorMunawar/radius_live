@@ -1749,7 +1749,7 @@ class RadarMobileRepositoryImpl implements RadarMobileRepository {
         "currentLongitude": longitude,
         "zone_id": zoneId,
       });
-      log("repository::addReview::jsonBody: $jsonBody\n");
+      log("repository::usherCheckIn::jsonBody: $jsonBody\n");
 
       http.Response response = await http.post(url, headers: authorizationHeaders(prefs), body: jsonBody);
 
@@ -1800,7 +1800,7 @@ class RadarMobileRepositoryImpl implements RadarMobileRepository {
   }
 
   @override
-  Future<int> getToday() async {
+  Future<(int, int)?> getToday() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       var url = Uri.parse('${NetworkUtils.baseUrl}/attendance/today');
@@ -1812,7 +1812,9 @@ class RadarMobileRepositoryImpl implements RadarMobileRepository {
       Map responseBody = jsonDecode(response.body);
       log("repository::getToday::responseBody: $responseBody\n");
       if (responseBody.containsKey("data") && responseBody["data"]["attendance"] != null) {
-        return responseBody["data"]["attendance"]["id"];
+        int id = responseBody["data"]["attendance"]["id"];
+        int eventId = responseBody["data"]["attendance"]["event_model_id"];
+        return (id, eventId);
       } else {
         throw Exception(responseBody["message"]);
       }
@@ -1822,7 +1824,7 @@ class RadarMobileRepositoryImpl implements RadarMobileRepository {
       throw Exception(noInternetConnectivityMsg);
     } on Exception catch (e) {
       log('repository::getToday::exception = ${e.toString()}');
-      throw Exception(e.toString().substring(11));
+      throw Exception(e.toString());
     }
   }
 }
