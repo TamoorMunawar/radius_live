@@ -10,7 +10,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../constants/network_utils.dart';
 import '../../../domain/entities/logictis/logistics.dart';
 import '../../../domain/repository/logistics_repo.dart';
-import '../../cubits/logistics/logistics_state.dart';
 import '../job_dashboard_screen.dart';
 
 class ComplainScreen extends StatefulWidget {
@@ -22,7 +21,9 @@ class ComplainScreen extends StatefulWidget {
 
 class _ComplainScreenState extends State<ComplainScreen> {
   List<Data> assetlist = [];
+  List<TextEditingController> controllers = [];
   bool isLoading = true;
+  bool isLoading1 = true;
   @override
   void initState() {
     super.initState();
@@ -44,6 +45,10 @@ class _ComplainScreenState extends State<ComplainScreen> {
       print("accept event");
       setState(() {
         assetlist = data.map((item) => Data.fromJson(item)).toList();
+        // Initialize controllers with existing returnQty values
+        controllers = assetlist.map((asset) {
+          return TextEditingController(text: asset.returnQty?.toString() ?? "");
+        }).toList();
         isLoading = false;
       });
     } else {
@@ -52,6 +57,55 @@ class _ComplainScreenState extends State<ComplainScreen> {
         isLoading = false;
       });
     }
+  }
+
+  Future<void> sendPostRequest(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String url = '${NetworkUtils.baseUrl}/return-logistics-qty';
+
+    // Construct the JSON body with the ids and quantities
+    Map<String, dynamic> jsonBody = {
+      "id": assetlist.map((asset) => asset.id).toList(),
+      "quantity": controllers.map((controller) => int.tryParse(controller.text) ?? 0).toList(),
+    };
+
+    setState(() {
+      isLoading1 = true;
+    });
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: authorizationHeaders(prefs),
+        body: jsonEncode(jsonBody),
+      );
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Update successful!')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Update failed!')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('An error occurred: $e')),
+      );
+    } finally {
+      setState(() {
+        isLoading1 = false;
+      });
+    }
+  }
+  @override
+  void dispose() {
+    // Dispose controllers when the widget is disposed
+    for (var controller in controllers) {
+      controller.dispose();
+    }
+    super.dispose();
   }
 
   @override
@@ -83,33 +137,6 @@ class _ComplainScreenState extends State<ComplainScreen> {
             fontSize: SizeConfig.width(context, 0.05),
             fontWeight: FontWeight.w600,
           ),
-        ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        padding: EdgeInsets.only(
-          bottom: SizeConfig.height(context, 0.055),
-          //  right: SizeConfig.width(context, 0.07),
-        ),
-        height: SizeConfig.height(context, 0.12),
-        color: GlobalColors.primaryColor,
-
-        // color: Colors.white,
-        elevation: 0,
-        child: Padding(
-          padding: EdgeInsets.only(
-            left: SizeConfig.width(context, 0.07),
-            right: SizeConfig.width(context, 0.07),
-          ),
-          child: SubmitButton(
-              onPressed: () {},
-              child: Text(
-                'Update'.tr(),
-                style: TextStyle(
-                  color: GlobalColors.submitButtonTextColor,
-                  fontSize: SizeConfig.width(context, 0.04),
-                  fontWeight: FontWeight.w500,
-                ),
-              )),
         ),
       ),
       body: Column(
@@ -160,7 +187,7 @@ class _ComplainScreenState extends State<ComplainScreen> {
                   flex: 2,
                   child: Center(
                     child: Text(
-                      'Input Field'.tr(),
+                      'Return Quantity'.tr(),
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontSize: SizeConfig.width(
                             context,
@@ -190,7 +217,7 @@ class _ComplainScreenState extends State<ComplainScreen> {
                         flex: 1,
                         child: Center(
                           child: Text(
-                            assetlist[index].asset?.name ?? "",
+                            asset.asset?.name ?? "",
                             style: TextStyle(
                               color: GlobalColors.goodMorningColor,
                               fontWeight: FontWeight.w400,
@@ -203,7 +230,7 @@ class _ComplainScreenState extends State<ComplainScreen> {
                         flex: 1,
                         child: Center(
                           child: Text(
-                            "${assetlist[index].quantity ?? ""}",
+                            "${asset.quantity ?? ""}",
                             style: TextStyle(
                               color: GlobalColors.goodMorningColor,
                               fontWeight: FontWeight.w400,
@@ -215,13 +242,24 @@ class _ComplainScreenState extends State<ComplainScreen> {
                       Expanded(
                         flex: 1,
                         child: TextField(
+                          keyboardType: TextInputType.number,
+                          controller: controllers[index],
                           onChanged: (value) {
-                            // Handle value input here
+                            int? inputValue = int.tryParse(value);
+                            if (inputValue != null && inputValue > asset.quantity ) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Value cannot be greater than available quantity')),
+                              );
+                            }
+                            assetlist[index].returnQty = inputValue ?? 0;
                           },
                           decoration: InputDecoration(
                             hintText: 'Enter Value',
                             fillColor: GlobalColors.goodMorningColor,
                             border: const OutlineInputBorder(),
+                          ),
+                          style: TextStyle(
+                            color: Colors.white, // Set text color to white
                           ),
                         ),
                       ),
@@ -233,6 +271,33 @@ class _ComplainScreenState extends State<ComplainScreen> {
           ),
         ],
       ),
+      bottomNavigationBar: BottomAppBar(
+        padding: EdgeInsets.only(
+          bottom: SizeConfig.height(context, 0.055),
+        ),
+        height: SizeConfig.height(context, 0.12),
+        color: GlobalColors.primaryColor,
+        elevation: 0,
+        child: Padding(
+          padding: EdgeInsets.only(
+            left: SizeConfig.width(context, 0.07),
+            right: SizeConfig.width(context, 0.07),
+          ),
+          child: SubmitButton(
+              onPressed: () async {
+                await sendPostRequest(context);
+              },
+              child: Text(
+                'Update'.tr(),
+                style: TextStyle(
+                  color: GlobalColors.submitButtonTextColor,
+                  fontSize: SizeConfig.width(context, 0.04),
+                  fontWeight: FontWeight.w500,
+                ),
+              )),
+        ),
+      ),
     );
   }
 }
+

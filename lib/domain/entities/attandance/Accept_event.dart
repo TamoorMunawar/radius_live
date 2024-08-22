@@ -23,15 +23,15 @@ class AcceptEvent {
 class Detail {
   int? currentPage;
   List<Data>? data;
-  var firstPageUrl;
+  String? firstPageUrl;
   int? from;
   int? lastPage;
-  var lastPageUrl;
+  String? lastPageUrl;
   List<Links>? links;
-  var nextPageUrl;
-  var path;
+  String? nextPageUrl;
+  String? path;
   int? perPage;
-  var prevPageUrl;
+  Null? prevPageUrl;
   int? to;
   int? total;
 
@@ -104,15 +104,16 @@ class Data {
   int? eventModelId;
   int? eventZoneJobId;
   int? userId;
-  var invitationCount;
-  var rejectionCount;
-  var status;
-  var createdAt;
-  var updatedAt;
+  String? invitationCount;
+  String? rejectionCount;
+  String? status;
+  String? createdAt;
+  String? updatedAt;
   bool? approveStatus;
   IsUserOut? isUserOut;
   User? user;
   EventModel? eventModel;
+  EventZone? eventZone;
 
   Data(
       {this.id,
@@ -127,7 +128,8 @@ class Data {
         this.approveStatus,
         this.isUserOut,
         this.user,
-        this.eventModel});
+        this.eventModel,
+        this.eventZone});
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -146,6 +148,9 @@ class Data {
     user = json['user'] != null ? new User.fromJson(json['user']) : null;
     eventModel = json['event_model'] != null
         ? new EventModel.fromJson(json['event_model'])
+        : null;
+    eventZone = json['event_zone'] != null
+        ? new EventZone.fromJson(json['event_zone'])
         : null;
   }
 
@@ -170,12 +175,15 @@ class Data {
     if (this.eventModel != null) {
       data['event_model'] = this.eventModel!.toJson();
     }
+    if (this.eventZone != null) {
+      data['event_zone'] = this.eventZone!.toJson();
+    }
     return data;
   }
 }
 
 class IsUserOut {
-  var distance;
+  int? distance;
   bool? isOut;
 
   IsUserOut({this.distance, this.isOut});
@@ -196,53 +204,53 @@ class IsUserOut {
 class User {
   int? id;
   int? companyId;
-  var name;
-  var email;
-  var twoFactorSecret;
-  var twoFactorRecoveryCodes;
+  String? name;
+  String? email;
+  String? twoFactorSecret;
+  String? twoFactorRecoveryCodes;
   int? twoFactorConfirmed;
   int? twoFactorEmailConfirmed;
-  var image;
-  var countryPhonecode;
-  var mobile;
-  var gender;
-  var salutation;
-  var locale;
-  var status;
-  var login;
-  var onesignalPlayerId;
-  var lastLogin;
+  String? image;
+  String? countryPhonecode;
+  String? mobile;
+  String? gender;
+  Null? salutation;
+  String? locale;
+  String? status;
+  String? login;
+  String? onesignalPlayerId;
+  String? lastLogin;
   int? emailNotifications;
-  var countryId;
+  Null? countryId;
   int? darkTheme;
   int? rtl;
-  var twoFaVerifyVia;
-  var twoFactorCode;
-  var twoFactorExpiresAt;
+  Null? twoFaVerifyVia;
+  String? twoFactorCode;
+  Null? twoFactorExpiresAt;
   int? adminApproval;
   int? permissionSync;
   int? googleCalendarStatus;
   int? customisedPermissions;
-  var stripeId;
-  var pmType;
-  var pmLastFour;
-  var trialEndsAt;
-  var qrImage;
-  var deviceToken;
-  var whatsappNumber;
-  var whatsappNumberCountryCode;
-  var latitude;
-  var longitude;
-  var deviceId;
-  var deviceName;
+  String? stripeId;
+  String? pmType;
+  String? pmLastFour;
+  Null? trialEndsAt;
+  String? qrImage;
+  String? deviceToken;
+  String? whatsappNumber;
+  String? whatsappNumberCountryCode;
+  String? latitude;
+  String? longitude;
+  String? deviceId;
+  String? deviceName;
   int? isVerified;
   int? isBanned;
-  var imageUrl;
+  String? imageUrl;
   List<String>? modules;
-  var mobileWithPhonecode;
-  var jobName;
-  var checkIn;
-  var clientDetails;
+  String? mobileWithPhonecode;
+  Null? jobName;
+  Null? checkIn;
+  Null? clientDetails;
   EmployeeDetail? employeeDetail;
   List<Null>? leaves;
 
@@ -425,33 +433,33 @@ class EmployeeDetail {
   int? id;
   int? companyId;
   int? userId;
-  var employeeId;
-  var address;
-  var hourlyRate;
-  var slackUsername;
+  String? employeeId;
+  Null? address;
+  Null? hourlyRate;
+  String? slackUsername;
   int? departmentId;
-  var designationId;
-  var joiningDate;
-  var lastDate;
+  Null? designationId;
+  String? joiningDate;
+  Null? lastDate;
   int? addedBy;
   int? lastUpdatedBy;
-  var attendanceReminder;
-  var dateOfBirth;
-  var calendarView;
-  var aboutMe;
-  var reportingTo;
-  var contractEndDate;
-  var internshipEndDate;
-  var employmentType;
-  var marriageAnniversaryDate;
-  var maritalStatus;
-  var noticePeriodEndDate;
-  var noticePeriodStartDate;
-  var probationEndDate;
-  var iqamaExpiry;
-  var city;
-  var upcomingBirthday;
-  var designation;
+  Null? attendanceReminder;
+  String? dateOfBirth;
+  Null? calendarView;
+  Null? aboutMe;
+  Null? reportingTo;
+  Null? contractEndDate;
+  Null? internshipEndDate;
+  Null? employmentType;
+  Null? marriageAnniversaryDate;
+  String? maritalStatus;
+  Null? noticePeriodEndDate;
+  Null? noticePeriodStartDate;
+  Null? probationEndDate;
+  String? iqamaExpiry;
+  String? city;
+  String? upcomingBirthday;
+  Null? designation;
   Company? company;
   Department? department;
 
@@ -571,41 +579,41 @@ class EmployeeDetail {
 
 class Company {
   int? id;
-  var companyName;
-  var appName;
-  var companyEmail;
-  var companyPhone;
-  var logo;
-  var lightLogo;
-  var favicon;
-  var authTheme;
-  var authThemeText;
-  var sidebarLogoStyle;
-  var loginBackground;
-  var address;
-  var website;
+  String? companyName;
+  String? appName;
+  String? companyEmail;
+  String? companyPhone;
+  String? logo;
+  String? lightLogo;
+  String? favicon;
+  String? authTheme;
+  String? authThemeText;
+  String? sidebarLogoStyle;
+  String? loginBackground;
+  String? address;
+  Null? website;
   int? currencyId;
-  var timezone;
-  var dateFormat;
-  var datePickerFormat;
-  var yearStartsFrom;
-  var momentFormat;
-  var timeFormat;
-  var locale;
-  var latitude;
-  var longitude;
-  var leavesStartFrom;
-  var activeTheme;
-  var status;
+  String? timezone;
+  String? dateFormat;
+  String? datePickerFormat;
+  String? yearStartsFrom;
+  String? momentFormat;
+  String? timeFormat;
+  String? locale;
+  String? latitude;
+  String? longitude;
+  String? leavesStartFrom;
+  String? activeTheme;
+  String? status;
   int? lastUpdatedBy;
-  var googleMapKey;
-  var taskSelf;
+  Null? googleMapKey;
+  String? taskSelf;
   int? roundedTheme;
-  var logoBackgroundColor;
-  var headerColor;
+  String? logoBackgroundColor;
+  String? headerColor;
   int? beforeDays;
   int? afterDays;
-  var onDeadline;
+  String? onDeadline;
   int? defaultTaskStatus;
   int? dashboardClock;
   int? ticketFormGoogleCaptcha;
@@ -614,26 +622,26 @@ class Company {
   int? datatableRowLimit;
   int? allowClientSignup;
   int? adminClientSignupApproval;
-  var googleCalendarStatus;
-  var googleClientId;
-  var googleClientSecret;
-  var googleCalendarVerificationStatus;
-  var googleId;
-  var name;
-  var token;
-  var hash;
-  var lastLogin;
+  String? googleCalendarStatus;
+  Null? googleClientId;
+  Null? googleClientSecret;
+  String? googleCalendarVerificationStatus;
+  Null? googleId;
+  Null? name;
+  Null? token;
+  String? hash;
+  Null? lastLogin;
   int? rtl;
   int? showNewWebhookAlert;
-  var pmType;
-  var pmLastFour;
+  Null? pmType;
+  Null? pmLastFour;
   int? employeeCanExportData;
-  var appAndroidVersion;
-  var appIosVersion;
-  var logoUrl;
-  var loginBackgroundUrl;
-  var momentDateFormat;
-  var faviconUrl;
+  String? appAndroidVersion;
+  String? appIosVersion;
+  String? logoUrl;
+  String? loginBackgroundUrl;
+  String? momentDateFormat;
+  String? faviconUrl;
 
   Company(
       {this.id,
@@ -843,11 +851,11 @@ class Company {
 class Department {
   int? id;
   int? companyId;
-  var teamName;
-  var code;
-  var parentId;
-  var addedBy;
-  var lastUpdatedBy;
+  String? teamName;
+  String? code;
+  Null? parentId;
+  Null? addedBy;
+  Null? lastUpdatedBy;
 
   Department(
       {this.id,
@@ -883,38 +891,38 @@ class Department {
 
 class EventModel {
   int? id;
-  var addedBy;
-  var eventName;
-  var logo;
-  var countryId;
-  var cityId;
-  var district;
-  var latitude;
-  var longitude;
-  var location;
-  var radius;
-  var startDate;
-  var endDate;
-  var startTime;
-  var endTime;
-  var managerId;
-  var warehouseManagerId;
-  var leadTime;
-  var leadTimeUnit;
-  var projectSummary;
-  var termsCondition;
-  var termsConditionArabic;
-  var hiddenFields;
-  var status;
-  var completionPercent;
-  var currencyId;
-  var budget;
-  var dayoff;
-  var deletedAt;
+  Null? addedBy;
+  String? eventName;
+  String? logo;
+  String? countryId;
+  String? cityId;
+  String? district;
+  String? latitude;
+  String? longitude;
+  Null? location;
+  String? radius;
+  String? startDate;
+  String? endDate;
+  String? startTime;
+  String? endTime;
+  String? managerId;
+  String? warehouseManagerId;
+  String? leadTime;
+  String? leadTimeUnit;
+  String? projectSummary;
+  String? termsCondition;
+  String? termsConditionArabic;
+  Null? hiddenFields;
+  String? status;
+  Null? completionPercent;
+  String? currencyId;
+  Null? budget;
+  String? dayoff;
+  Null? deletedAt;
   bool? isProjectAdmin;
-  var fullAddress;
-  var startDates;
-  var endDates;
+  String? fullAddress;
+  String? startDates;
+  String? endDates;
   List<Null>? members;
   Country? country;
 
@@ -1046,13 +1054,13 @@ class EventModel {
 
 class Country {
   int? id;
-  var iso;
-  var name;
-  var nicename;
-  var iso3;
+  String? iso;
+  String? name;
+  String? nicename;
+  String? iso3;
   int? numcode;
   int? phonecode;
-  var nationality;
+  String? nationality;
 
   Country(
       {this.id,
@@ -1089,9 +1097,82 @@ class Country {
   }
 }
 
+class EventZone {
+  int? id;
+  int? eventModelId;
+  int? zoneId;
+  int? eventJobId;
+  int? maleMainSeats;
+  int? femaleMainSeats;
+  Null? anyGenderMainSeats;
+  Null? maleStbySeats;
+  Null? femaleStbySeats;
+  Null? anyGenderStbySeats;
+  String? createdAt;
+  String? updatedAt;
+  int? newZoneId;
+  String? zoneName;
+  String? jobName;
+
+  EventZone(
+      {this.id,
+        this.eventModelId,
+        this.zoneId,
+        this.eventJobId,
+        this.maleMainSeats,
+        this.femaleMainSeats,
+        this.anyGenderMainSeats,
+        this.maleStbySeats,
+        this.femaleStbySeats,
+        this.anyGenderStbySeats,
+        this.createdAt,
+        this.updatedAt,
+        this.newZoneId,
+        this.zoneName,
+        this.jobName});
+
+  EventZone.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    eventModelId = json['event_model_id'];
+    zoneId = json['zone_id'];
+    eventJobId = json['event_job_id'];
+    maleMainSeats = json['male_main_seats'];
+    femaleMainSeats = json['female_main_seats'];
+    anyGenderMainSeats = json['any_gender_main_seats'];
+    maleStbySeats = json['male_stby_seats'];
+    femaleStbySeats = json['female_stby_seats'];
+    anyGenderStbySeats = json['any_gender_stby_seats'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    newZoneId = json['new_zone_id'];
+    zoneName = json['zone_name'];
+    jobName = json['job_name'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['event_model_id'] = this.eventModelId;
+    data['zone_id'] = this.zoneId;
+    data['event_job_id'] = this.eventJobId;
+    data['male_main_seats'] = this.maleMainSeats;
+    data['female_main_seats'] = this.femaleMainSeats;
+    data['any_gender_main_seats'] = this.anyGenderMainSeats;
+    data['male_stby_seats'] = this.maleStbySeats;
+    data['female_stby_seats'] = this.femaleStbySeats;
+    data['any_gender_stby_seats'] = this.anyGenderStbySeats;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    data['new_zone_id'] = this.newZoneId;
+    data['zone_name'] = this.zoneName;
+    data['job_name'] = this.jobName;
+    return data;
+  }
+}
+
 class Links {
-  var url;
-  var label;
+  String? url;
+  String? label;
   bool? active;
 
   Links({this.url, this.label, this.active});

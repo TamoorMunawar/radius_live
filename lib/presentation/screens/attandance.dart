@@ -173,6 +173,16 @@ class _AttandaceScreenState extends State<AttandaceScreen> {
                                             SizeConfig.width(context, 0.030),
                                       ),
                                     ),
+                                    Text(
+                                      "${accpetlist[index].eventZone?.jobName ?? "Job name"},  ${accpetlist[index].eventZone?.zoneName ?? "Zone"}",
+                                      maxLines: 3,
+                                      style: TextStyle(
+                                        color: GlobalColors.textFieldHintColor,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize:
+                                        SizeConfig.width(context, 0.030),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -226,6 +236,7 @@ class _AttandaceScreenState extends State<AttandaceScreen> {
                               ]),
                             ],
                           ),
+
                         ],
                       ),
                     ),
