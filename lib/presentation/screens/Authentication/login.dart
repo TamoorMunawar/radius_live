@@ -587,7 +587,7 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) {
                     if (value == null) {
-                      return 'Please_select_a_Gender'.tr();
+                      return null;
                     }
                     return null;
                   },
@@ -645,7 +645,7 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) {
                     if (value == null) {
-                      return 'Please_select_city'.tr();
+                      return null;
                     }
                     return null;
                   },
@@ -684,27 +684,27 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
               SizedBox(
                 height: SizeConfig.height(context, 0.02),
               ),
-              RadiusTextField(
-                inputFormatters: [
-                  LengthLimitingTextInputFormatter(10),
-                ],
-                textInputType: TextInputType.number,
-                isPassword: false,
-                controller: _idNumberController,
-                hintText: 'Id_Number'.tr(),
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return "Id_Number_Can't_be_Empty".tr();
-                  }
-                  if (value.length != 10) {
-                    return "Id_Number_length".tr();
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(
-                height: SizeConfig.height(context, 0.02),
-              ),
+              // RadiusTextField(
+              //   inputFormatters: [
+              //     LengthLimitingTextInputFormatter(10),
+              //   ],
+              //   textInputType: TextInputType.number,
+              //   isPassword: false,
+              //   controller: _idNumberController,
+              //   hintText: 'Id_Number'.tr(),
+              //   validator: (String? value) {
+              //     if (value == null || value.isEmpty) {
+              //       return "Id_Number_Can't_be_Empty".tr();
+              //     }
+              //     if (value.length != 10) {
+              //       return "Id_Number_length".tr();
+              //     }
+              //     return null;
+              //   },
+              // ),
+              // SizedBox(
+              //   height: SizeConfig.height(context, 0.02),
+              // ),
               /*   Padding(
                 padding: EdgeInsets.only(
                     //  top: SizeConfig.height(context, 0.05),
@@ -801,16 +801,16 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
               SizedBox(
                 height: SizeConfig.height(context, 0.02),
               ),*/
-              Padding(
-                padding: EdgeInsets.only(
-                  left: SizeConfig.width(context, 0.07),
-                  right: SizeConfig.width(context, 0.07),
-                ),
-                child: Text(
-                  "Please_STCPAY".tr(),
-                  style: TextStyle(color: GlobalColors.submitButtonColor, fontSize: SizeConfig.width(context, 0.03)),
-                ),
-              ),
+              // Padding(
+              //   padding: EdgeInsets.only(
+              //     left: SizeConfig.width(context, 0.07),
+              //     right: SizeConfig.width(context, 0.07),
+              //   ),
+              //   child: Text(
+              //     "Please_STCPAY".tr(),
+              //     style: TextStyle(color: GlobalColors.submitButtonColor, fontSize: SizeConfig.width(context, 0.03)),
+              //   ),
+              // ),
               SizedBox(
                 height: SizeConfig.height(context, 0.02),
               ),
@@ -900,7 +900,7 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                   },
                   validator: (PhoneNumber? value) {
                     if (value == null || value.number.isEmpty) {
-                      return 'STCPAY_is_required'.tr();
+                      return null;
                     }
 
                     return null;
@@ -999,7 +999,7 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                   },
                   validator: (PhoneNumber? value) {
                     if (value == null || value.number.isEmpty) {
-                      return 'Whatsapp_number_is_required'.tr();
+                      return null;
                     }
 
                     return null;
@@ -1279,7 +1279,7 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                         },
                         validator: (PhoneNumber? value) {
                           if (value == null || value.number.isEmpty) {
-                            return 'Mobile_number_is_required'.tr();
+                            return null;
                           }
 
                           return null;

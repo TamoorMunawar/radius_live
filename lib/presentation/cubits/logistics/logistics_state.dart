@@ -30,10 +30,17 @@ class BuyAssetCubit extends Cubit<BuyAssetState> {
   Future<void> fetchAssets() async {
     try {
       emit(BuyAssetLoading());
-      final assets = await repository.fetchBuyAssets();
+      var assets = await repository.fetchBuyAssets();
+      if (assets.isEmpty) {
+        print("Assets list is empty after fetching");
+      } else {
+        print("Fetched ${assets.length} assets");
+      }
       emit(BuyAssetLoaded(assets));
     } catch (e) {
+      print('Error in fetchAssets: $e');
       emit(BuyAssetError(e.toString()));
     }
   }
+
 }

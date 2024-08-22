@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.radius.radiusvebzaapp">
+    package="com.radius.radiusvebapp">
     <uses-permission android:name="android.permission.INTERNET" /> <!-- Permission used for liveness action changes if not added we will not vibrate on action change. -->
     <uses-permission android:name="android.permission.VIBRATE" /> <!-- Permissions used in demonstrating functionality -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />

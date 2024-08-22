@@ -11,6 +11,8 @@ import 'package:radar/presentation/widgets/LoadingWidget.dart';
 import 'package:radar/presentation/widgets/radius_text_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'attandance.dart';
+
 class AttandaceDetailScreen extends StatefulWidget {
   const AttandaceDetailScreen({super.key, required this.isBack});
 
@@ -93,7 +95,7 @@ class _AttandaceDetailScreenState extends State<AttandaceDetailScreen> {
                 ),
                 textAlign: TextAlign.center,
               )),
-            )
+            ) :roleName == "admin"? AttandaceScreen()
           : SingleChildScrollView(
               child: BlocConsumer<AttandanceCubit, AttandanceState>(
                 builder: (context, state) {

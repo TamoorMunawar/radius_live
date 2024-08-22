@@ -157,7 +157,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               )
             : Container(),
         title: Text(
-          "Profile".tr(),
+          "Profile Tamoor".tr(),
           style: TextStyle(
             color: GlobalColors.whiteColor,
             fontSize: 0.05.sw,
@@ -296,23 +296,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: 0.04.sh,
-                          ),
-                          const Row(
-                            children: [
-                              WorkInfoItem(title: "Total Jobs", value: "4"),
-                              WorkInfoItem(title: "Total events", value: "80"),
-                              WorkInfoItem(title: "ratting", value: "1"),
-                              WorkInfoItem(title: "last pay", value: "\$1200"),
-                            ],
-                          ),
+                          // SizedBox(
+                          //   height: 0.04.sh,
+                          // ),
+                          // const Row(
+                          //   children: [
+                          //     WorkInfoItem(title: "Total Jobs", value: "4"),
+                          //     WorkInfoItem(title: "Total events", value: "80"),
+                          //     WorkInfoItem(title: "ratting", value: "1"),
+                          //     WorkInfoItem(title: "last pay", value: "\$1200"),
+                          //   ],
+                          // ),
                         ],
                       );
                     },
                   ),
                 ),
-                SizedBox(height: 0.04.sh),
+                SizedBox(height: 0.02.sh),
                 Container(
                   //  height: SizeConfig.height(context, 0.2),
                   width: 0.9.sw,
@@ -403,7 +403,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           prefs.remove("qr_code");
                           prefs.clear();
                           prefs.setBool("isLocationDailog", true);
-                          socket.disconnect();
+                          // socket.disconnect();
                           Navigator.pushNamedAndRemoveUntil(context, AppRoutes.loginScreenRoute, (route) => false);
                         },
                         title: 'Logout'.tr(), icon: Symbols.logout,

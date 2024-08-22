@@ -12,7 +12,7 @@ Map<String, String> authorizationHeaders(SharedPreferences prefs) {
 }
 
 class BuyAssetRepository {
-  final String apiUrl = "https://radiusapp.online/api/v1/buy-asset-history";
+  final String apiUrl = "https://radiusapp.online/api/v1/get-user-logistics";
 
   Future<List<BuyAssetHistory>> fetchBuyAssets() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -26,21 +26,19 @@ class BuyAssetRepository {
 
       print('API URL: $apiUrl');
       print('Headers: $headers');
-
+      print("assets list");
       if (response.statusCode == 200) {
-        final jsonResponse = json.decode(response.body);
+        var jsonResponse = json.decode(response.body);
+
         final List<dynamic> data = jsonResponse['data'];
 
-        // Use a Set to filter out duplicates
-        final uniqueAssets = <BuyAssetHistory>{};
-        for (var item in data) {
-          final asset = BuyAssetHistory.fromJson(item);
-          uniqueAssets.add(asset);
-        }
-
-        return uniqueAssets.toList();
+        // Create a list of BuyAssetHistory objects
+        List<BuyAssetHistory> assets = data.map((item) => BuyAssetHistory.fromJson(item)).toList();
+print(assets.length);
+print("assets list");
+        return assets;
       } else {
-        throw Exception('Failed to load assets, status code: ${response.statusCode}');
+        throw Exception('Failed to load assets, status code: ${response.statusCode},');
       }
     } catch (e) {
       // Handle errors

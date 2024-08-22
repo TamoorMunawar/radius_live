@@ -1,9 +1,15 @@
+import 'dart:convert';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as http;
 import 'package:radar/constants/colors.dart';
 import 'package:radar/constants/size_config.dart';
 import 'package:radar/presentation/widgets/button_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../../constants/network_utils.dart';
+import '../../../domain/entities/logictis/logistics.dart';
+import '../../../domain/repository/logistics_repo.dart';
 import '../../cubits/logistics/logistics_state.dart';
 import '../job_dashboard_screen.dart';
 
@@ -15,10 +21,37 @@ class ComplainScreen extends StatefulWidget {
 }
 
 class _ComplainScreenState extends State<ComplainScreen> {
+  List<Data> assetlist = [];
+  bool isLoading = true;
   @override
   void initState() {
     super.initState();
-    context.read<BuyAssetCubit>().fetchAssets();
+    fetchassets();
+  }
+
+  Future<void> fetchassets() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final response = await http.get(
+      Uri.parse('${NetworkUtils.baseUrl}/get-user-logistics'),
+      headers: authorizationHeaders(prefs),
+    );
+    print("https://radiusapp.online/api/v1/get-accepted-event");
+    print(authorizationHeaders(prefs));
+    if (response.statusCode == 200) {
+      final jsonResponse = json.decode(response.body);
+      print(jsonResponse);
+      final List<dynamic> data = jsonResponse['data'];
+      print("accept event");
+      setState(() {
+        assetlist = data.map((item) => Data.fromJson(item)).toList();
+        isLoading = false;
+      });
+    } else {
+      // Handle the error
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -33,7 +66,9 @@ class _ComplainScreenState extends State<ComplainScreen> {
             Navigator.pop(context);
           },
           icon: Padding(
-            padding: EdgeInsets.only(left: SizeConfig.width(context, 0.05), right: SizeConfig.width(context, 0.05)),
+            padding: EdgeInsets.only(
+                left: SizeConfig.width(context, 0.05),
+                right: SizeConfig.width(context, 0.05)),
             child: Icon(
               Icons.arrow_back_ios,
               size: SizeConfig.width(context, 0.05),
@@ -141,71 +176,60 @@ class _ComplainScreenState extends State<ComplainScreen> {
             ),
           ),
           buildDividerWidget(context: context),
-          BlocBuilder<BuyAssetCubit, BuyAssetState>(
-            builder: (context, state) {
-              if (state is BuyAssetLoading) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (state is BuyAssetLoaded) {
-                return Expanded(
-                  child: ListView.builder(
-                    itemCount: state.assets.length,
-                    itemBuilder: (context, index) {
-                      print(state.assets.length);
-                      return Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Flexible(
-                              flex: 1,
-                              child: Center(
-                                child: Text(
-                                  state.assets[index].assetName,
-                                  style: TextStyle(
-                                    color: GlobalColors.goodMorningColor,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: SizeConfig.width(context, 0.040),
-                                  ),
-                                ),
-                              ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: assetlist.length,
+              itemBuilder: (context, index) {
+                final asset = assetlist[index];
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Flexible(
+                        flex: 1,
+                        child: Center(
+                          child: Text(
+                            assetlist[index].asset?.name ?? "",
+                            style: TextStyle(
+                              color: GlobalColors.goodMorningColor,
+                              fontWeight: FontWeight.w400,
+                              fontSize: SizeConfig.width(context, 0.040),
                             ),
-                            Flexible(
-                              flex: 1,
-                              child: Center(
-                                child: Text(
-                                  "${state.assets[index].quantity}",
-                                  style: TextStyle(
-                                    color: GlobalColors.goodMorningColor,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: SizeConfig.width(context, 0.040),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: TextField(
-                                onChanged: (value) {
-                                  // Handle value input here
-                                },
-                                decoration: InputDecoration(
-                                  hintText: 'Enter Value',
-                                  fillColor: GlobalColors.goodMorningColor,
-                                  border: const OutlineInputBorder(),
-                                ),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                      );
-                    },
+                      ),
+                      Flexible(
+                        flex: 1,
+                        child: Center(
+                          child: Text(
+                            "${assetlist[index].quantity ?? ""}",
+                            style: TextStyle(
+                              color: GlobalColors.goodMorningColor,
+                              fontWeight: FontWeight.w400,
+                              fontSize: SizeConfig.width(context, 0.040),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: TextField(
+                          onChanged: (value) {
+                            // Handle value input here
+                          },
+                          decoration: InputDecoration(
+                            hintText: 'Enter Value',
+                            fillColor: GlobalColors.goodMorningColor,
+                            border: const OutlineInputBorder(),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 );
-              } else if (state is BuyAssetError) {
-                return Center(child: Text(state.message));
-              }
-              return Container();
-            },
+              },
+            ),
           ),
         ],
       ),

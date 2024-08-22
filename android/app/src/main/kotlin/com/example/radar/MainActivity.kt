@@ -1,4 +1,4 @@
-package com.radius.radiusvebzaapp
+package com.radius.radiusvebapp
 
 import io.flutter.embedding.android.FlutterActivity
 
