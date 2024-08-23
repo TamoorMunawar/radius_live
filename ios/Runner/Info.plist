@@ -29,9 +29,9 @@
 	<key>NSCameraUsageDescription</key>
 	<string>This app needs camera access to scan QR codes</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Your location is used to provide real-time tracking and enhance the app experience.</string>
+	<string>We collect live location data for organizing our team .This data helps us track the location of our staff members who are present on-site.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Your location is used to provide real-time tracking and enhance the app experience.</string>
+	<string>We collect live location data for organizing our team .This data helps us track the location of our staff members who are present on-site.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app needs photos access to get QR code from photo library</string>
 	<key>NSUserTrackingUsageDescription</key>
