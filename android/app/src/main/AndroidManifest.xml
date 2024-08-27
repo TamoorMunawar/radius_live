@@ -17,7 +17,7 @@
     <uses-permission android:name="android.permission.VIDEO_CAPTURE" />
     <uses-permission android:name="android.permission.AUDIO_CAPTURE" />
     <application
-        android:label="Radius"
+        android:label="Radius Live"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
