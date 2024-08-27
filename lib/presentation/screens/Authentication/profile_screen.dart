@@ -396,7 +396,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       SizedBox(height: SizeConfig.height(context, 0.02)),
                       ProfileButton(
-                        gradientFirstColor: GlobalColors.logoutColor,
+                       // gradientFirstColor: GlobalColors.logoutColor,
                         //    width: SizeConfig.width(context, 0.5),
                         onPressed: () async {
                           SharedPreferences prefs = await SharedPreferences.getInstance();

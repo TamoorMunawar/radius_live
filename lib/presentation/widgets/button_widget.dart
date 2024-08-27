@@ -30,7 +30,18 @@ class SubmitButton extends StatelessWidget {
         width: width ?? SizeConfig.width(context, 0.85),
         height: height ?? SizeConfig.height(context, 0.07),
         decoration: ShapeDecoration(
-          color: gradientFirstColor ?? GlobalColors.submitButtonColor,
+          gradient: const LinearGradient(
+            colors: [
+              Color(0xff450295), // Start color
+              // Middle color
+              Color(0xff9a4eed),
+              Color(0xff32006c), // End color
+
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          // color: gradientFirstColor ?? GlobalColors.submitButtonColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderWidth ?? SizeConfig.width(context, 0.025)),
           ),
@@ -46,8 +57,7 @@ class ProfileButton extends StatelessWidget {
       {super.key,
       this.width,
       this.height,
-      this.gradientFirstColor,
-      this.gradientSecondColor,
+
       this.borderWidth,
       required this.onPressed,
       required this.title,
@@ -55,8 +65,7 @@ class ProfileButton extends StatelessWidget {
 
   final double? width;
   final double? height;
-  final Color? gradientFirstColor;
-  final Color? gradientSecondColor;
+
   final double? borderWidth;
   final VoidCallback? onPressed;
   final String title;
@@ -78,7 +87,18 @@ class ProfileButton extends StatelessWidget {
           width: width ?? SizeConfig.width(context, 0.9),
           //      height: height ?? SizeConfig.height(context, 0.08),
           decoration: ShapeDecoration(
-            color: gradientFirstColor ?? GlobalColors.primaryColor,
+            gradient: const LinearGradient(
+              colors: [
+                Color(0xff450295), // Start color
+                // Middle color
+                Color(0xff9a4eed),
+                Color(0xff32006c), // End color
+
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+           // color: gradientFirstColor ?? GlobalColors.primaryColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(borderWidth ?? SizeConfig.width(context, 0.025)),
             ),

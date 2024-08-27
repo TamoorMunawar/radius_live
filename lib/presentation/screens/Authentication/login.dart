@@ -486,24 +486,23 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                 },
                 child: (imagePath?.isNotEmpty ?? false)
                     ? CircleAvatar(
-                        backgroundImage: FileImage(
-                          File(
-                            newImage?.path ?? "",
-                          ),
-                        ),
-                        radius: SizeConfig.width(context, 0.15),
-                      )
+                  backgroundImage: FileImage(
+                    File(
+                      newImage?.path ?? "",
+                    ),
+                  ),
+                  radius: SizeConfig.width(context, 0.15),
+                )
                     : CircleAvatar(
-                        backgroundImage: AssetImage("assets/icons/download.png"),
-                        radius: SizeConfig.width(context, 0.15),
-                        child: Align(
-                          alignment: Alignment.bottomRight,
-                          child: CircleAvatar(
-                            //                  backgroundColor: Colors.red,
-                            radius: SizeConfig.width(context, 0.05),
-                            backgroundImage: AssetImage("assets/icons/edit_icon.png"),
-                          ),
-                        )),
+                    backgroundImage: AssetImage("assets/icons/download.png"),
+                    radius: SizeConfig.width(context, 0.15),
+                    child: Align(
+                      alignment: Alignment.bottomRight,
+                      child: CircleAvatar(
+                        radius: SizeConfig.width(context, 0.05),
+                        backgroundImage: AssetImage("assets/icons/edit_icon.png"),
+                      ),
+                    )),
               ),
               SizedBox(
                 height: SizeConfig.height(context, 0.02),
@@ -1022,40 +1021,30 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                 onPressed: () async {
                   print("whatsapp number $whatsappcountryCode ${whatsappController.text}");
                   if (isChecker ?? false) {
-                    if (imagePath?.isNotEmpty ?? false) {
-                      if (regFormKey.currentState!.validate()) {
-                        RegisterPayload register = RegisterPayload(
-                          name: nameController.text.trim(),
-                          email: _regEmailController.text.trim(),
-                          password: _regPasswordController.text.trim(),
-                          city: city,
-                          gender: gender,
-                          countryPhonecode: countryCode,
-                          mobile: mobileController.text.trim(),
-                          whatsappCountryCode: whatsappcountryCode,
-                          whatsappNumber: whatsappController.text.trim(),
-                          departmentcode: depertmentCodeController.text.trim(),
-                          //   age: _ageController.text,
-                          //dateOfBirth: _ageController.text,
-                          dateOfBirth: "16-05-1998",
-                          age: "16-05-1998",
-                          iqamaExpiry: "17-06-2050",
-                          // iqamaExpiry: _iqamaExpiryController.text,
-                          iqamaId: _idNumberController.text.trim(),
-                          deviceToken: deviceToken,
-                          deviceName: deviceName,
-                          deviceId: deviceId,
-                        );
+                    if (regFormKey.currentState!.validate()) {
+                      RegisterPayload register = RegisterPayload(
+                        name: nameController.text.trim(),
+                        email: _regEmailController.text.trim(),
+                        password: _regPasswordController.text.trim(),
+                        city: city,
+                        gender: gender,
+                        countryPhonecode: countryCode,
+                        mobile: mobileController.text.trim(),
+                        whatsappCountryCode: whatsappcountryCode,
+                        whatsappNumber: whatsappController.text.trim(),
+                        departmentcode: depertmentCodeController.text.trim(),
+                        dateOfBirth: "16-05-1998",
+                        age: "16-05-1998",
+                        iqamaExpiry: "17-06-2050",
+                        iqamaId: _idNumberController.text.trim(),
+                        deviceToken: deviceToken,
+                        deviceName: deviceName,
+                        deviceId: deviceId,
+                      );
 
-                        registerCubit.register(
-                          registerPayload: register,
-                          documentPath: newImage?.path,
-                        );
-                      }
-                    } else {
-                      AppUtils.showFlushBar(
-                        "Please_Select_an_image".tr(),
-                        context,
+                      registerCubit.register(
+                        registerPayload: register,
+                        documentPath: newImage?.path, // This can be null if no image is selected
                       );
                     }
                   } else {
@@ -1085,7 +1074,7 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                         context: context,
                         builder: (c) => BlocProvider.value(
                           value: OtpCubit(
-                              VerificationUsecase(repository: repository)), // Initialize VerificationCubit here
+                              VerificationUsecase(repository: repository)),
                           child: VerificationDialog(
                             email: state.register.email.toString(),
                             countryCode: countryCode ?? "+966",
@@ -1093,9 +1082,7 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
                           ),
                         ),
                       );
-                      print(
-                        state.register.email.toString(),
-                      );
+                      print(state.register.email.toString());
                       print(countryCode);
                       setState(() {
                         _cityController.clear();

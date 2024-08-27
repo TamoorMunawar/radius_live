@@ -34,8 +34,6 @@
 	<string>We collect live location data for organizing our team .This data helps us track the location of our staff members who are present on-site.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app needs photos access to get QR code from photo library</string>
-	<key>NSUserTrackingUsageDescription</key>
-	<string>We use your data to provide a better and personalized experience.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIDeviceFamily</key>

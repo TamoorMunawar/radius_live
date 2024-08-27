@@ -284,6 +284,8 @@ class _ComplainScreenState extends State<ComplainScreen> {
             right: SizeConfig.width(context, 0.07),
           ),
           child: SubmitButton(
+            gradientFirstColor: Colors.blue,   // Start color
+             gradientSecondColor:  Colors.purple,
               onPressed: () async {
                 await sendPostRequest(context);
               },
