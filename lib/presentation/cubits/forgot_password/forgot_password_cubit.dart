@@ -11,7 +11,7 @@ class ForgotPasswordCubit extends Cubit<ForgotPasswordState> {
   void forgotPassword({String? email, String? countryCode, bool? isLoginWithMobile}) async {
     try {
       emit(ForgotPasswordLoading());
-      int? result =
+      var result =
           await usecase.forgotPassword(email: email, countryCode: countryCode, isLoginWithMobile: isLoginWithMobile);
       emit(ForgotPasswordSuccess(otp: result ?? 0));
     } on Exception catch (e) {

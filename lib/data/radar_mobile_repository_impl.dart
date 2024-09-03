@@ -641,8 +641,9 @@ class RadarMobileRepositoryImpl implements RadarMobileRepository {
   Future<int?> forgetPassword({String? email, String? countryCode, bool? isLoginWithMobile}) async {
     try {
       var url = Uri.parse('${NetworkUtils.baseUrl}/auth/forget-password');
+      print("repository::forgetPassword::url: $url\n");
       String jsonBody = (isLoginWithMobile ?? false)
-          ? jsonEncode(<String, dynamic>{"email": email, "country_code": countryCode})
+          ? jsonEncode(<String, dynamic>{"whatsapp_number": email, "country_code": countryCode})
           : jsonEncode(<String, dynamic>{"email": email});
       /*String jsonBody =
           jsonEncode(scanQrCodePayload?.toJson());*/
@@ -650,12 +651,13 @@ class RadarMobileRepositoryImpl implements RadarMobileRepository {
       print("repository::forgetPassword::jsonBody: $jsonBody\n");
 
       http.Response response = await http.post(url, headers: NetworkUtils.headers, body: jsonBody);
-
+      log("repository::forgetPassword::responseBody: ${response.statusCode}\n");
       log("repository::forgetPassword::responseBody: ${response.body}\n");
-
+      log("repository::forgetPassword::url: $url\n");
+      log("repository::forgetPassword::jsonBody: $jsonBody\n");
       var responseBody = jsonDecode(response.body);
-      if (responseBody["success"]) {
-        return responseBody["otp_token"] ?? 00;
+      if (response.statusCode == 200) {
+        return int.tryParse(responseBody["otp_token"].toString()) ?? 0;
       } else {
         throw Exception(responseBody["message"]);
       }
