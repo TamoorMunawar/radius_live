@@ -157,7 +157,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               )
             : Container(),
         title: Text(
-          "Profile Tamoor".tr(),
+          "Profile ".tr(),
           style: TextStyle(
             color: GlobalColors.whiteColor,
             fontSize: 0.05.sw,

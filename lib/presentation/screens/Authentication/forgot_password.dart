@@ -73,6 +73,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             child: BlocConsumer<ForgotPasswordCubit, ForgotPasswordState>(
               builder: (context, state) {
                 if (state is ForgotPasswordLoading) {
+
                   return LoadingWidget();
                 }
                 return Text(
