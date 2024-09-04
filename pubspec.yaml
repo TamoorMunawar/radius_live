@@ -84,6 +84,7 @@ flutter:
   - assets/icons/
   - assets/icons/profile_icon.png
   - assets/translations/
+  - assets/BADGES/
   fonts:
   - family: Poppins
     fonts:

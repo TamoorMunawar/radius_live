@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,16 +7,11 @@ import 'package:radar/constants/extensions.dart';
 import 'package:radar/constants/route_arguments.dart';
 import 'package:radar/constants/router.dart';
 import 'package:radar/constants/size_config.dart';
-import 'package:radar/domain/entities/scan_qr_code/Scan_qr_code_payload.dart';
-import 'package:radar/main.dart';
 import 'package:radar/presentation/cubits/profile/profile_cubit.dart';
 import 'package:radar/presentation/cubits/scan_qr_code/scan_qrcode_cubit.dart';
-import 'package:radar/presentation/widgets/LoadingWidget.dart';
 import 'package:radar/presentation/widgets/button_widget.dart';
 
-import 'package:radar/presentation/widgets/radius_text_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -166,6 +160,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         actions: [
           IconButton.filled(
+            style: IconButton.styleFrom(
+              backgroundColor: GlobalColors.primaryColor,
+              maximumSize: Size(0.04.sh, 0.04.sh),
+              minimumSize: Size(0.04.sh, 0.04.sh),
+            ),
+            onPressed: () {
+              Navigator.pushNamed(context, AppRoutes.qrCodeScreenRoute);
+            },
+            icon: Icon(
+              Symbols.qr_code,
+              color: GlobalColors.whiteColor,
+              size: 0.02.sh,
+            ),
+          ),
+          IconButton.filled(
             onPressed: () {
               showDialog(
                   context: context,
@@ -250,63 +259,70 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   width: double.infinity,
                   child: BlocBuilder<ProfileCubit, ProfileState>(
                     builder: (context, state) {
-                      return Column(
+                      return Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          (image.contains("http"))
-                              ? CircleAvatar(
-                                  backgroundImage: NetworkImage(image),
-                                  //backgroundColor: Colors.red,
-                                  radius: 0.11.sw,
-                                )
-                              : CircleAvatar(
-                                  backgroundImage: const AssetImage("assets/icons/profile_icon.png"),
-                                  //                backgroundColor: Colors.red,
-                                  radius: 0.11.sw,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              (image.contains("http"))
+                                  ? CircleAvatar(
+                                      backgroundImage: NetworkImage(image),
+                                      //backgroundColor: Colors.red,
+                                      radius: 0.11.sw,
+                                    )
+                                  : CircleAvatar(
+                                      backgroundImage: const AssetImage("assets/icons/profile_icon.png"),
+                                      //                backgroundColor: Colors.red,
+                                      radius: 0.11.sw,
+                                    ),
+                              Text(
+                                name,
+                                style: TextStyle(
+                                  color: GlobalColors.whiteColor,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 0.04.sw,
                                 ),
-                          Text(
-                            name,
-                            style: TextStyle(
-                              color: GlobalColors.whiteColor,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 0.04.sw,
-                            ),
-                          ),
-                          Text(
-                            state is ProfileSuccess ? state.profileModel.deviceId ?? "" : "",
-                            style: TextStyle(
-                              color: GlobalColors.whiteColor,
-                              fontWeight: FontWeight.w300,
-                              fontSize: 0.03.sw,
-                            ),
-                          ),
-                          SizedBox(height: 0.01.sh),
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 0.03.sw, vertical: 0.01.sw),
-                            decoration:
-                                BoxDecoration(color: GlobalColors.primaryColor, borderRadius: BorderRadius.circular(8)),
-                            child: Text(
-                              state is ProfileSuccess
-                                  ? state.profileModel.jobName ?? "Job Not Assigned"
-                                  : "Job Not Assigned",
-                              style: TextStyle(
-                                color: GlobalColors.whiteColor,
-                                fontWeight: FontWeight.w300,
-                                fontSize: 0.03.sw,
                               ),
-                            ),
+                              Text(
+                                state is ProfileSuccess ? state.profileModel.deviceId ?? "" : "",
+                                style: TextStyle(
+                                  color: GlobalColors.whiteColor,
+                                  fontWeight: FontWeight.w300,
+                                  fontSize: 0.03.sw,
+                                ),
+                              ),
+                              SizedBox(height: 0.01.sh),
+                              Container(
+                                padding: EdgeInsets.symmetric(horizontal: 0.03.sw, vertical: 0.01.sw),
+                                decoration:
+                                    BoxDecoration(color: GlobalColors.primaryColor, borderRadius: BorderRadius.circular(8)),
+                                child: Text(
+                                  state is ProfileSuccess
+                                      ? roleName ?? "Job Not Assigned"
+                                      : "Job Not Assigned",
+                                  style: TextStyle(
+                                    color: GlobalColors.whiteColor,
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 0.03.sw,
+                                  ),
+                                ),
+                              ),
+                              // SizedBox(
+                              //   height: 0.04.sh,
+                              // ),
+                              // const Row(
+                              //   children: [
+                              //     WorkInfoItem(title: "Total Jobs", value: "4"),
+                              //     WorkInfoItem(title: "Total events", value: "80"),
+                              //     WorkInfoItem(title: "ratting", value: "1"),
+                              //     WorkInfoItem(title: "last pay", value: "\$1200"),
+                              //   ],
+                              // ),
+                            ],
                           ),
-                          // SizedBox(
-                          //   height: 0.04.sh,
-                          // ),
-                          // const Row(
-                          //   children: [
-                          //     WorkInfoItem(title: "Total Jobs", value: "4"),
-                          //     WorkInfoItem(title: "Total events", value: "80"),
-                          //     WorkInfoItem(title: "ratting", value: "1"),
-                          //     WorkInfoItem(title: "last pay", value: "\$1200"),
-                          //   ],
-                          // ),
+                          ProfileImage(context),
                         ],
                       );
                     },
@@ -349,9 +365,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           : ProfileButton(
                               //    width: SizeConfig.width(context, 0.5),
                               onPressed: () async {
-                                Navigator.pushNamed(context, AppRoutes.qrCodeScreenRoute);
+                                Navigator.pushNamed(context, AppRoutes.eventHistoryRoute);
                               },
-                              title: 'Qr Code'.tr(), icon: Symbols.qr_code,
+                              title: 'Event History'.tr(), icon: Symbols.history,
                             ),
                       SizedBox(
                         height: 0.02.sh,
@@ -448,6 +464,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
         ),
       ),
+    );
+  }
+  Widget ProfileImage (BuildContext context) {
+    return Column(
+      children: [
+        if (roleName == "Usher")
+          SizedBox(
+            height: 120,
+            width: 120,
+            child: Image.asset("assets/BADGES/BADGES-3.png"),
+          )
+        else if (roleName == "Supervisor")
+          SizedBox(
+            height: 120,
+            width:120,
+            child: Image.asset("assets/BADGES/BADGES-2.png"),
+          )
+        else if (roleName == "admin")
+            SizedBox(
+              height: 120,
+              width: 120,
+              child: Image.asset("assets/BADGES/BADGES-1.png"),
+            )
+          else
+            SizedBox(
+              height: 120,
+              width: 120,
+              child: Image.asset("assets/icons/profile_icon.png"),
+            ),
+      ],
     );
   }
 }

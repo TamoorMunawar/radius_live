@@ -3,6 +3,7 @@ class AppRoutes {
   static String verification = '/verification';
   static String forgotScreenRoute = '/forgotScreenRoute';
   static String resetScreenRoute = '/resetScreenRoute';
+  static String eventHistoryRoute = '/eventHistoryRoute';
   static String notificationScreenRoute = '/notificationScreenRoute';
   static String updateGroupScreenRoute = '/updateGroupScreenRoute';
   static String otpScreenRoute = '/otpScreenRoute';
