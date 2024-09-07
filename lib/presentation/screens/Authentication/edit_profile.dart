@@ -53,10 +53,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final _whatsappNumberController = TextEditingController();
   final _idController = TextEditingController();
   String phoneNumber = "";
-  String countryCode = "";
+  String countryCode = "966";
 
   String whatsappPhoneNumber = "";
-  String whatsappCountryCode = "";
+  String whatsappCountryCode = "966";
   String? imagePath;
 
   final ImagePicker _picker = ImagePicker();
@@ -85,7 +85,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   List<CountryCodeModel> countryList = [];
   List<CountryCodeModel> stcpayList = [
     CountryCodeModel(code: "SA", label: "Saudi Arabia", phone: "966", phoneLength: 9),
-    CountryCodeModel(code: "PR", label: "Puerto Rico", phone: "1", phoneLength: 10),
+    // CountryCodeModel(code: "PR", label: "Puerto Rico", phone: "1", phoneLength: 10),
   ];
 
   Future getCountryListData() async {

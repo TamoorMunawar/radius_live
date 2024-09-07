@@ -29,7 +29,7 @@ import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
 import '../../data/radar_mobile_repository_impl.dart';
 
-bool isJobAccepted = false;
+bool isJobAccepted = true;
 
 class DashBoardScreen extends StatefulWidget {
   const DashBoardScreen({super.key});
@@ -673,10 +673,10 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 gradientFirstColor: GlobalColors.submitButtonColor,
                 width: SizeConfig.width(context, 0.9),
                 onPressed: () async {
-                  if (!isJobAccepted) {
-                    AppUtils.showFlushBar("Accept a job to proceed.", context);
-                    return;
-                  }
+                  // if (!isJobAccepted) {
+                  //   AppUtils.showFlushBar("Accept a job to proceed.", context);
+                  //   return;
+                  // }
                   Navigator.pushNamed(context, AppRoutes.qrCodeScreenRoute);
                 },
                 child: Text(
@@ -916,10 +916,10 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               gradientFirstColor: GlobalColors.submitButtonColor,
               width: SizeConfig.width(context, 0.9),
               onPressed: () async {
-                if (!isJobAccepted) {
-                  AppUtils.showFlushBar("Accept a job to proceed.", context);
-                  return;
-                }
+                // if (!isJobAccepted) {
+                //   AppUtils.showFlushBar("Accept a job to proceed.", context);
+                //   return;
+                // }
 
                 Navigator.pushNamed(context, AppRoutes.qrCodeScreenRoute);
               },

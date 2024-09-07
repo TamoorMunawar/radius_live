@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
@@ -24,7 +25,10 @@ import 'package:radar/presentation/cubits/department/department_cubit.dart';
 import 'package:radar/presentation/screens/chat_screen.dart';
 import 'package:radar/presentation/widgets/LoadingWidget.dart';
 import 'package:radar/presentation/widgets/button_widget.dart';
-
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:radar/presentation/widgets/radius_text_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
@@ -39,7 +43,8 @@ class AdminDashBoardScreen extends StatefulWidget {
   State<AdminDashBoardScreen> createState() => _AdminDashBoardScreenState();
 }
 
-class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with WidgetsBindingObserver {
+class _AdminDashBoardScreenState extends State<AdminDashBoardScreen>
+    with WidgetsBindingObserver {
   late DepartmentCubit departmentCubit;
   late CreateAlertCubit createAlertCubit;
   late DashboardCubit dashboardCubit;
@@ -150,7 +155,8 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
   void didChangeAppLifecycleState(AppLifecycleState state) {
     print('AppLifecycleState state = ${state.name}');
 
-    if (state == AppLifecycleState.inactive || state == AppLifecycleState.detached) return;
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.detached) return;
 
     isAppInBackground = state == AppLifecycleState.paused;
 
@@ -189,14 +195,17 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
 
     if (permission == LocationPermission.deniedForever) {
       // Permissions are denied forever, handle appropriately.
-      return Future.error('Location permissions are permanently denied, we cannot request permissions.');
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
     }
 
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
     Position position = await Geolocator.getCurrentPosition();
-    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
-    currentLocation = '${placemarks[0].street}, ${placemarks[0].subLocality}, ${placemarks[0].locality}';
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
+    currentLocation =
+        '${placemarks[0].street}, ${placemarks[0].subLocality}, ${placemarks[0].locality}';
     print("if case ${position.latitude}");
     print("if case $currentLocation");
 
@@ -220,8 +229,10 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
       }
       print("inside every2seconds");
       Position position = await Geolocator.getCurrentPosition();
-      List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
-      currentLocation = '${placemarks[0].street}, ${placemarks[0].subLocality}, ${placemarks[0].locality}';
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(position.latitude, position.longitude);
+      currentLocation =
+          '${placemarks[0].street}, ${placemarks[0].subLocality}, ${placemarks[0].locality}';
       print("if case ${position.latitude}");
       print("if case $currentLocation");
     });
@@ -254,14 +265,71 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
     // TODO: implement dispose
     super.dispose();
   }
+  String _scanBarcode = 'Unknown';
+
+
+
+
+
+  Future<void> handleQrScan() async {
+    String barcodeScanRes;
+    var id ;
+    var departmentId ;
+
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+          '#ff6666', 'Cancel', true, ScanMode.QR);
+      print(barcodeScanRes);
+    } on PlatformException {
+      barcodeScanRes = 'Failed to get platform version.';
+      return; // Exit if the scan fails
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      _scanBarcode = barcodeScanRes;
+
+      // Parse the JSON response
+      var data = jsonDecode(_scanBarcode);
+      print(data);
+
+      id = data['id'].toString();
+      departmentId = data['department_id']?.toString() ?? "";
+
+      print('ID: $id');
+      print('Department ID: $departmentId');
+
+      // Now, navigate to the next screen with the scanned ID and department ID
+      final args = ReviewScreenArgs(
+        usherId: id, // Use the scanned ID
+        department: departmentId ?? "", // Use the scanned department ID
+      );
+
+      // Push the new screen with the scanned arguments
+      Navigator.pushNamed(
+        context,
+        AppRoutes.addReviewScreenRoute,
+        arguments: args,
+      );
+    });
+  }
+
+
+  // Platform messages are asynchronous, so we initialize in an async method.
 
   bool showAlert = false;
-
+  String result='';
   @override
   Widget build(BuildContext context) {
     DateTime specificDate = DateTime(2023, 1, 10);
     String formattedDate = DateFormat('dd MMM, yyyy').format(DateTime.now());
-    TimeOfDay specificTime = TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
+    TimeOfDay specificTime =
+        TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute);
     // Format the time as "9:45 AM" or "09:45 AM"
     String formattedTime = specificTime.format(context);
     print("aaaaa $formattedTime $formattedDate");
@@ -280,71 +348,78 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
                     top: SizeConfig.height(context, 0.02),
                     left: SizeConfig.width(context, 0.05),
                     right: SizeConfig.width(context, 0.05)),
-                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  SizedBox(
-                    // color: Colors.red,
-                    width: SizeConfig.width(context, 0.55),
-                    child: ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(context, AppRoutes.profileScreenRoute);
-                        },
-                        child: (image.contains("http"))
-                            ? CircleAvatar(
-                                backgroundImage: NetworkImage(image),
-                                radius: SizeConfig.width(context, 0.065),
-                              )
-                            : CircleAvatar(
-                                backgroundImage: AssetImage("assets/icons/person.png"),
-                                radius: SizeConfig.width(context, 0.065),
-                              ),
-                      ),
-                      title: Text(
-                        "${"Welcome".tr()} 👋🏻",
-                        style: TextStyle(
-                          color: GlobalColors.goodMorningColor,
-                          fontWeight: FontWeight.w400,
-                          fontSize: SizeConfig.width(context, 0.030),
-                        ),
-                      ),
-                      subtitle: Text(
-                        name,
-                        maxLines: 1,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: SizeConfig.width(context, 0.038),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      (roleName == "Client")
-                          ? Container()
-                          : InkWell(
-                              onTap: () {
-                                Navigator.pushNamed(context, AppRoutes.attandanceDetailScreenRoute);
-                              },
-                              child: Image.asset(
-                                "assets/icons/message_icon.png",
-                                width: SizeConfig.width(context, 0.05),
-                              ),
-                            ),
                       SizedBox(
-                        width: SizeConfig.width(context, 0.04),
+                        // color: Colors.red,
+                        width: SizeConfig.width(context, 0.55),
+                        child: ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                  context, AppRoutes.profileScreenRoute);
+                            },
+                            child: (image.contains("http"))
+                                ? CircleAvatar(
+                                    backgroundImage: NetworkImage(image),
+                                    radius: SizeConfig.width(context, 0.065),
+                                  )
+                                : CircleAvatar(
+                                    backgroundImage:
+                                        AssetImage("assets/icons/person.png"),
+                                    radius: SizeConfig.width(context, 0.065),
+                                  ),
+                          ),
+                          title: Text(
+                            "${"Welcome".tr()} 👋🏻",
+                            style: TextStyle(
+                              color: GlobalColors.goodMorningColor,
+                              fontWeight: FontWeight.w400,
+                              fontSize: SizeConfig.width(context, 0.030),
+                            ),
+                          ),
+                          subtitle: Text(
+                            name,
+                            maxLines: 1,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: SizeConfig.width(context, 0.038),
+                            ),
+                          ),
+                        ),
                       ),
-                      InkWell(
-                        onTap: () {
-                          Navigator.pushNamed(context, AppRoutes.announcementScreen);
-                        },
-                        child: Image.asset("assets/icons/notification.png", width: SizeConfig.width(context, 0.05)),
-                      ),
-                    ],
-                  )
-                ]),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          (roleName == "Client")
+                              ? Container()
+                              : InkWell(
+                            onTap: () => handleQrScan(),
+                                  child: Icon(
+                                    Icons
+                                        .qr_code_scanner, // Replace with the appropriate icon you want
+                                    size: SizeConfig.width(context, 0.05),
+                                    color: Colors
+                                        .white, // Optional: Set color if needed
+                                  ),
+                                ),
+                          SizedBox(
+                            width: SizeConfig.width(context, 0.04),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                  context, AppRoutes.announcementScreen);
+                            },
+                            child: Image.asset("assets/icons/notification.png",
+                                width: SizeConfig.width(context, 0.05)),
+                          ),
+                        ],
+                      )
+                    ]),
               ),
               SizedBox(
                 height: SizeConfig.height(context, 0.01),
@@ -383,12 +458,14 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
                           isExpanded: true,
                           dropdownColor: GlobalColors.backgroundColor,
                           padding: EdgeInsets.only(),
-                          items: state.attanfanceList.map((LatestEventModel item) {
+                          items:
+                              state.attanfanceList.map((LatestEventModel item) {
                             return DropdownMenuItem<LatestEventModel>(
                               value: item,
                               child: Text(
                                 item.eventName ?? "",
-                                style: TextStyle(color: GlobalColors.textFieldHintColor),
+                                style: TextStyle(
+                                    color: GlobalColors.textFieldHintColor),
                               ),
                             );
                           }).toList(),
@@ -407,7 +484,8 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
                               color: GlobalColors.textFieldHintColor,
                             ),
                             border: OutlineInputBorder(
-                              borderSide: const BorderSide(color: GlobalColors.submitButtonColor
+                              borderSide: const BorderSide(
+                                  color: GlobalColors.submitButtonColor
                                   //    color: GlobalColors.ftsTextColor,
                                   ),
                               borderRadius: BorderRadius.circular(
@@ -446,8 +524,10 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
     );
   }
 
-  Widget buildDashboardWidget(BuildContext context, String formattedDate, String formattedTime) {
-    return BlocConsumer<DashboardCubit, DashboardState>(builder: (context, state) {
+  Widget buildDashboardWidget(
+      BuildContext context, String formattedDate, String formattedTime) {
+    return BlocConsumer<DashboardCubit, DashboardState>(
+        builder: (context, state) {
       if (state is DashboardDetailSuccess) {
         return SingleChildScrollView(
           child: Column(
@@ -465,7 +545,9 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
                     Text(
                       "${state.dashboardDetail.checkins}/${state.dashboardDetail.totalSeats}",
                       style: TextStyle(
-                          fontWeight: FontWeight.w400, color: Colors.white, fontSize: SizeConfig.width(context, 0.04)),
+                          fontWeight: FontWeight.w400,
+                          color: Colors.white,
+                          fontSize: SizeConfig.width(context, 0.04)),
                     ),
                     Text(
                       "Check In".tr(),
@@ -523,7 +605,8 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.w600,
-                                      fontSize: SizeConfig.width(context, 0.04)),
+                                      fontSize:
+                                          SizeConfig.width(context, 0.04)),
                                 ),
                                 Text(
                                   index == 0
@@ -537,7 +620,8 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
                                   style: TextStyle(
                                       color: GlobalColors.goodMorningColor,
                                       fontWeight: FontWeight.w400,
-                                      fontSize: SizeConfig.width(context, 0.03)),
+                                      fontSize:
+                                          SizeConfig.width(context, 0.03)),
                                 )
                               ],
                             ),
@@ -586,7 +670,8 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.w600,
-                                      fontSize: SizeConfig.width(context, 0.04)),
+                                      fontSize:
+                                          SizeConfig.width(context, 0.04)),
                                 ),
                                 Text(
                                   index == 0
@@ -600,7 +685,8 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
                                   style: TextStyle(
                                       color: GlobalColors.goodMorningColor,
                                       fontWeight: FontWeight.w400,
-                                      fontSize: SizeConfig.width(context, 0.03)),
+                                      fontSize:
+                                          SizeConfig.width(context, 0.03)),
                                 )
                               ],
                             ),
@@ -645,7 +731,8 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.w600,
-                                      fontSize: SizeConfig.width(context, 0.04)),
+                                      fontSize:
+                                          SizeConfig.width(context, 0.04)),
                                 ),
                                 Text(
                                   index == 0
@@ -659,7 +746,8 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
                                   style: TextStyle(
                                       color: GlobalColors.goodMorningColor,
                                       fontWeight: FontWeight.w400,
-                                      fontSize: SizeConfig.width(context, 0.03)),
+                                      fontSize:
+                                          SizeConfig.width(context, 0.03)),
                                 )
                               ],
                             ),
@@ -703,7 +791,8 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.w600,
-                                      fontSize: SizeConfig.width(context, 0.04)),
+                                      fontSize:
+                                          SizeConfig.width(context, 0.04)),
                                 ),
                                 Text(
                                   index == 0
@@ -717,7 +806,8 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
                                   style: TextStyle(
                                       color: GlobalColors.goodMorningColor,
                                       fontWeight: FontWeight.w400,
-                                      fontSize: SizeConfig.width(context, 0.03)),
+                                      fontSize:
+                                          SizeConfig.width(context, 0.03)),
                                 )
                               ],
                             ),
@@ -739,9 +829,11 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
                       gradientFirstColor: GlobalColors.primaryColor,
                       width: SizeConfig.width(context, 0.4),
                       onPressed: () async {
-                        print("event value zone ${state.dashboardDetail.eventId?.toInt()}");
+                        print(
+                            "event value zone ${state.dashboardDetail.eventId?.toInt()}");
                         Navigator.pushNamed(context, AppRoutes.dashboardZone,
-                            arguments: ZoneDashboardScreenRoute(eventId: eventId ?? 0));
+                            arguments: ZoneDashboardScreenRoute(
+                                eventId: eventId ?? 0));
                       },
                       child: Text(
                         'Zones'.tr(),
@@ -761,7 +853,8 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
                       onPressed: () async {
                         print("event id job ${state.dashboardDetail.eventId}");
                         Navigator.pushNamed(context, AppRoutes.dashboardJob,
-                            arguments: JobDashboardScreenRoute(eventId: eventId ?? 0));
+                            arguments:
+                                JobDashboardScreenRoute(eventId: eventId ?? 0));
                       },
                       child: Text(
                         'Jobs'.tr(),
@@ -779,10 +872,13 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen> with Widget
                 gradientFirstColor: GlobalColors.submitButtonColor,
                 onPressed: () async {
                   if (kDebugMode) {
-                    print("event value zone ${state.dashboardDetail.eventId?.toInt()}");
+                    print(
+                        "event value zone ${state.dashboardDetail.eventId?.toInt()}");
                   }
-                  Navigator.pushNamed(context, AppRoutes.usherListByEventScreenRoute,
-                      arguments: UsherListByEventScreenRoute(eventId: eventId ?? 0));
+                  Navigator.pushNamed(
+                      context, AppRoutes.usherListByEventScreenRoute,
+                      arguments:
+                          UsherListByEventScreenRoute(eventId: eventId ?? 0));
                 },
                 child: Text(
                   "${'Outside Usher'.tr()}   ${state.dashboardDetail.usherCountOutside ?? 0}",
@@ -1100,7 +1196,8 @@ class HourPercentIndicator extends StatelessWidget {
       percent: percentOfDay,
       backgroundColor: Colors.grey[300],
       progressColor: Colors.blue,
-      center: Text('${(percentOfDay * 100).toStringAsFixed(2)}% of the day has passed'),
+      center: Text(
+          '${(percentOfDay * 100).toStringAsFixed(2)}% of the day has passed'),
     );
   }
 }

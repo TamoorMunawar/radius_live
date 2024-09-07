@@ -217,17 +217,16 @@ class _JobDashBoardScreenState extends State<JobDashBoardScreen> {
                               Flexible(
                                 flex: 2,
                                 child: Center(
-                                  child: Text(
+                                  child:Text(
                                     item.rate.toString() ?? "",
-                                    // displayDonationDate(
-                                    //   donationHistoryItem.donationDate ?? '',
-                                    // ),
                                     style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        color: GlobalColors.submitButtonColor,
-                                        fontSize: SizeConfig.width(context, 0.035)),
+                                      fontWeight: FontWeight.w700,
+                                      color: item.rate == 100 ? Colors.green : Colors.red, // Conditional color
+                                      fontSize: SizeConfig.width(context, 0.035),
+                                    ),
                                     textAlign: TextAlign.center,
                                   ),
+
                                 ),
                               ),
                             ],

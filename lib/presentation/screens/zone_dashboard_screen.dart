@@ -295,7 +295,7 @@ class _ZoneDashBoardScreenState extends State<ZoneDashBoardScreen> {
                                           //   donationHistoryItem.donationDate ?? '',
                                           // ),
                                           style: TextStyle(
-                                              color: GlobalColors.whiteColor,
+                                              color: item.rate == 100 ? Colors.green : Colors.red,
                                               fontSize: SizeConfig.width(context, 0.035)),
                                           textAlign: TextAlign.center,
                                         ),

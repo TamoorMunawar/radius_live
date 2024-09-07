@@ -1559,7 +1559,8 @@ class RadarMobileRepositoryImpl implements RadarMobileRepository {
       // UserDetail userDetails = UserDetail.fromJson(responseBody["data"]);
 
       if (responseBody["success"]) {
-        String result = responseBody['data']['qr_image'] ?? "";
+
+        var result = responseBody['data']['qr_image'] ?? "";
         return result;
       } else {
         throw Exception(responseBody["message"]);
