@@ -382,9 +382,9 @@ class _UsherListScreenState extends State<UsherListScreen> {
                     onTap: () {
                       final args = ReviewScreenArgs(
                         usherId: foundUshersList[index].id!,
-                        department: foundUshersList[index].employeeDetail!.department,
+                        depertmentIdd: foundUshersList[index].employeeDetail!.department?.id,
+                        depertmentName: foundUshersList[index].employeeDetail!.department?.teamName,
                       );
-
                       Navigator.pushNamed(context, AppRoutes.addReviewScreenRoute, arguments: args);
                     },
                     child: item.checkIn == null ? Center(

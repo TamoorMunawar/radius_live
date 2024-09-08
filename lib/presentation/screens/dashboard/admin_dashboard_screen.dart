@@ -275,7 +275,7 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen>
     String barcodeScanRes;
     var id ;
     var departmentId ;
-
+    var departmentname ;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
@@ -300,14 +300,15 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen>
 
       id = data['id'].toString();
       departmentId = data['department_id']?.toString() ?? "";
-
+      departmentname = data['department_name']?.toString() ?? "";
       print('ID: $id');
       print('Department ID: $departmentId');
-
+      print('Department name: $departmentname');
       // Now, navigate to the next screen with the scanned ID and department ID
       final args = ReviewScreenArgs(
-        usherId: id, // Use the scanned ID
-        department: departmentId ?? "", // Use the scanned department ID
+        usherId: id,
+        depertmentIdd: departmentId ?? "",// Use the scanned ID
+        depertmentName: departmentname ?? "",
       );
 
       // Push the new screen with the scanned arguments

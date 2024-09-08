@@ -89,10 +89,10 @@ class ProfileButton extends StatelessWidget {
           decoration: ShapeDecoration(
             gradient: const LinearGradient(
               colors: [
-                Color(0xff450295), // Start color
+                Color(0xff4d2f7c), // Start color
                 // Middle color
-                Color(0xff9a4eed),
-                Color(0xff32006c), // End color
+                Color(0xff4d2f7c),
+                Color(0xff4d2f7c),  // End color
 
               ],
               begin: Alignment.topLeft,

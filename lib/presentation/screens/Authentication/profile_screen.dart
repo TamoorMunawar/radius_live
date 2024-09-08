@@ -287,6 +287,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                               Text(
                                 state is ProfileSuccess ? state.profileModel.deviceId ?? "" : "",
+                                maxLines: 1,
                                 style: TextStyle(
                                   color: GlobalColors.whiteColor,
                                   fontWeight: FontWeight.w300,
@@ -332,11 +333,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Container(
                   //  height: SizeConfig.height(context, 0.2),
                   width: 0.9.sw,
-                  decoration: BoxDecoration(
-                      color: GlobalColors.primaryColor,
-                      borderRadius: BorderRadius.circular(
-                        0.06.sw,
-                      )),
+                  // decoration: BoxDecoration(
+                  //     color: GlobalColors.primaryColor,
+                  //     borderRadius: BorderRadius.circular(
+                  //       0.06.sw,
+                  //     )),
                   padding: EdgeInsets.only(
                     top: 0.03.sh,
                     bottom: 0.03.sh,

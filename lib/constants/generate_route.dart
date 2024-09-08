@@ -745,7 +745,8 @@ MultiBlocProvider reviewScreen(ReviewScreenArgs args) {
     ],
     child: ReviewScreen(
       usherId: args.usherId,
-      department: args.department,
+      depertmentIdd: args.depertmentIdd,
+    depertmentName: args.depertmentName,
     ),
   );
 }

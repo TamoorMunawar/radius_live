@@ -121,12 +121,13 @@ class CreateZoneScreenArgs {
 }
 
 class ReviewScreenArgs {
-  final int usherId;
-
-  final Department? department;
+  var usherId;
+  var depertmentIdd;
+  var depertmentName;
 
   ReviewScreenArgs({
     required this.usherId,
-    required this.department,
+    required this.depertmentIdd,
+    required this.depertmentName
   });
 }

@@ -18,13 +18,15 @@ import 'package:radar/presentation/widgets/text_field.dart';
 import '../../domain/entities/ushers/Department.dart';
 
 class ReviewScreen extends StatefulWidget {
-  final int usherId;
-
-  final Department? department;
-  const ReviewScreen({
+ var usherId;
+var depertmentIdd;
+var depertmentName;
+  // final Department? department;
+   ReviewScreen({
     super.key,
     required this.usherId,
-    required this.department,
+    required this.depertmentIdd,
+     required this.depertmentName,
   });
 
   @override
@@ -112,7 +114,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                 }
 
                 _formKey.currentState!.save();
-                if (widget.department == null) {
+                if (widget.depertmentIdd == null) {
                   AppUtils.showFlushBar("Team is not assigned", context);
                   return;
                 }
@@ -120,7 +122,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                     review: _reviewController.text,
                     rating: _rating.toInt(),
                     usherId: widget.usherId,
-                    teamId: widget.department?.id ?? 0,
+                    teamId: widget.depertmentIdd ?? 0,
                     isBanned: _isBanned,
                     eventId: eventId ?? 0));
               },
@@ -140,7 +142,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
           child: Column(
             children: [
               SizedBox(height: 0.02.sh),
-              if (widget.department != null)
+              if (widget.depertmentName != null)
                 Padding(
                   padding: EdgeInsets.only(left: 0.05.sw, right: 0.05.sw),
                   child: Container(
@@ -150,7 +152,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                       border: Border.all(color: GlobalColors.hintTextColor),
                       borderRadius: BorderRadius.circular(0.02.sw),
                     ),
-                    child: Text(widget.department?.teamName ?? "",
+                    child: Text(widget.depertmentName ?? "",
                         style: TextStyle(
                           color: GlobalColors.hintTextColor,
                           fontWeight: FontWeight.w500,
