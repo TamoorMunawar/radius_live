@@ -85,158 +85,159 @@ class _AttandaceDetailScreenState extends State<AttandaceDetailScreen> {
       ),
       body: roleName == "Client"
           ? Padding(
-              padding: EdgeInsets.symmetric(horizontal: SizeConfig.width(context, 0.05)),
-              child: Center(
-                  child: Text(
-                "You Don't have permission to view the Attendance".tr(),
-                style: TextStyle(
-                  color: GlobalColors.textFieldHintColor,
-                  fontSize: SizeConfig.width(context, 0.06),
-                ),
-                textAlign: TextAlign.center,
-              )),
-            ) :roleName == "admin"? AttandaceScreen()
-          : SingleChildScrollView(
-              child: BlocConsumer<AttandanceCubit, AttandanceState>(
-                builder: (context, state) {
-                  if (state is AttandanceSuccess) {
-                    return (state.attanfanceList.isEmpty)
-                        ? Center(
-                            child: Container(
-                              padding: EdgeInsets.symmetric(vertical: SizeConfig.height(context, 0.2)),
-                              child: Text(
-                                "No Data Found".tr(),
-                                style: TextStyle(
-                                    color: GlobalColors.textFieldHintColor, fontSize: SizeConfig.width(context, 0.06)),
-                              ),
-                            ),
-                          )
-                        : Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: List.generate(state.attanfanceList.length, (index) {
-                              return Container(
-                                  height: SizeConfig.height(context, 0.135),
-                                  width: SizeConfig.width(context, 0.9),
-                                  margin: EdgeInsets.only(
-                                      top: SizeConfig.height(context, 0.02),
-                                      left: SizeConfig.width(context, 0.05),
-                                      right: SizeConfig.width(context, 0.05)),
-                                  decoration: BoxDecoration(
-                                      border: Border.all(color: GlobalColors.textFieldHintColor),
-                                      color: GlobalColors.backgroundColor,
-                                      borderRadius: BorderRadius.circular(
-                                        SizeConfig.width(context, 0.02),
-                                      )),
-                                  padding: EdgeInsets.only(
-                                    top: SizeConfig.height(context, 0.02),
-                                    //   bottom: SizeConfig.height(context, 0.01),
-                                    left: SizeConfig.width(context, 0.04),
-                                    right: SizeConfig.width(context, 0.04),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "${state.attanfanceList[index].formattedDate}",
-                                            style: TextStyle(
-                                                fontSize: SizeConfig.width(context, 0.05),
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w400),
-                                          )
-                                        ],
-                                      ),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: List.generate(3, (indexdata) {
-                                          return Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              (indexdata) == 0
-                                                  ? Text(
-                                                      "Check in".tr(),
-                                                      style: TextStyle(
-                                                          fontWeight: FontWeight.w400,
-                                                          fontSize: SizeConfig.width(context, 0.035),
-                                                          color: GlobalColors.textFieldHintColor),
-                                                    )
-                                                  : (indexdata) == 1
-                                                      ? Text(
-                                                          "Check out".tr(),
-                                                          style: TextStyle(
-                                                              fontWeight: FontWeight.w400,
-                                                              fontSize: SizeConfig.width(context, 0.035),
-                                                              color: GlobalColors.textFieldHintColor),
-                                                        )
-                                                      : Text(
-                                                          "Duty Hours".tr(),
-                                                          style: TextStyle(
-                                                              fontWeight: FontWeight.w400,
-                                                              fontSize: SizeConfig.width(context, 0.035),
-                                                              color: GlobalColors.textFieldHintColor),
-                                                        ),
-                                              (indexdata == 0)
-                                                  ? Text(
-                                                      state.attanfanceList[index].formattedClockInTime ?? "-",
-                                                      style: TextStyle(
-                                                          fontWeight: FontWeight.w400,
-                                                          fontSize: SizeConfig.width(context, 0.035),
-                                                          color: GlobalColors.textFieldHintColor),
-                                                    )
-                                                  : (indexdata == 1)
-                                                      ? Text(
-                                                          state.attanfanceList[index].formattedClockOutTime ?? "-",
-                                                          style: TextStyle(
-                                                            fontWeight: FontWeight.w400,
-                                                            fontSize: SizeConfig.width(context, 0.035),
-                                                            color: GlobalColors.whiteColor.withOpacity(0.5),
-                                                          ),
-                                                        )
-                                                      : Text(
-                                                          state.attanfanceList[index].formattedHour ?? "-",
-                                                          style: TextStyle(
-                                                              fontWeight: FontWeight.w400,
-                                                              fontSize: SizeConfig.width(context, 0.035),
-                                                              color: GlobalColors.textFieldHintColor),
-                                                        ),
-                                            ],
-                                          );
-                                        }),
-                                      )
-                                    ],
-                                  ));
-                            }),
-                          );
-                  }
-                  if (state is AttandanceLoading) {
-                    return const Center(child: LoadingWidget());
-                  }
-                  if (state is AttandanceFailure) {
-                    print("inside hereee");
-                    return Container(
-                      padding: EdgeInsets.symmetric(vertical: SizeConfig.height(context, 0.2)),
-                      child: Text(
-                        "No Data Found".tr(),
-                        style: TextStyle(color: Colors.white, fontSize: SizeConfig.width(context, 0.06)),
-                      ),
-                    );
-                  }
-                  return Container();
-                },
-                listener: (context, state) {
-                  if (state is AttandanceFailure) {
-                    //    AppUtils.showFlushBar(state.errorMessage, context);
-                  }
-                  if (state is AttandanceSuccess) {
-                    /*if (state.attanfanceList?.isEmpty ?? false) {
-                AppUtils.showFlushBar("No Record Found", context);
-              }*/
-                  }
-                },
-              ),
+        padding: EdgeInsets.symmetric(horizontal: SizeConfig.width(context, 0.05)),
+        child: Center(
+          child: Text(
+            "You Don't have permission to view the Attendance".tr(),
+            style: TextStyle(
+              color: GlobalColors.textFieldHintColor,
+              fontSize: SizeConfig.width(context, 0.06),
             ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      )
+          : roleName == "admin"
+          ? AttendanceScreen()  // Navigating to AttandaceScreen if role is admin
+          : SingleChildScrollView(
+        child: BlocConsumer<AttandanceCubit, AttandanceState>(
+          builder: (context, state) {
+            if (state is AttandanceSuccess) {
+              return (state.attanfanceList.isEmpty)
+                  ? Center(
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: SizeConfig.height(context, 0.2)),
+                  child: Text(
+                    "No Data Found".tr(),
+                    style: TextStyle(
+                        color: GlobalColors.textFieldHintColor,
+                        fontSize: SizeConfig.width(context, 0.06)),
+                  ),
+                ),
+              )
+                  : Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: List.generate(state.attanfanceList.length, (index) {
+                  return Container(
+                      height: SizeConfig.height(context, 0.135),
+                      width: SizeConfig.width(context, 0.9),
+                      margin: EdgeInsets.only(
+                          top: SizeConfig.height(context, 0.02),
+                          left: SizeConfig.width(context, 0.05),
+                          right: SizeConfig.width(context, 0.05)),
+                      decoration: BoxDecoration(
+                          border: Border.all(color: GlobalColors.textFieldHintColor),
+                          color: GlobalColors.backgroundColor,
+                          borderRadius: BorderRadius.circular(
+                            SizeConfig.width(context, 0.02),
+                          )),
+                      padding: EdgeInsets.only(
+                        top: SizeConfig.height(context, 0.02),
+                        left: SizeConfig.width(context, 0.04),
+                        right: SizeConfig.width(context, 0.04),
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                "${state.attanfanceList[index].formattedDate}",
+                                style: TextStyle(
+                                    fontSize: SizeConfig.width(context, 0.05),
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w400),
+                              )
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: List.generate(3, (indexdata) {
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  (indexdata) == 0
+                                      ? Text(
+                                    "Check in".tr(),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: SizeConfig.width(context, 0.035),
+                                        color: GlobalColors.textFieldHintColor),
+                                  )
+                                      : (indexdata) == 1
+                                      ? Text(
+                                    "Check out".tr(),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: SizeConfig.width(context, 0.035),
+                                        color: GlobalColors.textFieldHintColor),
+                                  )
+                                      : Text(
+                                    "Duty Hours".tr(),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: SizeConfig.width(context, 0.035),
+                                        color: GlobalColors.textFieldHintColor),
+                                  ),
+                                  (indexdata == 0)
+                                      ? Text(
+                                    state.attanfanceList[index].formattedClockInTime ?? "-",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: SizeConfig.width(context, 0.035),
+                                        color: GlobalColors.textFieldHintColor),
+                                  )
+                                      : (indexdata == 1)
+                                      ? Text(
+                                    state.attanfanceList[index].formattedClockOutTime ?? "-",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: SizeConfig.width(context, 0.035),
+                                      color: GlobalColors.whiteColor.withOpacity(0.5),
+                                    ),
+                                  )
+                                      : Text(
+                                    state.attanfanceList[index].formattedHour ?? "-",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: SizeConfig.width(context, 0.035),
+                                        color: GlobalColors.textFieldHintColor),
+                                  ),
+                                ],
+                              );
+                            }),
+                          )
+                        ],
+                      ));
+                }),
+              );
+            }
+            if (state is AttandanceLoading) {
+              return const Center(child: LoadingWidget());
+            }
+            if (state is AttandanceFailure) {
+              return Container(
+                padding: EdgeInsets.symmetric(vertical: SizeConfig.height(context, 0.2)),
+                child: Text(
+                  "No Data Found".tr(),
+                  style: TextStyle(color: Colors.white, fontSize: SizeConfig.width(context, 0.06)),
+                ),
+              );
+            }
+            return Container();
+          },
+          listener: (context, state) {
+            if (state is AttandanceFailure) {
+              // Handle failure state
+            }
+            if (state is AttandanceSuccess) {
+              // Handle success state if needed
+            }
+          },
+        ),
+      )
+
     );
   }
 }

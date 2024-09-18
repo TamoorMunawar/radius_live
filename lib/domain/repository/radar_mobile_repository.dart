@@ -80,6 +80,7 @@ abstract class RadarMobileRepository {
     // String? departmentId,
     // String? description,
     int? eventId,
+    String? type,
     String? message,
   });
 

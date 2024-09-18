@@ -12,12 +12,14 @@ class CreateAlertUsecase {
     // String? departmentId,
     // String? description,
     int? eventId,
+    String? type,
     String? message,
   }) async {
     try {
       return await repository.createAlert(
         eventId: eventId,
         message: message,
+        type: type,
         // description: description,
         // departmentId: departmentId,
         // heading: heading,

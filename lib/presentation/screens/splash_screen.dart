@@ -1,8 +1,9 @@
-import 'dart:developer';
 import 'dart:io';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart';
 import 'package:radar/constants/app_utils.dart';
 import 'package:radar/constants/colors.dart';
@@ -14,6 +15,7 @@ import 'package:radar/presentation/cubits/login/login_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:permission_handler/permission_handler.dart' as ph;
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key, required this.isProfile});
@@ -32,33 +34,28 @@ class _SplashScreenState extends State<SplashScreen> {
 
   bool appUpdate = false;
 
-  // bool isProfileUpdated = false;
-  bool isVerified = false;
+  bool isProfileUpdated = false;
 
   Future<void> checkAppVersion() async {
     // Get the current installed app version
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     currentVersion = packageInfo.version;
 
-    log("Current app version is: $currentVersion");
+    print("Current app version is: $currentVersion");
     loginCubit.appUpdate(appVersion: currentVersion);
     // Here you can add logic to compare this version with the one fetched from the Play Store
   }
 
   String appUpdateUrl = (Platform.isAndroid)
-      ?
-  "1.0.45"
-  //'https://play.google.com/store/apps/details?id=com.radius.radiusvebzaapp'
-      :
-  //"1.0.44";
-  "https://apps.apple.com/us/app/radius-live/id6618153542";
-  String? currentVersion = "1.0.45";
+      ?  '1.0.46'
+      : "https://apps.apple.com/us/app/radius-live/id6618153542";
+  String? currentVersion = "";
 
   void checkLocationServiceStatus() async {
     var location = Location();
     bool serviceEnabled = await location.serviceEnabled();
-    log("Location status splash screen $serviceEnabled");
-    log("Location status splash screen ${location.hasPermission}");
+    print("Location status splash screen $serviceEnabled");
+    print("Location status splash screen ${location.hasPermission}");
     if (!serviceEnabled) {
       serviceEnabled = await location.requestService();
       if (!serviceEnabled) {
@@ -75,7 +72,7 @@ class _SplashScreenState extends State<SplashScreen> {
     notificationServices.firebaseInit();
     notificationServices.foregroundMessage();
     notificationServices.getToken().then((value) {
-      log("device token $value");
+      print("device token $value");
     });
 
     super.initState();
@@ -85,59 +82,51 @@ class _SplashScreenState extends State<SplashScreen> {
     var location = Location();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isEnglish = prefs.getBool("isEnglish") ?? true;
-    await (isEnglish ? context.setLocale(const Locale('en')) : context.setLocale(Locale('ar')));
+    await (isEnglish
+        ? context.setLocale(const Locale('en'))
+        : context.setLocale(Locale('ar')));
     token = prefs.getString("token") ?? "";
-    // isProfileUpdated = prefs.getBool("isProfileUpdated") ?? false;
-    isVerified = prefs.getBool("isVerified") ?? false;
-
+    isProfileUpdated = prefs.getBool("isProfileUpdated") ?? false;
     PermissionStatus permissionStatus = await location.hasPermission();
-    log("permission status ${permissionStatus.name}");
-    log("token aaa $token");
-    log("isEnglish aaa $isEnglish");
-    // var status = await ph.Permission.location.status;
-    // log("splash location status $status");
+    print("permission status ${permissionStatus.name}");
+    print("token aaa $token");
+    print("isEnglish aaa $isEnglish");
+    var status = await ph.Permission.location.status;
+    print("splash location status $status");
     setState(() {});
     await Future.delayed(
       const Duration(seconds: 3),
     );
-    log("user token $token");
-    // print("isProfileUpdated $isProfileUpdated");
-    log("appUpdate $appUpdate");
-
-    log(permissionStatus.toString(), name: "Permission Status");
+    print("user token $token");
+    print("isProfileUpdated $isProfileUpdated");
+    print("appUpdate $appUpdate");
 
     if (appUpdate) {
-      if (permissionStatus != PermissionStatus.granted) {
+
+      if (permissionStatus.name != "granted") {
+        print("indie 11");
         prefs.clear();
         Navigator.pushNamedAndRemoveUntil(
           context,
           AppRoutes.loginScreenRoute,
               (route) => false,
         );
-        // } else if (token != null && token != "" && isProfileUpdated) {
-      } else if (token != null && token != "") {
-        if (isVerified) {
+      } else if (token != null && token != "" && isProfileUpdated) {
+        print("indie 22");
+        if (widget.isProfile) {
+          Navigator.pushNamed(context, AppRoutes.editProfileScreenRoute,
+              arguments:
+              EditProfileScreenArgs(isFromLogin: true, phoneCode: "+92"));
+        } else {
           Navigator.pushNamedAndRemoveUntil(
             context,
             AppRoutes.pagesScreenRoute,
                 (route) => false,
             arguments: 0,
           );
-        } else {
-          Navigator.pushNamed(context, AppRoutes.editProfileScreenRoute,
-              arguments: EditProfileScreenArgs(isFromLogin: true, phoneCode: "+966"));
         }
-        // print("indie 22");
-        // if (widget.isProfile) {
-        // } else {
-        //   Navigator.pushNamedAndRemoveUntil(
-        //     context,
-        //     AppRoutes.pagesScreenRoute,
-        //     (route) => false,
-        //     arguments: 0,
-        //   );
-        // }
       } else {
+        print("indie 33");
         Navigator.pushNamedAndRemoveUntil(
           context,
           AppRoutes.loginScreenRoute,
@@ -151,6 +140,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: GlobalColors.backgroundColor,
         body: Stack(
           children: [
             Center(
@@ -164,41 +154,44 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
               ),
             ),
-            BlocConsumer<LoginCubit, LoginState>(builder: (context, state) {
-              if (state is AppUpdateSuccess) {
-                return Container(
-                  height: 0,
-                );
-              }
+            BlocConsumer<LoginCubit, LoginState>(
+                builder: (context, state) {
+                  if (state is AppUpdateSuccess) {
+                    return Container(
+                      height: 0,
+                    );
+                  }
 
-              if (state is LoginFailed) {
-                return AlertDialog(
-                  backgroundColor: GlobalColors.backgroundColor,
-                  title: Text(
-                    "App_Update".tr(),
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                  content: Text(
-                    "${"Update_App_From".tr()} ${(Platform.isAndroid) ? "Play Store." : "App Store."}${"Your app current version is".tr()} $currentVersion",
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        log(appUpdateUrl);
-                        appUpdateLauncher(appUpdateUrl);
-                      },
-                      child: Text(
-                        "Update".tr(),
-                        style: TextStyle(color: GlobalColors.whiteColor, fontSize: SizeConfig.width(context, 0.05)),
+                  if (state is LoginFailed) {
+                    return AlertDialog(
+                      backgroundColor: GlobalColors.backgroundColor,
+                      title: Text(
+                        "App_Update".tr(),
+                        style: const TextStyle(color: Colors.white),
                       ),
-                    ),
-                  ],
-                );
-              }
-              return Container();
-            }, listener: (context, state) {
-              log("appUpdate $appUpdate");
+                      content: Text(
+                        "${"Update_App_From".tr()} ${(Platform.isAndroid) ? "Play Store." : "App Store."}${"Your app current version is".tr()} $currentVersion",
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            print(appUpdateUrl);
+                            appUpdateLauncher(appUpdateUrl);
+                          },
+                          child: Text(
+                            "Update".tr(),
+                            style: TextStyle(
+                                color: GlobalColors.whiteColor,
+                                fontSize: SizeConfig.width(context, 0.05)),
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                  return Container();
+                }, listener: (context, state) {
+              print("appUpdate $appUpdate");
               if (state is AppUpdateSuccess) {
                 setState(() {
                   appUpdate = true;
@@ -207,7 +200,8 @@ class _SplashScreenState extends State<SplashScreen> {
               }
               if (state is LoginFailed) {
                 AppUtils.showFlushBar(state.errorMessage, context);
-                if (mounted) {
+                if(mounted){
+
                   setState(() {
                     appUpdate = false;
                   });
@@ -231,3 +225,4 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 }
+

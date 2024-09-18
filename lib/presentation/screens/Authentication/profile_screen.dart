@@ -285,15 +285,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   fontSize: 0.04.sw,
                                 ),
                               ),
-                              Text(
-                                state is ProfileSuccess ? state.profileModel.deviceId ?? "" : "",
-                                maxLines: 1,
-                                style: TextStyle(
-                                  color: GlobalColors.whiteColor,
-                                  fontWeight: FontWeight.w300,
-                                  fontSize: 0.03.sw,
-                                ),
-                              ),
+                              // Text(
+                              //   state is ProfileSuccess ? state.profileModel.deviceId ?? "" : "",
+                              //   maxLines: 1,
+                              //   style: TextStyle(
+                              //     color: GlobalColors.whiteColor,
+                              //     fontWeight: FontWeight.w300,
+                              //     fontSize: 0.03.sw,
+                              //   ),
+                              // ),
                               SizedBox(height: 0.01.sh),
                               Container(
                                 padding: EdgeInsets.symmetric(horizontal: 0.03.sw, vertical: 0.01.sw),
@@ -474,7 +474,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           SizedBox(
             height: 120,
             width: 120,
-            child: Image.asset("assets/BADGES/BADGES-3.png"),
+            child: Image.asset("assets/BADGES/BADGES-4.png"),
           )
         else if (roleName == "Supervisor")
           SizedBox(

@@ -89,8 +89,15 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   String? departmentValue;
   List<String> genderList = ["Male", "Female", "Other"];
   String _complain = "Event Complain";
-  final List<String> _complainTypes = ["Event Complain", "General Complain"];
+  final List<String> _complainTypes = ["Event Complain", "General Complain","Call Backup"];
   int _complainValue = 0;
+  // Filter the complain types based on the role
+  List<String> getFilteredComplainTypes() {
+    if (roleName == "Usher") {
+      return _complainTypes.where((type) => type != "Call Backup").toList();
+    }
+    return _complainTypes;
+  }
   @override
   void initState() {
     LogManager.info("dashboard_usecase.dart");
@@ -242,66 +249,64 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 SizedBox(
                   height: SizeConfig.height(context, 0.02),
                 ),
-                Material(
-                  color: Colors.transparent,
-                  shadowColor: Color(0xFF006DFC).withOpacity(0.16),
-                  child: DropdownButtonFormField<String>(
-                    dropdownColor: GlobalColors.backgroundColor,
-                    padding: EdgeInsets.only(),
-                    items: _complainTypes.map((String item) {
-                      return DropdownMenuItem<String>(
-                        value: item,
-                        child: Text(
-                          item ?? "",
-                          style: TextStyle(color: GlobalColors.textFieldHintColor),
-                        ),
-                      );
-                    }).toList(),
-                    value: _complain,
-                    onChanged: (value) {
-                      setState(() => _complain = value!);
-                      log(_complain.toString());
-                      if (_complain == _complainTypes[0]) {
-                        _complainValue = 0;
-                      } else {
-                        _complainValue = 1;
-                        eventId = null;
-                      }
-                      log(_complainValue.toString());
-                    },
-                    decoration: InputDecoration(
-                      filled: false,
-                      hintText: 'Select Complain type'.tr(),
-                      hintStyle: TextStyle(
-                        color: GlobalColors.textFieldHintColor,
-                      ),
-                      border: OutlineInputBorder(
-                        borderSide: const BorderSide(color: GlobalColors.submitButtonColor
-                            //    color: GlobalColors.ftsTextColor,
-                            ),
-                        borderRadius: BorderRadius.circular(
-                          SizeConfig.width(context, 0.03),
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: GlobalColors.hintTextColor,
-                          //    color: GlobalColors.ftsTextColor,
-                        ),
-                        borderRadius: BorderRadius.circular(
-                          SizeConfig.width(context, 0.03),
-                        ),
-                      ),
+            Material(
+              color: Colors.transparent,
+              shadowColor: Color(0xFF006DFC).withOpacity(0.16),
+              child: DropdownButtonFormField<String>(
+                dropdownColor: Colors.black, // Change to your desired color
+                items: getFilteredComplainTypes().map((String item) {
+                  return DropdownMenuItem<String>(
+                    value: item,
+                    child: Text(
+                      item,
+                      style: TextStyle(color: Colors.white), // Use your text field hint color here
                     ),
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (value) {
-                      if (value == null) {
-                        return 'Please select a country'.tr();
-                      }
-                      return null;
-                    },
+                  );
+                }).toList(),
+                value: _complain,
+                onChanged: (value) {
+                  setState(() => _complain = value!);
+                  if (_complain == _complainTypes[0]) {
+                    _complainValue = 0;
+                  } else if (_complain == _complainTypes[1]) {
+                    _complainValue = 1;
+                  } else {
+                    if (roleName != "Usher") { // Check if the user role is not "Usher"
+                      _complainValue = 2;
+                    }
+                  }
+                  print(_complainValue.toString());
+                },
+                decoration: InputDecoration(
+                  filled: false,
+                  hintText: 'Select Complain type',
+                  hintStyle: TextStyle(
+                    color: Colors.white, // Use your hint text color here
+                  ),
+                  border: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.blue), // Your submit button color here
+                    borderRadius: BorderRadius.circular(
+                      8.0, // Change this to your preferred width
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.grey, // Your hint text color here
+                    ),
+                    borderRadius: BorderRadius.circular(
+                      8.0, // Change this to your preferred width
+                    ),
                   ),
                 ),
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) {
+                  if (value == null) {
+                    return 'Please select a complaint type';
+                  }
+                  return null;
+                },
+              ),
+            ),
                 SizedBox(
                   height: SizeConfig.height(context, 0.02),
                 ),
@@ -399,12 +404,15 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                       setState(() {
                         showAlert = false;
                       });
+                      print(_complainValue.toString());
+                      print("_complainValue.toString()");
                       createAlertCubit.createAlert(
                         // description: _messageController.text,
                         // departmentId: departmentValue?.id.toString(),
                         // to: departmentValue?.teamName,
                         // heading: "App",
                         eventId: eventId,
+                        type: _complainValue.toString(),
                         message: _messageController.text,
                       );
                     }

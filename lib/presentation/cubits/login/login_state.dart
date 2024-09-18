@@ -20,7 +20,8 @@ final  Login loginModel;
   LoginSuccess({required this.loginModel});
   @override
   List<Object> get props => [];
-}class AppUpdateSuccess extends LoginState {
+}
+class AppUpdateSuccess extends LoginState {
 final  bool result;
 
 AppUpdateSuccess({required this.result});

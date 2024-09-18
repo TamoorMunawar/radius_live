@@ -78,7 +78,19 @@ class _UsherListScreenState extends State<UsherListScreen> {
     // TODO: implement initState
     super.initState();
   }
-
+// Helper method to format the check-in time
+  String _formatCheckInTime(String? checkInTime) {
+    if (checkInTime == null) {
+      return "N/A";
+    }
+    try {
+      DateTime parsedDate = DateTime.parse(checkInTime);
+      // Include AM/PM in the format
+      return DateFormat('yyyy-MM-dd hh:mm a').format(parsedDate);
+    } catch (e) {
+      return "Invalid date";
+    }
+  }
   List<Ushers> foundUshersList = [];
 
   final searchController = TextEditingController();
@@ -134,10 +146,25 @@ class _UsherListScreenState extends State<UsherListScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            "${item.categoryName ?? ""}   \n  ${item.invitationCount ?? ""}",
-                            style: TextStyle(color: GlobalColors.textFieldHintColor),
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: item.categoryName ?? "",
+                                  style: TextStyle(color: GlobalColors.textFieldHintColor),
+                                ),
+                                TextSpan(
+                                  text: " | ",
+                                  style: TextStyle(color: Colors.amber), // Set the color to golden here
+                                ),
+                                TextSpan(
+                                  text: item.invitationCount.toString() ?? "",
+                                  style: TextStyle(color: GlobalColors.textFieldHintColor),
+                                ),
+                              ],
+                            ),
                           ),
+
                           Text(
                             "${item.suppervisor}",
                             style: TextStyle(color: GlobalColors.textFieldHintColor, overflow: TextOverflow.clip),
@@ -350,19 +377,17 @@ class _UsherListScreenState extends State<UsherListScreen> {
           (isLoadingMore)
               ? const LoadingWidget()
               : (usherList.isEmpty || foundUshersList.isEmpty)
-                  ? Center(
-                      child: Padding(
-                        padding: EdgeInsets.only(top: SizeConfig.height(context, 0.2)),
-                        child: Text(
-                          "No Data Found".tr(),
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: SizeConfig.width(context, 0.06)),
-                        ),
-                      ),
-                    )
-                  : Expanded(
+              ? Center(
+            child: Text(
+              "No ushers Checkin",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w500,
+                fontSize: SizeConfig.width(context, 0.032),
+              ),
+            ),
+          )
+              : Expanded(
             child: ListView.separated(
               padding: EdgeInsets.only(bottom: SizeConfig.height(context, 0.1)),
               controller: initialScrollController,
@@ -376,24 +401,22 @@ class _UsherListScreenState extends State<UsherListScreen> {
                 );
               },
               itemBuilder: (context, index) {
-                var item = foundUshersList.elementAt(index);
-                if (index < foundUshersList.length) {
+                // Filter out items where checkIn is null
+                var filteredUshersList =
+                foundUshersList.where((item) => item.checkIn != null).toList();
+                if (index < filteredUshersList.length) {
+                  var item = filteredUshersList.elementAt(index);
+
                   return InkWell(
                     onTap: () {
                       final args = ReviewScreenArgs(
-                        usherId: foundUshersList[index].id!,
-                        depertmentIdd: foundUshersList[index].employeeDetail!.department?.id,
-                        depertmentName: foundUshersList[index].employeeDetail!.department?.teamName,
+                        usherId: item.id!,
+                        depertmentIdd: item.employeeDetail!.department?.id,
+                        depertmentName: item.employeeDetail!.department?.teamName,
                       );
                       Navigator.pushNamed(context, AppRoutes.addReviewScreenRoute, arguments: args);
                     },
-                    child: item.checkIn == null ? Center(
-                      child: Text("No ushers Checkin", style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                        fontSize: SizeConfig.width(context, 0.032),
-                      ),),
-                    ):Container(
+                    child: Container(
                       width: SizeConfig.width(context, 0.9),
                       margin: EdgeInsets.only(
                         left: SizeConfig.width(context, 0.05),
@@ -429,7 +452,7 @@ class _UsherListScreenState extends State<UsherListScreen> {
                                       ),
                                     ),
                                     Text(
-                                      "Check-In Time: ${item.checkIn ?? "N/A"}",
+                                      "Check-In Time: ${_formatCheckInTime(item.checkIn)}",
                                       style: TextStyle(
                                         color: GlobalColors.textFieldHintColor,
                                         fontWeight: FontWeight.w700,
@@ -456,7 +479,6 @@ class _UsherListScreenState extends State<UsherListScreen> {
                                         ),
                                       ]),
                                     ),
-                                    // New Row for Check-In Time and View Image
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
@@ -544,9 +566,9 @@ class _UsherListScreenState extends State<UsherListScreen> {
                   );
                 }
               },
-              itemCount: (isLoadingMore) ? foundUshersList.length : foundUshersList.length,
+              itemCount: foundUshersList.where((item) => item.checkIn != null).length,
             ),
-          )
+          ),
 
         ],
       ),

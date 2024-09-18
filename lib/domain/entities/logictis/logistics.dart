@@ -104,7 +104,7 @@ class Asset {
   var name;
   var assetTypeId;
   var serialNumber;
-  Null? image;
+  String? image;
   var description;
   var status;
   var value;

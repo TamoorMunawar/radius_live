@@ -115,6 +115,7 @@ class RadarMobileRepositoryImpl implements RadarMobileRepository {
     // String? description,
     int? eventId,
     String? message,
+    String? type,
   }) async {
     try {
       // var url = Uri.parse('${NetworkUtils.baseUrl}/notice/store');
@@ -130,6 +131,7 @@ class RadarMobileRepositoryImpl implements RadarMobileRepository {
       String jsonBody = jsonEncode(<String, dynamic>{
         "user_id": prefs.getInt("user_id"),
         "event_model_id": eventId,
+        "type": type,
         "text": message,
       });
       print("repository::createAlert::jsonBody: $jsonBody\n");

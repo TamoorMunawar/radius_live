@@ -13,6 +13,7 @@ class CreateAlertCubit extends Cubit<CreateAlertState> {
     // String? departmentId,
     // String? description,
     int? eventId,
+    String? type,
     String? message,
   }) async {
     try {
@@ -23,6 +24,7 @@ class CreateAlertCubit extends Cubit<CreateAlertState> {
         // heading: heading,
         // to: to,
         eventId: eventId,
+        type:type ,
         message: message,
       );
       emit(CreateAlertSuccess(result: result));

@@ -132,15 +132,40 @@ class _QrCodeScreenState extends State<QrCodeScreen> with SingleTickerProviderSt
                     height: SizeConfig.height(context, 0.15),
                   ),
                   Center(
-                    child: FadeTransition(
-                      opacity: _animation,
-                      child: SvgPicture.network(
-                        state.qrCode ?? "",
-                        placeholderBuilder: (BuildContext context) =>
-                            Container(padding: const EdgeInsets.all(30.0), child: const CircularProgressIndicator()),
-                      ),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        // Animated border
+                        FadeTransition(
+                          opacity: _animation,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.orangeAccent, // Desired border color
+                                width: 8.0,                 // Border width
+                              ),
+                            ),
+                            // This container serves as the border.
+                            // Padding ensures the border appears around the QR code image.
+                            width: 230, // Adjust to fit the QR code size
+                            height: 230, // Adjust to fit the QR code size
+                          ),
+                        ),
+                        // QR code image without animation
+                        SvgPicture.network(
+                          state.qrCode ?? "",
+                          width: 210, // Adjust these values to fit within the border
+                          height: 210, // Adjust these values to fit within the border
+                          placeholderBuilder: (BuildContext context) =>
+                              Container(
+                                padding: const EdgeInsets.all(30.0),
+                                child: const CircularProgressIndicator(),
+                              ),
+                        ),
+                      ],
                     ),
                   ),
+
                 ],
               ),
             );

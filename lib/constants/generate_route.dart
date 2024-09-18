@@ -173,7 +173,7 @@ Route? onGenerateRoute(RouteSettings settings) {
   }
   if (settings.name == AppRoutes.attandanceScreenRoute) {
     return MaterialPageRoute(
-      builder: (context) => const AttandaceScreen(),
+      builder: (context) =>  AttendanceScreen(),
     );
   }
   if (settings.name == AppRoutes.eventScreenRoute) {
