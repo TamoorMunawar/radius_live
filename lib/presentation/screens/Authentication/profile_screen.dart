@@ -391,8 +391,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         },
                         title: 'Change Password'.tr(), icon: Symbols.lock,
                       ),
-                      SizedBox(height: SizeConfig.height(context, 0.02)),
-                      ProfileButton(
+                      roleName == "Usher"?Container():SizedBox(height: SizeConfig.height(context, 0.02)),
+                      roleName == "Usher"?Container(): ProfileButton(
                         //    width: SizeConfig.width(context, 0.5),
                         onPressed: () async {
                           Navigator.pushNamed(context, AppRoutes.complainScreenRoute);
@@ -425,7 +425,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         },
                         title: 'Logout'.tr(), icon: Symbols.logout,
                       ),
-
                     ],
                   ),
                 ),

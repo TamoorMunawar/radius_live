@@ -8,7 +8,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:radar/constants/network_utils.dart';
-import 'package:radar/domain/entities/Job.dart';
+import 'package:radar/domain/entities/Job.dart' as job;
 import 'package:radar/domain/entities/announcement/Announcement.dart';
 import 'package:radar/domain/entities/attandance/Attandance.dart';
 import 'package:radar/domain/entities/dashboard/dashboard_detail.dart';
@@ -940,7 +940,7 @@ class RadarMobileRepositoryImpl implements RadarMobileRepository {
   }
 
   @override
-  Future<List<Job>> getJob({int? eventModelId, bool? isZone, int? zoneId}) async {
+  Future<List<job.Job>> getJob({int? eventModelId, bool? isZone, int? zoneId}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       var url = (isZone ?? false)
@@ -960,10 +960,10 @@ class RadarMobileRepositoryImpl implements RadarMobileRepository {
         throw Exception(responseBody["message"]);
       }
       List list = responseBody["data"] as List;
-      List<Job> jobList = [];
+      List<job.Job> jobList = [];
 
       if (list.isNotEmpty) {
-        list.forEach((t) => jobList.add(Job.fromJson(t)));
+        list.forEach((t) => jobList.add(job.Job.fromJson(t)));
       }
 
       return jobList;

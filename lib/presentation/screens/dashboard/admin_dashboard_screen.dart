@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
@@ -36,6 +37,10 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import 'package:web_socket_client/web_socket_client.dart';
 
+import '../../../data/radar_mobile_repository_impl.dart';
+import '../../../domain/repository/radar_mobile_repository.dart';
+import '../../../domain/usecase/event/event_list/event_list_usecase.dart';
+
 class AdminDashBoardScreen extends StatefulWidget {
   const AdminDashBoardScreen({super.key});
 
@@ -56,7 +61,18 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen>
   String image = "";
   int? userId = 0;
   final _messageController = TextEditingController();
+  List<MyEvent> _eventList = [];
+  final EventListUsecase _usecase = EventListUsecase(
+    repository: RadarMobileRepositoryImpl(),
+  );
+  _getEventList() async {
+    _eventList = await _usecase.getEventList();
+    log(_eventList.length.toString());
 
+    setState(() {
+      eventId = _eventList[0].$1;
+    });
+  }
   final alertFormKey = GlobalKey<FormState>();
   _sendMessage() {
     print("mesaafedsdfsdfsdf");
@@ -241,6 +257,7 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen>
   @override
   void initState() {
     determinePosition();
+    _getEventList();
     //  websocket();
 
     LogManager.info("Admin dashboard_usecase.dart");
@@ -293,7 +310,11 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen>
 
     setState(() {
       _scanBarcode = barcodeScanRes;
-
+      setState(() {
+        eventId = eventValue?.id;
+        print("this is event id");
+        print(eventId);
+      });
       // Parse the JSON response
       var data = jsonDecode(_scanBarcode);
       print(data);
@@ -309,6 +330,7 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen>
         usherId: id,
         depertmentIdd: departmentId ?? "",// Use the scanned ID
         depertmentName: departmentname ?? "",
+
       );
 
       // Push the new screen with the scanned arguments
@@ -324,6 +346,17 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen>
   // Platform messages are asynchronous, so we initialize in an async method.
 
   bool showAlert = false;
+
+  String _complain = "Event Complain";
+  final List<String> _complainTypes = ["Event Complain", "General Complain","Call Backup"];
+  int _complainValue = 0;
+  // Filter the complain types based on the role
+  List<String> getFilteredComplainTypes() {
+    if (roleName == "Usher") {
+      return _complainTypes.where((type) => type != "Call Backup").toList();
+    }
+    return _complainTypes;
+  }
   String result='';
   @override
   Widget build(BuildContext context) {
@@ -341,7 +374,7 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen>
             attandanceCubit.latestEvent();
             getUserDetailsFromLocal();
           },
-          child: ListView(
+          child: Stack(
             children: [
               Container(
                 width: SizeConfig.width(context, 0.9),
@@ -427,7 +460,7 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen>
               ),
               Padding(
                 padding: EdgeInsets.only(
-                  top: SizeConfig.height(context, 0.01),
+                  top: SizeConfig.height(context, 0.12),
                   bottom: SizeConfig.height(context, 0.02),
                   left: SizeConfig.width(context, 0.05),
                   right: SizeConfig.width(context, 0.05),
@@ -517,14 +550,323 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen>
                   ),
                 ),
               ),
-              buildDashboardWidget(context, formattedDate, formattedTime),
+              Padding(
+                padding: EdgeInsets.only(
+                  top: SizeConfig.height(context, 0.22),
+
+
+                ),
+                child: buildDashboardWidget(context, formattedDate, formattedTime),
+              ),
+              (showAlert) ? buildAlertWidget(context) : Container()
             ],
           ),
         ),
       ),
     );
   }
+  Align buildAlertWidget(BuildContext context) {
+    return Align(
+      alignment: Alignment.center,
+      child: Container(
+        decoration: BoxDecoration(
+            color: GlobalColors.backgroundColor, borderRadius: BorderRadius.circular(SizeConfig.width(context, 0.02))),
+        height: SizeConfig.height(context, 0.75),
+        width: SizeConfig.width(context, 0.9),
+        padding: EdgeInsets.only(
+          left: SizeConfig.width(context, 0.04),
+          right: SizeConfig.width(context, 0.04),
+          top: SizeConfig.height(context, 0.015),
+          bottom: SizeConfig.height(context, 0.015),
+        ),
+        child: SingleChildScrollView(
+          child: Form(
+            key: alertFormKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      showAlert = false;
+                      _messageController.clear();
+                      departmentValue = null;
+                    });
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Image.asset(
+                        "assets/icons/cancel_icon.png",
+                        width: SizeConfig.width(context, 0.035),
+                      )
+                    ],
+                  ),
+                ),
+                Text(
+                  "Get Alert".tr(),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    fontSize: SizeConfig.width(context, 0.04),
+                  ),
+                ),
+                Container(
+                  width: SizeConfig.width(context, 0.9),
+                  margin: EdgeInsets.only(
+                    top: SizeConfig.height(context, 0.01),
+                  ),
+                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                    Container(
+                      // color: Colors.red,
+                      width: SizeConfig.width(context, 0.55),
+                      child: ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: GestureDetector(
+                          onTap: () {
+                            /*      Navigator.pushNamed(
+                                    context, AppRoutes.profileScreenRoute);*/
+                          },
+                          child: (image.contains("http"))
+                              ? CircleAvatar(
+                            backgroundImage: NetworkImage(image),
+                            radius: SizeConfig.width(context, 0.065),
+                          )
+                              : CircleAvatar(
+                            backgroundImage: AssetImage("assets/icons/person.png"),
+                            radius: SizeConfig.width(context, 0.065),
+                          ),
+                        ),
+                        title: Text(
+                          name,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: SizeConfig.width(context, 0.038),
+                          ),
+                        ),
+                        subtitle: Text(
+                          roleName == "Usher".tr() ? "Usher".tr() : "Supervisor".tr(),
+                          maxLines: 1,
+                          style: TextStyle(
+                            color: GlobalColors.goodMorningColor,
+                            fontWeight: FontWeight.w400,
+                            fontSize: SizeConfig.width(context, 0.030),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ]),
+                ),
+                SizedBox(
+                  height: SizeConfig.height(context, 0.02),
+                ),
+                Material(
+                  color: Colors.transparent,
+                  shadowColor: Color(0xFF006DFC).withOpacity(0.16),
+                  child: DropdownButtonFormField<String>(
+                    dropdownColor: Colors.black, // Change to your desired color
+                    items: getFilteredComplainTypes().map((String item) {
+                      return DropdownMenuItem<String>(
+                        value: item,
+                        child: Text(
+                          item,
+                          style: TextStyle(color: Colors.white), // Use your text field hint color here
+                        ),
+                      );
+                    }).toList(),
+                    value: _complain,
+                    onChanged: (value) {
+                      setState(() => _complain = value!);
+                      if (_complain == _complainTypes[0]) {
+                        _complainValue = 0;
+                      } else if (_complain == _complainTypes[1]) {
+                        _complainValue = 1;
+                      } else {
+                        if (roleName != "Usher") { // Check if the user role is not "Usher"
+                          _complainValue = 2;
+                        }
+                      }
+                      print(_complainValue.toString());
+                    },
+                    decoration: InputDecoration(
+                      filled: false,
+                      hintText: 'Select Complain type',
+                      hintStyle: TextStyle(
+                        color: Colors.white, // Use your hint text color here
+                      ),
+                      border: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.blue), // Your submit button color here
+                        borderRadius: BorderRadius.circular(
+                          8.0, // Change this to your preferred width
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.grey, // Your hint text color here
+                        ),
+                        borderRadius: BorderRadius.circular(
+                          8.0, // Change this to your preferred width
+                        ),
+                      ),
+                    ),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) {
+                      if (value == null) {
+                        return 'Please select a complaint type';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: SizeConfig.height(context, 0.02),
+                ),
+                _complainValue == 0
+                    ? Material(
+                  color: Colors.transparent,
+                  shadowColor: const Color(0xff006DFC).withOpacity(0.16),
+                  child: DropdownButtonFormField<int?>(
+                    dropdownColor: GlobalColors.backgroundColor,
+                    isExpanded: true,
+                    items: [
+                      for (int i = 0; i < _eventList.length; i++)
+                        DropdownMenuItem(
+                          value: _eventList[i].$1,
+                          child: Text(
+                            _eventList[i].$2,
+                            style: TextStyle(color: GlobalColors.hintTextColor),
+                          ),
+                        ),
+                    ],
+                    value: eventId,
+                    onChanged: (value) {
+                      setState(() {
+                        eventId = value;
+                      });
+                    },
+                    decoration: InputDecoration(
+                      filled: false,
+                      hintText: 'Select'.tr(),
+                      hintStyle: TextStyle(
+                        color: GlobalColors.textFieldHintColor,
+                      ),
+                      border: OutlineInputBorder(
+                        borderSide: const BorderSide(color: GlobalColors.submitButtonColor),
+                        borderRadius: BorderRadius.circular(
+                          SizeConfig.width(context, 0.03),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: GlobalColors.hintTextColor,
+                          //    color: GlobalColors.ftsTextColor,
+                        ),
+                        borderRadius: BorderRadius.circular(
+                          SizeConfig.width(context, 0.03),
+                        ),
+                      ),
+                    ),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) {
+                      if (value == null) {
+                        return 'Please select an Event'.tr();
+                      }
+                      return null;
+                    },
+                  ),
+                )
+                    : Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey.shade700, width: 1.5),
+                      borderRadius: BorderRadius.circular(
+                        SizeConfig.width(context, 0.03),
+                      )),
+                  child: Text(
+                    "General Complain",
+                    style: TextStyle(color: Colors.grey.shade700),
+                  ),
+                ),
+                SizedBox(
+                  height: SizeConfig.height(context, 0.02),
+                ),
+                RadiusTextField(
+                  leftPadding: 0,
+                  rightPadding: 0,
+                  maxLength: 9,
+                  controller: _messageController,
+                  hintText: 'Type Message'.tr(),
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please Enter Message'.tr();
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(
+                  height: SizeConfig.height(context, 0.03),
+                ),
+                SubmitButton(
+                  gradientFirstColor: GlobalColors.submitButtonColor,
+                  width: SizeConfig.width(context, 0.85),
+                  onPressed: () async {
+                    if (alertFormKey.currentState!.validate()) {
+                      setState(() {
+                        showAlert = false;
+                      });
+                      print(_complainValue.toString());
+                      print("_complainValue.toString()");
+                      createAlertCubit.createAlert(
+                        // description: _messageController.text,
+                        // departmentId: departmentValue?.id.toString(),
+                        // to: departmentValue?.teamName,
+                        // heading: "App",
+                        eventId: eventId,
+                        type: _complainValue.toString(),
+                        message: _messageController.text,
+                      );
+                    }
+                    //  Navigator.pushNamed(context, AppRoutes.resetScreenRoute);
+                  },
+                  child: BlocConsumer<CreateAlertCubit, CreateAlertState>(
+                    builder: (context, state) {
+                      if (state is CreateAlertLoading) {
+                        return const LoadingWidget();
+                      }
+                      return Text(
+                        'Send Alert'.tr(),
+                        style: TextStyle(
+                          color: GlobalColors.submitButtonTextColor,
+                          fontSize: SizeConfig.width(context, 0.04),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      );
+                    },
+                    listener: (context, state) {
+                      if (state is CreateAlertSuccess) {
+                        AppUtils.showFlushBar("Your Message Has Been Sent Successfully".tr(), context);
 
+                        setState(() {
+                          showAlert = false;
+                          _messageController.clear();
+                          eventId = null;
+                        });
+                      }
+                      if (state is CreateAlertFailure) {
+                        AppUtils.showFlushBar(state.errorMessage, context);
+                      }
+                    },
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
   Widget buildDashboardWidget(
       BuildContext context, String formattedDate, String formattedTime) {
     return BlocConsumer<DashboardCubit, DashboardState>(
@@ -889,6 +1231,29 @@ class _AdminDashBoardScreenState extends State<AdminDashBoardScreen>
                     fontWeight: FontWeight.w500,
                   ),
                 ),
+              ),
+              SizedBox(
+                height: SizeConfig.height(context, 0.02),
+              ),
+              SubmitButton(
+                gradientFirstColor: const Color(0xFFEF4A4A).withOpacity(0.2),
+                width: SizeConfig.width(context, 0.85),
+                onPressed: () async {
+                  setState(() {
+                    showAlert = true;
+                  });
+                },
+                child: Text(
+                  'Get Alert'.tr(),
+                  style: TextStyle(
+                    color: const Color(0xFFEF4A4A),
+                    fontSize: SizeConfig.width(context, 0.04),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: SizeConfig.height(context, 0.02),
               ),
             ],
           ),

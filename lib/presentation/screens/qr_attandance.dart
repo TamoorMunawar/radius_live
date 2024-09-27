@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:math' as m;
@@ -15,21 +14,20 @@ import 'package:radar/constants/colors.dart';
 import 'package:radar/constants/size_config.dart';
 import 'package:radar/data/radar_mobile_repository_impl.dart';
 import 'package:radar/domain/entities/events/initial_event/Initial_event.dart';
-import 'package:radar/domain/entities/scan_qr_code/Scan_qr_code_payload.dart';
 import 'package:radar/domain/entities/zone/Zone.dart';
 import 'package:radar/domain/usecase/scan_qr_code/scan_qr_code_usecase.dart';
 import 'package:radar/presentation/cubits/events/initial_events/initial_event_cubit.dart';
 import 'package:radar/presentation/cubits/scan_qr_code/scan_qrcode_cubit.dart';
-import 'package:radar/presentation/cubits/ushers/usher_cubit.dart';
-import 'package:radar/presentation/cubits/zone/zone_cubit.dart';
 import 'package:radar/presentation/cubits/zone_seats/zone_seats_cubit.dart';
 import 'package:radar/presentation/screens/dashboard_screen.dart';
-
 import 'package:radar/presentation/screens/events.dart';
 import 'package:radar/presentation/widgets/LoadingWidget.dart';
 import 'package:radar/presentation/widgets/button_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
+import '../../domain/entities/events/event_detail/Event_detail.dart';
+import '../../domain/entities/events/event_detail/GetZone.dart'as eGetZone;
+import '../cubits/events/event_detail/event_detail_cubit.dart';
+import 'event_detail_screen.dart';
 
 class QrAttandanceScreen extends StatefulWidget {
   const QrAttandanceScreen({super.key});
@@ -46,7 +44,7 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
 
     return htmlString.replaceAll(regExp, '');
   }
-
+  EventDetail? eventDetail;
   List<Tabs> tabList = [
     Tabs(
       title: "Check In".tr(),
@@ -61,6 +59,7 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
   int finalCount = 1;
   late ScanQrCodeCubit scanQrCodeCubit;
   late InitialEventCubit initialEventCubit;
+  late EventDetailCubit eventDetailCubit;
   late ZoneSeatsCubit zoneSeatsCubit;
   // late ZoneCubit zoneCubit;
   String? roleName;
@@ -86,6 +85,8 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
       setState(() {
         isCheckInValue = true;
         attendanceEventId = result.$2;
+        print(attendanceEventId);
+
       });
     }
   }
@@ -209,7 +210,8 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
     _getAttendance();
     determinePosition();
     getUserDetailsFromLocal();
-
+    eventDetailCubit = BlocProvider.of<EventDetailCubit>(context);
+    eventDetailCubit.getEventDetailById(eventId: 117);
     getFinalEventData();
     //  initialEventCubit.getFinalEvent(page: finalCount);
     super.initState();
@@ -273,6 +275,20 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
         children: [
           Column(
             children: [
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: List.generate(
+                      eventDetail?.eventZonesAll?.length ?? 0,
+                          (index) => ZonesWidget(
+                        eventDetail: eventDetail ?? EventDetail(id: 0),
+                        eventId: 117,
+                        getZone: eventDetail?.eventZonesAll?[index].getZone ?? eGetZone.GetZone(id: 0),
+                      ),
+                    )),
+              ),
               // Padding(
               //   padding: EdgeInsets.only(
               //       top: SizeConfig.height(context, 0.02),
@@ -403,6 +419,7 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
                                       checkOutEventModelId = item.id;
                                       // isCheckInValue = false;
                                       _initialEvent = item;
+
                                     });
 
                                     if (attendanceEventId == null) {
@@ -487,11 +504,12 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+
               GestureDetector(
                 onTap: () {
                   setState(() {
                     showAlert = false;
-
+                    print(event?.id);
                     zoneValue = null;
                   });
                 },
@@ -558,8 +576,8 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
                     ),
                     border: OutlineInputBorder(
                       borderSide: const BorderSide(color: GlobalColors.submitButtonColor
-                          //    color: GlobalColors.ftsTextColor,
-                          ),
+                        //    color: GlobalColors.ftsTextColor,
+                      ),
                       borderRadius: BorderRadius.circular(
                         SizeConfig.width(context, 0.03),
                       ),

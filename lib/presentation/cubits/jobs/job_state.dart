@@ -1,5 +1,4 @@
 part of 'job_cubit.dart';
-
 abstract class JobState extends Equatable {
   const JobState();
 }
@@ -15,7 +14,7 @@ class JobLoading extends JobState {
 }
 
 class JobSuccess extends JobState {
-  final List<Job> result;
+  final List<job.Job> result;
 
   JobSuccess({required this.result});
 

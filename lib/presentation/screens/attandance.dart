@@ -32,7 +32,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     );
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body);
-      final List<dynamic> data = jsonResponse['detail']['data'];
+      final List<dynamic> data = jsonResponse['data'];
       return data.map((item) => Data.fromJson(item)).toList();
     } else {
       throw Exception('Failed to load events');
@@ -102,7 +102,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             Row(
               children: [
                 CircleAvatar(
-                  backgroundImage: AssetImage(
+                  backgroundImage: NetworkImage(
                       event.user?.imageUrl ?? "assets/icons/Event.png"),
                   radius: 30,
                 ),

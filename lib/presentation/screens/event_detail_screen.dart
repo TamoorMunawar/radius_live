@@ -410,7 +410,6 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: List.generate(
                                 eventDetail?.eventZonesAll?.length ?? 0,
-                                // eventDetail?.eventZonesAll?.length ?? 0,
                                 (index) => JobWidget(
                                   eventDetail: eventDetail ?? EventDetail(id: 0),
                                   eventId: widget.args.eventId,
@@ -464,7 +463,6 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: List.generate(
                                 eventDetail?.eventZonesAll?.length ?? 0,
-                                // eventDetail?.eventZonesAll?.length ?? 0,
                                 (index) => ZonesWidget(
                                   eventDetail: eventDetail ?? EventDetail(id: 0),
                                   eventId: widget.args.eventId,

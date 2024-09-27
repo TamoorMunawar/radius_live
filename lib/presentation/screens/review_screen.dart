@@ -19,7 +19,9 @@ import 'package:radar/presentation/widgets/button_widget.dart';
 import 'package:radar/presentation/widgets/text_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../constants/network_utils.dart';
+import '../../constants/size_config.dart';
 import '../../data/reviewdropdown_service.dart';
+import '../../domain/entities/lastest_event/latest_event_model.dart';
 import '../../domain/entities/ushers/Department.dart';
 import '../../domain/repository/logistics_repo.dart';
 
@@ -41,6 +43,7 @@ class ReviewScreen extends StatefulWidget {
 
 class _ReviewScreenState extends State<ReviewScreen> {
   late TextEditingController _reviewController;
+  late  List<LatestEventModel>attanfanceList;
   double _rating = 1;
   bool _isBanned = true;
   List<MyEvent> _eventList = [];
@@ -53,7 +56,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
     _fetchDesignations();
     _reviewController = TextEditingController();
     _futureGroups = fetchGroups();
-    // _getEventList();
+    _getEventList();
   }
 
   Future<void> _fetchDesignations() async {
@@ -90,15 +93,18 @@ class _ReviewScreenState extends State<ReviewScreen> {
     super.dispose();
   }
 
-  // _getEventList() async {
-  //   _eventList = await _usecase.getEventList();
-  //   log(_eventList.length.toString());
-  //
-  //   setState(() {
-  //     eventId = _eventList[0].$1;
-  //     print("eventId $eventId");
-  //   });
-  // }
+  LatestEventModel? eventValue;
+  int? eventIdd;
+  _getEventList() async {
+    _eventList = await _usecase.getEventList();
+    log(_eventList.length.toString());
+
+    setState(() {
+      eventId = _eventList[0].$1;
+      eventIdd = eventValue?.id;
+      print("eventId $eventIdd");
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -193,10 +199,69 @@ class _ReviewScreenState extends State<ReviewScreen> {
                         style: TextStyle(
                           color: GlobalColors.hintTextColor,
                           fontWeight: FontWeight.w500,
-                        )
-                    ),
+                        )),
                   ),
                 ),
+              SizedBox(height: 0.02.sh),
+              Padding(
+                padding: EdgeInsets.only(left: 0.05.sw, right: 0.05.sw),
+                child: DropdownButtonFormField<LatestEventModel>(
+                  isExpanded: true,
+                  dropdownColor: GlobalColors.backgroundColor,
+                  padding: EdgeInsets.only(),
+                  items:
+                  attanfanceList.map((LatestEventModel item) {
+                    return DropdownMenuItem<LatestEventModel>(
+                      value: item,
+                      child: Text(
+                        item.eventName ?? "",
+                        style: TextStyle(
+                            color: GlobalColors.textFieldHintColor),
+                      ),
+                    );
+                  }).toList(),
+                  value: eventValue,
+                  onChanged: (value) {
+                    setState(() {
+                      eventValue = value;
+                      eventId = eventValue?.id;
+                    });
+
+                  },
+                  decoration: InputDecoration(
+                    filled: false,
+                    hintText: 'Select Event'.tr(),
+                    hintStyle: TextStyle(
+                      color: GlobalColors.textFieldHintColor,
+                    ),
+                    border: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                          color: GlobalColors.submitButtonColor
+                        //    color: GlobalColors.ftsTextColor,
+                      ),
+                      borderRadius: BorderRadius.circular(
+                        SizeConfig.width(context, 0.03),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: GlobalColors.hintTextColor,
+                        //    color: GlobalColors.ftsTextColor,
+                      ),
+                      borderRadius: BorderRadius.circular(
+                        SizeConfig.width(context, 0.03),
+                      ),
+                    ),
+                  ),
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) {
+                    if (value == null) {
+                      return 'Please select a Event';
+                    }
+                    return null;
+                  },
+                ),
+              ),
               SizedBox(height: 0.02.sh),
               Padding(
                 padding: EdgeInsets.only(left: 0.05.sw, right: 0.05.sw),
@@ -245,6 +310,12 @@ class _ReviewScreenState extends State<ReviewScreen> {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else if (snapshot.hasData) {
                     final groups = snapshot.data!;
+
+                    // Set the initial value of selectedGroupId to the first group's id if it's not already set.
+                    if (selectedGroupId == null && groups.isNotEmpty) {
+                      selectedGroupId = groups[0].id;
+                    }
+
                     return Padding(
                       padding: EdgeInsets.symmetric(horizontal: 0.05.sw),
                       child: Container(
@@ -263,10 +334,10 @@ class _ReviewScreenState extends State<ReviewScreen> {
                               value: group.id,
                               child: Text(
                                 group.teamName,
-                                  style: TextStyle(
-                                    color: GlobalColors.hintTextColor,
-                                    fontWeight: FontWeight.w500,
-                                  )
+                                style: TextStyle(
+                                  color: GlobalColors.hintTextColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             );
                           }).toList(),
@@ -293,7 +364,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                   ),
                   child: DropdownButton<int?>(
                     dropdownColor: GlobalColors.backgroundColor,
-                    value: _selectedDesignationId,
+                    value: _selectedDesignationId ?? (_designationList.isNotEmpty ? _designationList[0].id : null), // Set initial value if not already selected
                     isExpanded: true,
                     underline: Container(),
                     padding: EdgeInsets.only(left: 0.05.sw, right: 0.05.sw),
@@ -302,10 +373,10 @@ class _ReviewScreenState extends State<ReviewScreen> {
                         value: designation.id,
                         child: Text(
                           designation.name,
-                            style: TextStyle(
-                              color: GlobalColors.hintTextColor,
-                              fontWeight: FontWeight.w500,
-                            )
+                          style: TextStyle(
+                            color: GlobalColors.hintTextColor,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       );
                     }).toList(),
@@ -317,6 +388,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                   ),
                 ),
               ),
+
               SizedBox(height: 0.02.sh),
               Padding(
                 padding: EdgeInsets.only(left: 0.05.sw, right: 0.05.sw),

@@ -264,10 +264,10 @@ class _EventsScreenState extends State<EventsScreen> {
                                   Navigator.pushNamed(context, AppRoutes.eventDetailScreenRoute,
                                       arguments: EventDetailScreenArgs(eventId: item?.id ?? 0));
                                 },
-                                title: "${item?.eventName}",
+                                title: "${item.eventName}",
                                 subtitle:
-                                    "${removeHtmlTags(item?.projectSummary ?? "")} \n ${item?.startDate} to ${item?.endDate}",
-                                imagePath: "$eventImagePath${item?.logo}",
+                                    "${removeHtmlTags(item.projectSummary ?? "")} \n ${item?.startDate} to ${item?.endDate}",
+                                imagePath: "$eventImagePath${item.logo}",
                               );
                             } else {
                               return LoadingWidget();

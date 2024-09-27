@@ -1,4 +1,4 @@
-import 'package:radar/domain/entities/Job.dart';
+import 'package:radar/domain/entities/Job.dart' as job;
 import 'package:radar/domain/entities/announcement/Announcement.dart';
 import 'package:radar/domain/entities/attandance/Attandance.dart';
 import 'package:radar/domain/entities/dashboard/dashboard_detail.dart';
@@ -47,7 +47,7 @@ abstract class RadarMobileRepository {
   Future<List<OutsideEventUsher>> getUshersByEvent({int? eventId, int? page});
   Future<List<Supervisior>> getSuperVisior();
   Future<DashboardAttandanceData> getAttandanceData({int? userId});
-  Future<List<Job>> getJob({int? eventModelId, bool? isZone, int? zoneId});
+  Future<List<job.Job>> getJob({int? eventModelId, bool? isZone, int? zoneId});
   Future<List<Zone>> getZoneByUserId({int? eventId});
   Future<bool?> scanQrCodeByEventId({
     ScanQrCodePayload? scanQrCodePayload,

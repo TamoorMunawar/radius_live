@@ -683,6 +683,11 @@ MultiBlocProvider qrAttandance() {
         ZoneUsecase(repository: repository),
       ),
     ),
+    BlocProvider<EventDetailCubit>(
+      create: (context) => EventDetailCubit(
+        EventDetailUsecase(repository: repository),
+      ),
+    ),
     BlocProvider(
       create: (context) => InitialEventCubit(
         InitialEventUsecase(repository: repository),
@@ -747,6 +752,7 @@ MultiBlocProvider reviewScreen(ReviewScreenArgs args) {
       usherId: args.usherId,
       depertmentIdd: args.depertmentIdd,
     depertmentName: args.depertmentName,
+
     ),
   );
 }
