@@ -577,7 +577,6 @@ class _QrAttandanceScreenState extends State<QrAttandanceScreen> {
                           AppUtils.showFlushBar("You don't have permission to marked the Attandance".tr(), context);
                           return;
                         }
-
                         log(event.id.toString());
                         log(ZoneId.toString() ?? "Zone is null");
                         print("tamoor munawar");
