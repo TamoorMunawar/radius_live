@@ -73,8 +73,8 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     eventImagePath = prefs.getString("event_image_path") ?? "";
     roleName = prefs.getString(
-          "role_name",
-        ) ??
+      "role_name",
+    ) ??
         "";
     print("role name $roleName");
     setState(() {});
@@ -264,11 +264,11 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                             (eventDetail?.formatStartDate == null)
                                 ? Container()
                                 : TitleAndNameWidget(
-                                    title: "Date From".tr(), maxLine: 2, subtitle: "${eventDetail?.formatStartDate}"),
+                                title: "Date From".tr(), maxLine: 2, subtitle: "${eventDetail?.formatStartDate}"),
                             (eventDetail?.formatEndDate == null)
                                 ? Container()
                                 : TitleAndNameWidget(
-                                    maxLine: 2, title: "Date To".tr(), subtitle: "${eventDetail?.formatEndDate}"),
+                                maxLine: 2, title: "Date To".tr(), subtitle: "${eventDetail?.formatEndDate}"),
                           ],
                         ),
                         SizedBox(
@@ -291,11 +291,11 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                             (eventDetail?.manager?.name == null)
                                 ? Container()
                                 : TitleAndNameWidget(
-                                    title: "Event Manager".tr(), subtitle: "${eventDetail?.manager?.name}"),
+                                title: "Event Manager".tr(), subtitle: "${eventDetail?.manager?.name}"),
                             (eventDetail?.leadTimeUnit == null)
                                 ? Container()
                                 : TitleAndNameWidget(
-                                    title: "Lead Time Unit".tr(), subtitle: "${eventDetail?.leadTimeUnit}"),
+                                title: "Lead Time Unit".tr(), subtitle: "${eventDetail?.leadTimeUnit}"),
                           ],
                         ),
                         Row(
@@ -304,9 +304,9 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                             (eventDetail?.wareHouseManager?.name == null)
                                 ? Container()
                                 : TitleAndNameWidget(
-                                    titleMaxLine: 2,
-                                    title: "Warehouse Manager".tr(),
-                                    subtitle: "${eventDetail?.wareHouseManager?.name}"),
+                                titleMaxLine: 2,
+                                title: "Warehouse Manager".tr(),
+                                subtitle: "${eventDetail?.wareHouseManager?.name}"),
                             /*   TitleAndNameWidget(
                                 title: "Payment Interval", subtitle: "Naperville"),*/
                           ],
@@ -323,7 +323,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                             (eventDetail?.location == null)
                                 ? Container()
                                 : TitleAndNameWidget(
-                                    title: "Location Radius".tr(), subtitle: "${eventDetail?.location}"),
+                                title: "Location Radius".tr(), subtitle: "${eventDetail?.location}"),
                           ],
                         ),
                         Row(
@@ -340,11 +340,11 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                         (eventDetail?.dayoff.toString() == "null" || eventDetail?.dayoff == null)
                             ? Container()
                             : Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  TitleAndNameWidget(width: 0.7, title: "Day Off", subtitle: "${eventDetail?.dayoff}"),
-                                ],
-                              ),
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            TitleAndNameWidget(width: 0.7, title: "Day Off", subtitle: "${eventDetail?.dayoff}"),
+                          ],
+                        ),
                         /*   Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
@@ -392,15 +392,15 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                             (roleName == "Usher" || roleName == "Client")
                                 ? Container()
                                 : IconButton(
-                                    onPressed: () {
-                                      Navigator.pushNamed(context, AppRoutes.createJobScreenRoute,
-                                          arguments: CreateJobScreenArgs(id: eventDetail?.id ?? 0));
-                                    },
-                                    icon: Icon(
-                                      Icons.add_circle_outline_sharp,
-                                      size: SizeConfig.width(context, 0.06),
-                                      color: Colors.white,
-                                    ))
+                                onPressed: () {
+                                  Navigator.pushNamed(context, AppRoutes.createJobScreenRoute,
+                                      arguments: CreateJobScreenArgs(id: eventDetail?.id ?? 0));
+                                },
+                                icon: Icon(
+                                  Icons.add_circle_outline_sharp,
+                                  size: SizeConfig.width(context, 0.06),
+                                  color: Colors.white,
+                                ))
                           ],
                         ),
                         SingleChildScrollView(
@@ -410,7 +410,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: List.generate(
                                 eventDetail?.eventZonesAll?.length ?? 0,
-                                (index) => JobWidget(
+                                    (index) => JobWidget(
                                   eventDetail: eventDetail ?? EventDetail(id: 0),
                                   eventId: widget.args.eventId,
                                   job: eventDetail?.eventZonesAll?[index].job ?? Job(),
@@ -436,21 +436,21 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                             (roleName == "Usher" || roleName == "Client")
                                 ? Container()
                                 : IconButton(
-                                    onPressed: () {
-                                      print("sdfsmdnfsdfnsndf,mnsmdnf");
-                                      Navigator.pushNamed(
-                                        context,
-                                        AppRoutes.createZoneScreenRoute,
-                                        arguments: CreateZoneScreenArgs(
-                                          eventId: widget.args.eventId,
-                                        ),
-                                      );
-                                    },
-                                    icon: Icon(
-                                      Icons.add_circle_outline_sharp,
-                                      size: SizeConfig.width(context, 0.06),
-                                      color: Colors.white,
-                                    ))
+                                onPressed: () {
+                                  print("sdfsmdnfsdfnsndf,mnsmdnf");
+                                  Navigator.pushNamed(
+                                    context,
+                                    AppRoutes.createZoneScreenRoute,
+                                    arguments: CreateZoneScreenArgs(
+                                      eventId: widget.args.eventId,
+                                    ),
+                                  );
+                                },
+                                icon: Icon(
+                                  Icons.add_circle_outline_sharp,
+                                  size: SizeConfig.width(context, 0.06),
+                                  color: Colors.white,
+                                ))
                           ],
                         ),
                         SizedBox(
@@ -463,7 +463,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: List.generate(
                                 eventDetail?.eventZonesAll?.length ?? 0,
-                                (index) => ZonesWidget(
+                                    (index) => ZonesWidget(
                                   eventDetail: eventDetail ?? EventDetail(id: 0),
                                   eventId: widget.args.eventId,
                                   getZone: eventDetail?.eventZonesAll?[index].getZone ?? GetZone(id: 0),
@@ -506,164 +506,164 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                         (eventDetail?.manager?.name == null)
                             ? Container()
                             : Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "${"Event Manager".tr()} : ${eventDetail?.manager?.name}",
-                                    textAlign: TextAlign.left,
-                                    maxLines: 1,
-                                    style: TextStyle(
-                                        fontSize: SizeConfig.width(
-                                          context,
-                                          0.032,
-                                        ),
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.white),
-                                  )
-                                ],
-                              ),
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              "${"Event Manager".tr()} : ${eventDetail?.manager?.name}",
+                              textAlign: TextAlign.left,
+                              maxLines: 1,
+                              style: TextStyle(
+                                  fontSize: SizeConfig.width(
+                                    context,
+                                    0.032,
+                                  ),
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white),
+                            )
+                          ],
+                        ),
                         (widget.args.finalInvitation || _timerCubit.checkIfExpired(eventDetail!))
                             ? Container()
                             : buildCheckBoxWidget(
-                                context: context,
-                                checkValue: _isChecked,
-                                detail: eventDetail,
-                                title: "I_am_accepting_the".tr(),
-                                onChange: (bool? value) {
-                                  setState(() {
-                                    _isChecked = value ?? false;
-                                  });
-                                }),
+                            context: context,
+                            checkValue: _isChecked,
+                            detail: eventDetail,
+                            title: "I_am_accepting_the".tr(),
+                            onChange: (bool? value) {
+                              setState(() {
+                                _isChecked = value ?? false;
+                              });
+                            }),
                         SizedBox(
                           height: SizeConfig.height(context, 0.02),
                         ),
                         (widget.args.finalInvitation && roleName != "Usher" && roleName != "Client")
                             ? SubmitButton(
-                                gradientFirstColor: GlobalColors.submitButtonColor,
-                                width: SizeConfig.width(context, 0.85),
-                                onPressed: () async {
-                                  Navigator.pushNamed(
-                                    context,
-                                    AppRoutes.scanQrcodeForUsherInviteScreenRoute,
-                                    arguments: UsherInviteScreenArgs(
-                                      eventId: widget.args.eventId,
-                                      finalInvitation: false,
-                                      eventZoneAll: eventDetail?.eventZonesAll ?? [],
-                                    ),
-                                  );
-                                },
-                                child: Text(
-                                  'Invite Usher'.tr(),
-                                  style: TextStyle(
-                                    color: GlobalColors.submitButtonTextColor,
-                                    fontSize: SizeConfig.width(context, 0.04),
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              )
+                          gradientFirstColor: GlobalColors.submitButtonColor,
+                          width: SizeConfig.width(context, 0.85),
+                          onPressed: () async {
+                            Navigator.pushNamed(
+                              context,
+                              AppRoutes.scanQrcodeForUsherInviteScreenRoute,
+                              arguments: UsherInviteScreenArgs(
+                                eventId: widget.args.eventId,
+                                finalInvitation: false,
+                                eventZoneAll: eventDetail?.eventZonesAll ?? [],
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'Invite Usher'.tr(),
+                            style: TextStyle(
+                              color: GlobalColors.submitButtonTextColor,
+                              fontSize: SizeConfig.width(context, 0.04),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        )
                             : Container(),
                         (widget.args.finalInvitation || _timerCubit.checkIfExpired(eventDetail!))
                             ? Container()
                             : SubmitButton(
-                                gradientFirstColor: const Color(0xFFEF4A4A).withOpacity(0.2),
-                                width: SizeConfig.width(context, 0.9),
-                                onPressed: () async {
-                                  if (!_isChecked) {
-                                    AppUtils.showFlushBar(
-                                      "Terms_and_Condition".tr(),
-                                      context,
-                                    );
-                                    return;
-                                  }
-                                  int.parse(eventDetail?.leadTime ?? "0");
-                                  int time = int.parse(eventDetail?.leadTime ?? "0") ?? 0;
-                                  log("sddddddddddddd ${int.parse(eventDetail?.leadTime ?? "0")}");
-                                  if (time > 0) {
-                                    acceptInvitationCubit.acceptInvitation(status: 1, eventId: widget.args.eventId);
-                                  } else {
-                                    AppUtils.showFlushBar(
-                                      "Event is Expired".tr(),
-                                      context,
-                                    );
-                                  }
-                                },
-                                child: BlocConsumer<AcceptInvitationCubit, AcceptInvitationState>(
-                                  listener: (context, state) {
-                                    log("state AcceptInvitation state $state");
+                          gradientFirstColor: const Color(0xFFEF4A4A).withOpacity(0.2),
+                          width: SizeConfig.width(context, 0.9),
+                          onPressed: () async {
+                            if (!_isChecked) {
+                              AppUtils.showFlushBar(
+                                "Terms_and_Condition".tr(),
+                                context,
+                              );
+                              return;
+                            }
+                            int.parse(eventDetail?.leadTime ?? "0");
+                            int time = int.parse(eventDetail?.leadTime ?? "0") ?? 0;
+                            log("sddddddddddddd ${int.parse(eventDetail?.leadTime ?? "0")}");
+                            if (time > 0) {
+                              acceptInvitationCubit.acceptInvitation(status: 1, eventId: widget.args.eventId);
+                            } else {
+                              AppUtils.showFlushBar(
+                                "Event is Expired".tr(),
+                                context,
+                              );
+                            }
+                          },
+                          child: BlocConsumer<AcceptInvitationCubit, AcceptInvitationState>(
+                            listener: (context, state) {
+                              log("state AcceptInvitation state $state");
 
-                                    if (state is AcceptInvitationFailed) {}
-                                    if (state is AcceptInvitationSuccess) {
-                                      isJobAccepted = true;
-                                      Navigator.pushNamedAndRemoveUntil(
-                                          context, AppRoutes.pagesScreenRoute, (route) => false,
-                                          arguments: 2);
-                                      AppUtils.showFlushBar("Job Accept Successfully".tr(), context);
-                                      //    Navigator.pop(context);
+                              if (state is AcceptInvitationFailed) {}
+                              if (state is AcceptInvitationSuccess) {
+                                isJobAccepted = true;
+                                Navigator.pushNamedAndRemoveUntil(
+                                    context, AppRoutes.pagesScreenRoute, (route) => false,
+                                    arguments: 2);
+                                AppUtils.showFlushBar("Job Accept Successfully".tr(), context);
+                                //    Navigator.pop(context);
 
-                                      /*    Navigator.pushReplacementNamed(
+                                /*    Navigator.pushReplacementNamed(
                                     context, AppRoutes.pagesScreenRoute,
                                     arguments: 2);*/
-                                    }
-                                  },
-                                  builder: (context, state) {
-                                    if (state is AcceptInvitationLoading) {
-                                      return const LoadingWidget();
-                                    }
-                                    return Text(
-                                      'Accept Job'.tr(),
-                                      style: TextStyle(
-                                        color: const Color(0xFFEF4A4A),
-                                        fontSize: SizeConfig.width(context, 0.04),
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    );
-                                  },
+                              }
+                            },
+                            builder: (context, state) {
+                              if (state is AcceptInvitationLoading) {
+                                return const LoadingWidget();
+                              }
+                              return Text(
+                                'Accept Job'.tr(),
+                                style: TextStyle(
+                                  color: const Color(0xFFEF4A4A),
+                                  fontSize: SizeConfig.width(context, 0.04),
+                                  fontWeight: FontWeight.w500,
                                 ),
-                              ),
+                              );
+                            },
+                          ),
+                        ),
                         SizedBox(
                           height: SizeConfig.height(context, 0.01),
                         ),
                         (widget.args.finalInvitation || _timerCubit.checkIfExpired(eventDetail!))
                             ? Container()
                             : SubmitButton(
-                                gradientFirstColor: const Color(0xFFEF4A4A).withOpacity(0.2),
-                                width: SizeConfig.width(context, 0.9),
-                                onPressed: () async {
-                                  acceptInvitationCubit.declineInvitation(status: 0, eventId: widget.args.eventId);
-                                },
-                                child: BlocConsumer<AcceptInvitationCubit, AcceptInvitationState>(
-                                  listener: (context, state) {
-                                    print("state AcceptInvitation state $state");
-                                    if (state is DeclineInvitationFailed) {
-                                      AppUtils.showFlushBar(state.errorMessage, context);
-                                    }
-                                    if (state is DeclineInvitationSuccess) {
-                                      Navigator.pushNamedAndRemoveUntil(
-                                          context, AppRoutes.pagesScreenRoute, (route) => false,
-                                          arguments: 2);
-                                      AppUtils.showFlushBar("Job Decline Successfully".tr(), context);
-                                      //    Navigator.pop(context);
+                          gradientFirstColor: const Color(0xFFEF4A4A).withOpacity(0.2),
+                          width: SizeConfig.width(context, 0.9),
+                          onPressed: () async {
+                            acceptInvitationCubit.declineInvitation(status: 0, eventId: widget.args.eventId);
+                          },
+                          child: BlocConsumer<AcceptInvitationCubit, AcceptInvitationState>(
+                            listener: (context, state) {
+                              print("state AcceptInvitation state $state");
+                              if (state is DeclineInvitationFailed) {
+                                AppUtils.showFlushBar(state.errorMessage, context);
+                              }
+                              if (state is DeclineInvitationSuccess) {
+                                Navigator.pushNamedAndRemoveUntil(
+                                    context, AppRoutes.pagesScreenRoute, (route) => false,
+                                    arguments: 2);
+                                AppUtils.showFlushBar("Job Decline Successfully".tr(), context);
+                                //    Navigator.pop(context);
 
-                                      /*    Navigator.pushReplacementNamed(
+                                /*    Navigator.pushReplacementNamed(
                                     context, AppRoutes.pagesScreenRoute,
                                     arguments: 2);*/
-                                    }
-                                  },
-                                  builder: (context, state) {
-                                    if (state is DeclineInvitationLoading) {
-                                      return const LoadingWidget();
-                                    }
-                                    return Text(
-                                      'Decline Job'.tr(),
-                                      style: TextStyle(
-                                        color: const Color(0xFFEF4A4A),
-                                        fontSize: SizeConfig.width(context, 0.04),
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    );
-                                  },
+                              }
+                            },
+                            builder: (context, state) {
+                              if (state is DeclineInvitationLoading) {
+                                return const LoadingWidget();
+                              }
+                              return Text(
+                                'Decline Job'.tr(),
+                                style: TextStyle(
+                                  color: const Color(0xFFEF4A4A),
+                                  fontSize: SizeConfig.width(context, 0.04),
+                                  fontWeight: FontWeight.w500,
                                 ),
-                              ),
+                              );
+                            },
+                          ),
+                        ),
                         SizedBox(
                           height: SizeConfig.height(context, 0.01),
                         ),
@@ -700,7 +700,7 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
       return buildEventLogo(
         context: context,
         leadTime:
-            'Time left: ${state.inDays} days, ${state.inHours % 24} hours, ${state.inMinutes % 60} minutes, ${state.inSeconds % 60} seconds',
+        'Time left: ${state.inDays} days, ${state.inHours % 24} hours, ${state.inMinutes % 60} minutes, ${state.inSeconds % 60} seconds',
         logo: "$eventImagePath${eventDetail?.logo}",
         isExpired: context.read<TimerCubit>().checkIfExpired(eventDetail!),
       );
@@ -890,8 +890,8 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                             ),
                             border: OutlineInputBorder(
                               borderSide: const BorderSide(color: GlobalColors.submitButtonColor
-                                  //    color: GlobalColors.ftsTextColor,
-                                  ),
+                                //    color: GlobalColors.ftsTextColor,
+                              ),
                               borderRadius: BorderRadius.circular(
                                 SizeConfig.width(context, 0.03),
                               ),
@@ -988,13 +988,13 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
       children: [
         (logo == null)
             ? CircleAvatar(
-                backgroundImage: const AssetImage("assets/icons/Event.png"),
-                radius: SizeConfig.width(context, 0.09),
-              )
+          backgroundImage: const AssetImage("assets/icons/Event.png"),
+          radius: SizeConfig.width(context, 0.09),
+        )
             : CircleAvatar(
-                backgroundImage: NetworkImage(logo),
-                radius: SizeConfig.width(context, 0.09),
-              ),
+          backgroundImage: NetworkImage(logo),
+          radius: SizeConfig.width(context, 0.09),
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -1025,20 +1025,20 @@ class _EventDetilsScreenState extends State<EventDetilsScreen> {
                   borderRadius: BorderRadius.circular(SizeConfig.width(context, 0.02))),
               child: isExpired
                   ? Text(
-                      "Expired",
-                      style: TextStyle(color: const Color(0xFF57FF49), fontSize: SizeConfig.width(context, 0.03)),
-                    )
+                "Expired",
+                style: TextStyle(color: const Color(0xFF57FF49), fontSize: SizeConfig.width(context, 0.03)),
+              )
                   : ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(
-                        "${"Lead Time".tr()} :",
-                        style: TextStyle(color: const Color(0xFF57FF49), fontSize: SizeConfig.width(context, 0.03)),
-                      ),
-                      subtitle: Text(
-                        "$leadTime ${eventDetail?.leadTimeUnit}",
-                        style: TextStyle(color: const Color(0xFF57FF49), fontSize: SizeConfig.width(context, 0.03)),
-                      ),
-                    ),
+                contentPadding: EdgeInsets.zero,
+                title: Text(
+                  "${"Lead Time".tr()} :",
+                  style: TextStyle(color: const Color(0xFF57FF49), fontSize: SizeConfig.width(context, 0.03)),
+                ),
+                subtitle: Text(
+                  "$leadTime ${eventDetail?.leadTimeUnit}",
+                  style: TextStyle(color: const Color(0xFF57FF49), fontSize: SizeConfig.width(context, 0.03)),
+                ),
+              ),
             )
           ],
         )
@@ -1100,32 +1100,32 @@ class JobWidget extends StatelessWidget {
           (job?.totalMaleSalary == null)
               ? Container()
               : Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    TitleAndNameWidget(title: "Total Male Salary".tr(), subtitle: "${job?.totalMaleSalary}"),
-                  ],
-                ),
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              TitleAndNameWidget(title: "Total Male Salary".tr(), subtitle: "${job?.totalMaleSalary}"),
+            ],
+          ),
           (job?.dailyMaleSalary == null)
               ? Container()
               : Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    TitleAndNameWidget(title: "Daily Male Salary".tr(), subtitle: "${job?.dailyMaleSalary}"),
-                  ],
-                ),
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              TitleAndNameWidget(title: "Daily Male Salary".tr(), subtitle: "${job?.dailyMaleSalary}"),
+            ],
+          ),
           (job?.description == null)
               ? Container()
               : Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    TitleAndNameWidget(
-                        width: 0.48,
-                        height: 0.12,
-                        maxLine: 5,
-                        title: "Description".tr(),
-                        subtitle: "${job?.description}"),
-                  ],
-                ),
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              TitleAndNameWidget(
+                  width: 0.48,
+                  height: 0.12,
+                  maxLine: 5,
+                  title: "Description".tr(),
+                  subtitle: "${job?.description}"),
+            ],
+          ),
         ],
       ),
     );
@@ -1184,32 +1184,32 @@ class ZonesWidget extends StatelessWidget {
           (eventDetail.manager?.name == null)
               ? Container()
               : Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    TitleAndNameWidget(title: "Supervisior".tr(), subtitle: "${eventDetail.manager?.name}"),
-                  ],
-                ),
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              TitleAndNameWidget(title: "Supervisior".tr(), subtitle: "${eventDetail.manager?.name}"),
+            ],
+          ),
           (getZone.location == null)
               ? Container()
               : Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    TitleAndNameWidget(title: "Location".tr(), subtitle: "${getZone.location}"),
-                  ],
-                ),
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              TitleAndNameWidget(title: "Location".tr(), subtitle: "${getZone.location}"),
+            ],
+          ),
           (getZone.description == null)
               ? Container()
               : Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    TitleAndNameWidget(
-                        width: 0.48,
-                        height: 0.12,
-                        maxLine: 3,
-                        title: "Description".tr(),
-                        subtitle: "${getZone.description}"),
-                  ],
-                ),
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              TitleAndNameWidget(
+                  width: 0.48,
+                  height: 0.12,
+                  maxLine: 3,
+                  title: "Description".tr(),
+                  subtitle: "${getZone.description}"),
+            ],
+          ),
         ],
       ),
     );

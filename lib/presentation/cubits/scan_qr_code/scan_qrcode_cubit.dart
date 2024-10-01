@@ -39,7 +39,7 @@ class ScanQrCodeCubit extends Cubit<ScanQrCodeState> {
     }
   }
 
-  void usherCheckIn({int? eventId, double? latitude, double? longitude, int? zoneId}) async {
+  void usherCheckIn({int? eventId, double? latitude, double? longitude, var zoneId}) async {
     try {
       emit(UsherAttendanceLoading());
       bool result =

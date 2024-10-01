@@ -1743,7 +1743,7 @@ class RadarMobileRepositoryImpl implements RadarMobileRepository {
   }
 
   @override
-  Future<bool> usherCheckIn({int? eventId, double? latitude, double? longitude, int? zoneId}) async {
+  Future<bool> usherCheckIn({int? eventId, double? latitude, double? longitude, var zoneId}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       var url = Uri.parse('${NetworkUtils.baseUrl}/attendance/clock-in');

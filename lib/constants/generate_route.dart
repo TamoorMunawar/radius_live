@@ -458,7 +458,7 @@ MultiBlocProvider dashBoard() {
         ),
       ),
     ),
-  ], child: DashBoardScreen());
+  ], child: const DashBoardScreen());
 }
 
 MultiBlocProvider adminDashBoard() {
@@ -751,7 +751,7 @@ MultiBlocProvider reviewScreen(ReviewScreenArgs args) {
     child: ReviewScreen(
       usherId: args.usherId,
       depertmentIdd: args.depertmentIdd,
-    depertmentName: args.depertmentName,
+      depertmentName: args.depertmentName,
 
     ),
   );

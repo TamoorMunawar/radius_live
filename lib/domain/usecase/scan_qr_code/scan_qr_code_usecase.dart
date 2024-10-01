@@ -38,7 +38,7 @@ class ScanQrCodeUsecase {
     double? latitude,
     double? longitude,
     int? eventId,
-    int? zoneId,
+    var zoneId,
   }) async {
     try {
       return await repository.usherCheckIn(

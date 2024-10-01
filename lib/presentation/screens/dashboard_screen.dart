@@ -90,6 +90,10 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   List<String> genderList = ["Male", "Female", "Other"];
   String _complain = "Event Complain";
   final List<String> _complainTypes = ["Event Complain", "General Complain","Call Backup"];
+  final List<String> _eventcomplainTypes = ["Too much crowd", "Accident", "Misbehaving"];
+
+  String? _selectedComplainType; // To store the selected value
+
   int _complainValue = 0;
   // Filter the complain types based on the role
   List<String> getFilteredComplainTypes() {
@@ -311,59 +315,55 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   height: SizeConfig.height(context, 0.02),
                 ),
                 _complainValue == 0
-                    ? Material(
-                        color: Colors.transparent,
-                        shadowColor: const Color(0xff006DFC).withOpacity(0.16),
-                        child: DropdownButtonFormField<int?>(
-                          dropdownColor: GlobalColors.backgroundColor,
-                          isExpanded: true,
-                          items: [
-                            for (int i = 0; i < _eventList.length; i++)
-                              DropdownMenuItem(
-                                value: _eventList[i].$1,
-                                child: Text(
-                                  _eventList[i].$2,
-                                  style: TextStyle(color: GlobalColors.hintTextColor),
-                                ),
-                              ),
-                          ],
-                          value: eventId,
-                          onChanged: (value) {
-                            setState(() {
-                              eventId = value;
-                            });
-                          },
-                          decoration: InputDecoration(
-                            filled: false,
-                            hintText: 'Select'.tr(),
-                            hintStyle: TextStyle(
-                              color: GlobalColors.textFieldHintColor,
-                            ),
-                            border: OutlineInputBorder(
-                              borderSide: const BorderSide(color: GlobalColors.submitButtonColor),
-                              borderRadius: BorderRadius.circular(
-                                SizeConfig.width(context, 0.03),
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: GlobalColors.hintTextColor,
-                                //    color: GlobalColors.ftsTextColor,
-                              ),
-                              borderRadius: BorderRadius.circular(
-                                SizeConfig.width(context, 0.03),
-                              ),
-                            ),
-                          ),
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (value) {
-                            if (value == null) {
-                              return 'Please select an Event'.tr();
-                            }
-                            return null;
-                          },
+                    ?Material(
+                  color: Colors.transparent,
+                  shadowColor: const Color(0xff006DFC).withOpacity(0.16),
+                  child: DropdownButtonFormField<String>(
+                    isExpanded: true,
+                    dropdownColor: Colors.black,
+                    decoration: InputDecoration(
+                      filled: false,
+                      hintText: 'Select Complain type',
+                      hintStyle: TextStyle(
+                        color: Colors.white, // Use your hint text color here
+                      ),
+                      border: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.blue), // Border color
+                        borderRadius: BorderRadius.circular(8.0), // Border radius
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.grey, // Focused border color
                         ),
-                      )
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    value: _selectedComplainType, // Currently selected value
+                    items: _eventcomplainTypes.map((String complainType) {
+                      return DropdownMenuItem<String>(
+                        value: complainType,
+                        child: Text(
+                          complainType,
+                          style: TextStyle(
+                            color:  Colors.white, // Default color for other items
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedComplainType = newValue; // Update selected value
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null) {
+                        return 'Please select a complain type';
+                      }
+                      return null;
+                    },
+                  ),
+                )
                     : Container(
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
