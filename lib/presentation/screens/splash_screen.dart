@@ -47,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   String appUpdateUrl = (Platform.isAndroid)
-      ?  '1.0.46'
+      ?  '1.1.46'
       : "https://apps.apple.com/us/app/radius-live/id6618153542";
   String? currentVersion = "";
 

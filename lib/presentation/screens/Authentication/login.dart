@@ -1019,9 +1019,17 @@ class _LoginState extends State<Login> with WidgetsBindingObserver {
               ),
               SubmitButton(
                 onPressed: () async {
+                  // Check if profile picture is null or empty
+
                   print("whatsapp number $whatsappcountryCode ${whatsappController.text}");
                   if (isChecker ?? false) {
                     if (regFormKey.currentState!.validate()) {
+                      if (newImage?.path == null ) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Please add a profile picture")),
+                        );
+                        return; // Stop the registration process if no profile picture
+                      }
                       RegisterPayload register = RegisterPayload(
                         name: nameController.text.trim(),
                         email: _regEmailController.text.trim(),

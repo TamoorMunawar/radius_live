@@ -454,111 +454,97 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     SizedBox(
                       height: SizeConfig.height(context, 0.01),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: SizeConfig.width(context, 0.07),
-                        right: SizeConfig.width(context, 0.07),
-                      ),
-                      child: Text(
-                        "Please_STCPAY".tr(),
-                        style:
-                            TextStyle(color: GlobalColors.submitButtonColor, fontSize: SizeConfig.width(context, 0.03)),
-                      ),
-                    ),
+
                     SizedBox(
                       height: SizeConfig.height(context, 0.01),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: SizeConfig.width(context, 0.07),
-                        right: SizeConfig.width(context, 0.02),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            width: SizeConfig.width(context, 0.22),
-                            //  color: Colors.transparent,
-                            //shadowColor: const Color(0xff006DFC).withOpacity(0.16),
-                            child: DropdownButtonFormField<CountryCodeModel>(
-                              isExpanded: true,
-                              dropdownColor: GlobalColors.backgroundColor,
-                              items: countryList.map((CountryCodeModel item) {
-                                return DropdownMenuItem<CountryCodeModel>(
-                                  value: item,
-                                  child: Text(
-                                    "${item.phone}",
-                                    style: TextStyle(color: GlobalColors.textFieldHintColor),
-                                  ),
-                                );
-                              }).toList(),
-                              value: mobileCode,
-                              onChanged: (value) {
-                                setState(() => mobileCode = value);
-                              },
-                              decoration: InputDecoration(
-                                enabled: false,
-                                filled: false,
-                                hintText: ''.tr(),
-                                hintStyle: TextStyle(
-                                  color: GlobalColors.textFieldHintColor,
-                                ),
-                                disabledBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(color: GlobalColors.submitButtonColor
-                                      //    color: GlobalColors.ftsTextColor,
-                                      ),
-                                  borderRadius: BorderRadius.circular(
-                                    SizeConfig.width(context, 0.03),
-                                  ),
-                                ),
-                                border: OutlineInputBorder(
-                                  borderSide: const BorderSide(color: GlobalColors.submitButtonColor
-                                      //    color: GlobalColors.ftsTextColor,
-                                      ),
-                                  borderRadius: BorderRadius.circular(
-                                    SizeConfig.width(context, 0.03),
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: GlobalColors.hintTextColor,
-                                    //    color: GlobalColors.ftsTextColor,
-                                  ),
-                                  borderRadius: BorderRadius.circular(
-                                    SizeConfig.width(context, 0.03),
-                                  ),
-                                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: SizeConfig.width(context, 0.07),
+                    right: SizeConfig.width(context, 0.02),
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: SizeConfig.width(context, 0.22),
+                        child: DropdownButtonFormField<String>(
+                          isExpanded: true,
+                          dropdownColor: GlobalColors.backgroundColor,
+                          // Items for the dropdown, only one item with static value '+966'
+                          items: [
+                            DropdownMenuItem<String>(
+                              value: '966',
+                              child: Text(
+                                '966',
+                                style: TextStyle(color: GlobalColors.textFieldHintColor),
                               ),
-                              autovalidateMode: AutovalidateMode.onUserInteraction,
-                              validator: (value) {
-                                return null;
-                              },
+                            ),
+                          ],
+                          value: '966', // Static initial value
+                          onChanged: null, // Disable change since it's static
+                          decoration: InputDecoration(
+                            enabled: false, // Disable the dropdown interaction
+                            filled: false,
+                            hintText: ''.tr(),
+                            hintStyle: TextStyle(
+                              color: GlobalColors.textFieldHintColor,
+                            ),
+                            disabledBorder: OutlineInputBorder(
+                              borderSide:  BorderSide(
+                                color: GlobalColors.hintTextColor,
+                              ),
+                              borderRadius: BorderRadius.circular(
+                                SizeConfig.width(context, 0.03),
+                              ),
+                            ),
+                            border: OutlineInputBorder(
+                              borderSide:  BorderSide(
+                                color: GlobalColors.hintTextColor,
+                              ),
+                              borderRadius: BorderRadius.circular(
+                                SizeConfig.width(context, 0.03),
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: GlobalColors.hintTextColor,
+                              ),
+                              borderRadius: BorderRadius.circular(
+                                SizeConfig.width(context, 0.03),
+                              ),
                             ),
                           ),
-                          Expanded(
-                            child: RadiusTextField(
-                              textInputType: TextInputType.number,
-                              controller: _phoneNumberController,
-                              inputFormatters: [
-                                LengthLimitingTextInputFormatter(mobileCode?.phoneLength),
-                              ],
-                              hintText: 'STCPAY Number'.tr(),
-                              validator: (String? value) {
-                                if (value!.length != mobileCode!.phoneLength!) {
-                                  return "Please enter correct number".tr();
-                                }
-
-                                if (value!.contains("+") || value == null || value.isEmpty) {
-                                  return 'Enter_valid_stcpay_number'.tr();
-                                }
-                                return null;
-                              },
-                            ),
-                          )
-                        ],
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) {
+                            return null;
+                          },
+                        ),
                       ),
-                    ),
-                    SizedBox(
+                      Expanded(
+                        child: RadiusTextField(
+                          textInputType: TextInputType.number,
+                          controller: _phoneNumberController,
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(9), // Assuming phone length after +966 is 9 digits
+                          ],
+                          hintText: 'STCPAY Number'.tr(),
+                          validator: (String? value) {
+                            if (value!.length != 9) {
+                              return "Please enter correct number".tr();
+                            }
+
+                            if (value.contains("+") || value.isEmpty) {
+                              return 'Enter_valid_stcpay_number'.tr();
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
                       height: SizeConfig.height(context, 0.02),
                     ),
                     Padding(
@@ -570,35 +556,41 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(
-                            width: SizeConfig.width(context, 0.27),
-                            //  color: Colors.transparent,
-                            //shadowColor: const Color(0xff006DFC).withOpacity(0.16),
-                            child: DropdownButtonFormField<CountryCodeModel>(
+                            width: SizeConfig.width(context, 0.22),
+                            child: DropdownButtonFormField<String>(
                               isExpanded: true,
                               dropdownColor: GlobalColors.backgroundColor,
-                              items: countryList.map((CountryCodeModel item) {
-                                return DropdownMenuItem<CountryCodeModel>(
-                                  value: item,
+                              // Items for the dropdown, only one item with static value '+966'
+                              items: [
+                                DropdownMenuItem<String>(
+                                  value: '966',
                                   child: Text(
-                                    "${item.code} ${item.phone}",
+                                    '966',
                                     style: TextStyle(color: GlobalColors.textFieldHintColor),
                                   ),
-                                );
-                              }).toList(),
-                              value: whatappCode,
-                              onChanged: (value) {
-                                setState(() => whatappCode = value);
-                              },
+                                ),
+                              ],
+                              value: '966', // Static initial value
+                              onChanged: null, // Disable change since it's static
                               decoration: InputDecoration(
+                                enabled: false, // Disable the dropdown interaction
                                 filled: false,
                                 hintText: ''.tr(),
                                 hintStyle: TextStyle(
                                   color: GlobalColors.textFieldHintColor,
                                 ),
+                                disabledBorder: OutlineInputBorder(
+                                  borderSide:  BorderSide(
+                                    color: GlobalColors.hintTextColor,
+                                  ),
+                                  borderRadius: BorderRadius.circular(
+                                    SizeConfig.width(context, 0.03),
+                                  ),
+                                ),
                                 border: OutlineInputBorder(
-                                  borderSide: const BorderSide(color: GlobalColors.submitButtonColor
-                                      //    color: GlobalColors.ftsTextColor,
-                                      ),
+                                  borderSide:  BorderSide(
+                                    color: GlobalColors.hintTextColor,
+                                  ),
                                   borderRadius: BorderRadius.circular(
                                     SizeConfig.width(context, 0.03),
                                   ),
@@ -606,7 +598,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
                                     color: GlobalColors.hintTextColor,
-                                    //    color: GlobalColors.ftsTextColor,
                                   ),
                                   borderRadius: BorderRadius.circular(
                                     SizeConfig.width(context, 0.03),
@@ -615,9 +606,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               ),
                               autovalidateMode: AutovalidateMode.onUserInteraction,
                               validator: (value) {
-                                if (value == null) {
-                                  return 'Please select whatsapp Number Country Code'.tr();
-                                }
                                 return null;
                               },
                             ),
